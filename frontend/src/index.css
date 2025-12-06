@@ -3,3 +3,28 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
+
+/* Scrollbar styling (WebKit/Chromium) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1f2937 #0f172a;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #0f172a;
+  border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+  border: 2px solid #0f172a;
+  border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #374151 0%, #1f2937 100%);
+}
