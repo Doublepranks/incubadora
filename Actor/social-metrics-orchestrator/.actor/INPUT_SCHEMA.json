@@ -1,0 +1,53 @@
+{
+    "title": "Social Metrics Orchestrator Input",
+    "description": "Configuration for collecting social media metrics",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "profiles": {
+            "title": "Profiles",
+            "description": "List of social media profiles to collect metrics from",
+            "type": "array",
+            "editor": "json",
+            "prefill": [
+                {
+                    "platform": "youtube",
+                    "username": "MrBeast"
+                },
+                {
+                    "platform": "instagram",
+                    "username": "cristiano"
+                }
+            ],
+            "items": {
+                "type": "object",
+                "required": [
+                    "platform",
+                    "username"
+                ],
+                "properties": {
+                    "platform": {
+                        "title": "Platform",
+                        "description": "Social media platform",
+                        "type": "string",
+                        "enum": [
+                            "instagram",
+                            "tiktok",
+                            "youtube",
+                            "x",
+                            "kwai"
+                        ]
+                    },
+                    "username": {
+                        "title": "Username",
+                        "description": "Profile username (without @)",
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "required": [
+        "profiles"
+    ]
+}

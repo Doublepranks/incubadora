@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Platform {
+  instagram
+  x
+  youtube
+  kwai
+  tiktok
+}
+
+enum SyncStatus {
+  success
+  error
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+}
+
+model Influencer {
+  id              Int              @id @default(autoincrement())
+  name            String
+  avatarUrl       String?          @map("avatar_url")
+  state           String
+  city            String
+  notes           String?
+  socialProfiles  SocialProfile[]
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+}
+
+model SocialProfile {
+  id             Int          @id @default(autoincrement())
+  influencerId   Int          @map("influencer_id")
+  platform       Platform
+  handle         String
+  url            String?
+  externalId     String?      @map("external_id")
+  metrics        MetricDaily[]
+  createdAt      DateTime     @default(now()) @map("created_at")
+  influencer     Influencer   @relation(fields: [influencerId], references: [id], onDelete: Cascade)
+  syncLogs       SyncLog[]
+
+  @@index([influencerId])
+}
+
+model MetricDaily {
+  id              Int       @id @default(autoincrement())
+  socialProfileId Int       @map("social_profile_id")
+  date            DateTime
+  followersCount  Int       @map("followers_count")
+  postsCount      Int       @map("posts_count")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  socialProfile   SocialProfile @relation(fields: [socialProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([socialProfileId, date])
+  @@index([socialProfileId, date])
+}
+
+model SyncLog {
+  id              Int          @id @default(autoincrement())
+  socialProfileId Int?         @map("social_profile_id")
+  startedAt       DateTime     @default(now()) @map("started_at")
+  finishedAt      DateTime?    @map("finished_at")
+  status          SyncStatus
+  errorMessage    String?      @map("error_message")
+
+  socialProfile   SocialProfile? @relation(fields: [socialProfileId], references: [id], onDelete: SetNull)
+
+  @@index([socialProfileId])
+}

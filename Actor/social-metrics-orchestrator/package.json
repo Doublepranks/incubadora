@@ -1,0 +1,22 @@
+{
+	"name": "social-metrics-orchestrator",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "Orchestrates social media metrics collection using Apify Store actors",
+	"main": "dist/main.js",
+	"scripts": {
+		"start": "node dist/main.js",
+		"build": "tsc",
+		"start:prod": "npm run build && npm run start"
+	},
+	"dependencies": {
+		"apify": "^3.4.0",
+		"apify-client": "^2.9.0",
+		"crawlee": "^3.14.0",
+		"puppeteer": "^24.14.0"
+	},
+	"devDependencies": {
+		"typescript": "^5.3.0",
+		"@types/node": "^20.0.0"
+	}
+}

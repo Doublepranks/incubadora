@@ -1,0 +1,9 @@
+{
+	"actorSpecification": 1,
+	"name": "social-metrics-orchestrator",
+	"title": "Social Metrics Orchestrator",
+	"description": "Collects social media metrics from multiple platforms using Apify Store actors",
+	"version": "1.0",
+	"input": "./INPUT_SCHEMA.json",
+	"dockerfile": "./Dockerfile"
+}

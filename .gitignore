@@ -11,6 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+
+# Local build outputs per package
+/frontend/dist
+/backend/dist
 
 # Editor directories and files
 .vscode/*
