@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Activity, Edit2, FileText, Loader2, Plus, Trash2, X } from "lucide-react";
+import { Activity, Edit2, FileText, Loader2, Plus, Trash2, X, Users } from "lucide-react";
 import { useApp } from "../context/AppContext";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
@@ -17,6 +17,19 @@ const UF_LIST = [
   "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS",
   "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
 ];
+
+const platformBadgeClasses = {
+  instagram: "bg-pink-600/20 text-pink-200 border border-pink-500/40",
+  x: "bg-slate-600/30 text-slate-200 border border-slate-500/50",
+  youtube: "bg-red-600/20 text-red-200 border border-red-500/40",
+  kwai: "bg-amber-500/20 text-amber-100 border border-amber-400/50",
+  tiktok: "bg-purple-500/20 text-purple-100 border border-purple-400/50",
+};
+
+const formatNumber = (value) => {
+  if (value === null || value === undefined) return "0";
+  return Number(value).toLocaleString("pt-BR");
+};
 
 const emptyForm = {
   name: "",
@@ -369,84 +382,107 @@ const Influencers = () => {
       ) : error ? (
         <div className="p-4 rounded-md bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400">{error}</div>
       ) : (
-        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
+        <div className="bg-gray-950 text-gray-100 rounded-xl border border-gray-800 overflow-hidden shadow-lg">
           {status && (
             <div className="px-4 py-3 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300 border-b border-green-200 dark:border-green-800">
               {status}
             </div>
           )}
-          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
+          <table className="w-full text-sm text-left text-gray-400">
+            <thead className="text-xs uppercase bg-gray-900/80 text-gray-500">
               <tr>
-                <th className="px-4 py-3">Nome</th>
-                <th className="px-4 py-3">Localização</th>
-                <th className="px-4 py-3">Plataformas</th>
-                <th className="px-4 py-3">Seguidores</th>
-                <th className="px-4 py-3">Posts</th>
-                <th className="px-4 py-3">% Cresc.</th>
-                <th className="px-4 py-3 w-40">Ações</th>
+                <th className="px-6 py-3">Nome</th>
+                <th className="px-6 py-3">UF</th>
+                <th className="px-6 py-3">Município</th>
+                <th className="px-6 py-3">Plataformas</th>
+                <th className="px-6 py-3">Seguidores</th>
+                <th className="px-6 py-3">Posts</th>
+                <th className="px-6 py-3">Crescimento</th>
+                <th className="px-6 py-3 text-right">Ações</th>
               </tr>
             </thead>
             <tbody>
               {influencers.map((inf) => (
-                <tr key={inf.id} className="border-b dark:border-gray-800">
-                  <td className="px-4 py-3 text-gray-900 dark:text-white font-medium">{inf.name}</td>
-                  <td className="px-4 py-3">{inf.city || "-"} / {inf.state}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1">
+                <tr key={inf.id} className="border-b border-gray-800/60 bg-gray-900/60 hover:bg-gray-900 transition-colors">
+                  <td className="px-6 py-4 text-gray-50">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-gray-800 overflow-hidden flex items-center justify-center text-gray-400">
+                        {inf.avatarUrl ? (
+                          <img src={inf.avatarUrl} alt={inf.name} className="h-full w-full object-cover" />
+                        ) : (
+                          <Users size={18} />
+                        )}
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold text-gray-50">{inf.name}</div>
+                        <div className="text-xs text-gray-400">{inf.city || "-"} - {inf.state}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-gray-200">{inf.state}</td>
+                  <td className="px-6 py-4 text-gray-200">{inf.city || "-"}</td>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-wrap gap-2">
                       {inf.platforms?.map((p) => (
-                        <span key={p} className="px-2 py-1 text-xs rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200">
-                          {p}
+                        <span
+                          key={p}
+                          className={`px-2 py-1 text-xs rounded-full font-semibold ${platformBadgeClasses[p] || "bg-gray-700 text-gray-200 border border-gray-600"}`}
+                        >
+                          {p === "x" ? "X" : p.charAt(0).toUpperCase() + p.slice(1)}
                         </span>
                       ))}
                     </div>
                   </td>
-                  <td className="px-4 py-3">{inf.totalFollowers?.toLocaleString("pt-BR") || 0}</td>
-                  <td className="px-4 py-3">{inf.totalPosts || 0}</td>
-                  <td className="px-4 py-3">
-                    {inf.growthPercent ? `${inf.growthPercent.toFixed(1)}%` : "0%"}
+                  <td className="px-6 py-4 text-gray-100 font-semibold">{formatNumber(inf.totalFollowers)}</td>
+                  <td className="px-6 py-4 text-gray-100">{formatNumber(inf.totalPosts)}</td>
+                  <td className="px-6 py-4">
+                    <span className={`font-semibold ${inf.growthPercent >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                      {inf.growthPercent ? `${inf.growthPercent.toFixed(1)}%` : "0%"}
+                    </span>
                   </td>
-                  <td className="px-4 py-3 flex items-center gap-2 flex-wrap">
-                    <button
-                      onClick={() => openEdit(inf)}
-                      className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-blue-600"
-                      title="Editar"
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                    <button
-                      onClick={() => openNote(inf)}
-                      className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-200"
-                      title="Notas"
-                    >
-                      <FileText size={16} />
-                    </button>
-                    <button
-                      onClick={() => openMetric(inf)}
-                      className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-emerald-600"
-                      title="Adicionar métrica manual"
-                    >
-                      <Activity size={16} />
-                    </button>
-                    <button
-                      onClick={() => navigate(`/influencer/${inf.id}`)}
-                      className="px-2 py-1 text-xs rounded border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
-                    >
-                      Detalhe
-                    </button>
-                    <button
-                      onClick={() => handleDelete(inf.id)}
-                      className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-red-600"
-                      title="Remover"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2 justify-end flex-wrap">
+                      <button
+                        onClick={() => openEdit(inf)}
+                        className="px-3 py-1 text-xs rounded-md border border-blue-500/60 text-blue-100 bg-blue-500/10 hover:bg-blue-500/20"
+                        title="Editar"
+                      >
+                        <div className="flex items-center gap-1"><Edit2 size={14} /> Editar</div>
+                      </button>
+                      <button
+                        onClick={() => openNote(inf)}
+                        className="px-3 py-1 text-xs rounded-md border border-gray-500/60 text-gray-100 bg-gray-500/10 hover:bg-gray-500/20"
+                        title="Notas"
+                      >
+                        <div className="flex items-center gap-1"><FileText size={14} /> Nota</div>
+                      </button>
+                      <button
+                        onClick={() => openMetric(inf)}
+                        className="px-3 py-1 text-xs rounded-md border border-amber-500/70 text-amber-100 bg-amber-500/10 hover:bg-amber-500/20"
+                        title="Adicionar métrica manual"
+                      >
+                        <div className="flex items-center gap-1"><Activity size={14} /> Métrica</div>
+                      </button>
+                      <button
+                        onClick={() => navigate(`/influencer/${inf.id}`)}
+                        className="px-3 py-1 text-xs rounded-md border border-indigo-500/70 text-indigo-100 bg-indigo-500/10 hover:bg-indigo-500/20"
+                      >
+                        Detalhe
+                      </button>
+                      <button
+                        onClick={() => handleDelete(inf.id)}
+                        className="px-3 py-1 text-xs rounded-md border border-red-500/70 text-red-100 bg-red-500/10 hover:bg-red-500/20"
+                        title="Remover"
+                      >
+                        <div className="flex items-center gap-1"><Trash2 size={14} /> Remover</div>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
               {influencers.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-6 text-center text-gray-500 dark:text-gray-400">
+                  <td colSpan={8} className="px-6 py-6 text-center text-gray-500">
                     Nenhum influenciador encontrado
                   </td>
                 </tr>
