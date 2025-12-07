@@ -5,6 +5,7 @@ import { SyncStatus } from "@prisma/client";
 type SyncFilter = {
   handles?: string[];
   profileIds?: number[];
+  regions?: string[];
 };
 
 function normalizeHandles(handles: string[]) {
@@ -18,6 +19,9 @@ export async function syncAllProfiles(filter?: SyncFilter) {
   }
   if (filter?.profileIds && filter.profileIds.length > 0) {
     where.id = { in: filter.profileIds };
+  }
+  if (filter?.regions && filter.regions.length > 0) {
+    where.influencer = { state: { in: filter.regions } };
   }
 
   const profiles = await prisma.socialProfile.findMany({ where });

@@ -119,7 +119,8 @@ async function runActorAndGetItems(actorId: string, token: string, profiles: Soc
     throw new Error(`Apify run failed: ${startRes.status} ${text}`);
   }
 
-  let runData = (await startRes.json())?.data;
+  const startJson = (await startRes.json()) as any;
+  let runData = startJson?.data;
   const runId = runData?.id;
   let datasetId = runData?.defaultDatasetId;
   let status = runData?.status;
@@ -130,7 +131,8 @@ async function runActorAndGetItems(actorId: string, token: string, profiles: Soc
     await new Promise((resolve) => setTimeout(resolve, 5_000));
     const runRes = await fetch(`${APIFY_BASE}/actor-runs/${runId}?token=${token}`);
     if (runRes.ok) {
-      runData = (await runRes.json())?.data ?? runData;
+      const runJson = (await runRes.json()) as any;
+      runData = runJson?.data ?? runData;
       status = runData?.status ?? status;
       datasetId = runData?.defaultDatasetId ?? datasetId;
     } else {

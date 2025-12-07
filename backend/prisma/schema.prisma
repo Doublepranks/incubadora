@@ -28,6 +28,8 @@ model User {
   role         String?
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
+  regions      UserRegion[]
+  @@index([role])
 }
 
 model Influencer {
@@ -82,4 +84,14 @@ model SyncLog {
   socialProfile   SocialProfile? @relation(fields: [socialProfileId], references: [id], onDelete: SetNull)
 
   @@index([socialProfileId])
+}
+
+model UserRegion {
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int    @map("user_id")
+  uf     String @db.Char(2)
+
+  @@unique([userId, uf])
+  @@index([userId])
 }

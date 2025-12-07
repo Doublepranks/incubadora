@@ -10,6 +10,7 @@ export type AuthTokenPayload = {
   email: string;
   name: string;
   role?: string | null;
+  regions?: string[];
 };
 
 export function hashPassword(password: string): Promise<string> {
@@ -38,5 +39,6 @@ export function mapUserToAuth(user: AuthTokenPayload): AuthUser {
     email: user.email,
     name: user.name,
     role: user.role,
+    regions: user.regions,
   };
 }

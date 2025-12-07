@@ -1,29 +1,45 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { Search, Moon, Sun, LayoutDashboard, Users } from 'lucide-react';
+import { Search, LayoutDashboard, Users, Shield, LogOut } from 'lucide-react';
 
 const Sidebar = () => {
     const {
-        darkMode, toggleDarkMode,
         selectedState, setSelectedState,
         selectedMunicipality, setSelectedMunicipality,
         searchQuery, setSearchQuery,
         sidebarResults,
         states,
-        cities
+        cities,
+        user,
+        logout
     } = useApp();
 
     const navigate = useNavigate();
+    const canAccessInfluencers = ['admin_global', 'admin_regional', 'admin_estadual'].includes(user?.role);
 
     return (
         <div className="w-64 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col fixed left-0 top-0 transition-colors duration-300">
             <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
                 <h1 className="text-xl font-bold text-gray-800 dark:text-white">Incubadora</h1>
-                <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400">
-                    {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-                </button>
             </div>
+            {user && (
+                <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-800">
+                    <div className="text-sm font-semibold text-gray-800 dark:text-white truncate">{user.name}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</div>
+                    <div className="flex items-center justify-between mt-2">
+                        <span className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                            {user.role || "sem perfil"}
+                        </span>
+                        <button
+                            onClick={() => logout().then(() => navigate("/login"))}
+                            className="flex items-center text-xs text-red-500 hover:text-red-600"
+                        >
+                            <LogOut size={14} className="mr-1" /> Sair
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <nav className="flex-1 overflow-y-auto p-4 space-y-6">
                 <div>
@@ -33,10 +49,22 @@ const Sidebar = () => {
                             <LayoutDashboard size={18} className="mr-3" />
                             Dashboard Geral
                         </Link>
+                        {canAccessInfluencers && (
+                            <Link to="/influencers" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                                <Users size={18} className="mr-3" />
+                                Influenciadores
+                            </Link>
+                        )}
                         <Link to="/reports" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
                             <LayoutDashboard size={18} className="mr-3" />
                             Relatórios
                         </Link>
+                        {user?.role === 'admin_global' && (
+                            <Link to="/users" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                                <Shield size={18} className="mr-3" />
+                                Usuários
+                            </Link>
+                        )}
                     </div>
                 </div>
 

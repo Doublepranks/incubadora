@@ -7,6 +7,7 @@ type ReportFilters = {
   state?: string;
   city?: string;
   search?: string;
+  regions?: string[];
 };
 
 type WeeklyData = {
@@ -19,6 +20,7 @@ export async function getReportData(filters: ReportFilters) {
   const influencers = await prisma.influencer.findMany({
     where: {
       AND: [
+        filters.regions && filters.regions.length > 0 ? { state: { in: filters.regions } } : {},
         filters.state ? { state: filters.state } : {},
         filters.city ? { city: filters.city } : {},
         filters.search

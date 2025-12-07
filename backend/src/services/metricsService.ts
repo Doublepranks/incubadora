@@ -6,7 +6,8 @@ type MetricsFilters = {
   state?: string;
   city?: string;
   platform?: Platform;
-  periodDays?: number;
+  periodDays?: number | null;
+  regions?: string[];
 };
 
 type AggregatedInfluencerInternal = {
@@ -59,7 +60,7 @@ export async function getPlatformDistribution() {
 export async function getStateDistribution(filters: MetricsFilters) {
   const influencers = await prisma.influencer.findMany({
     where: {
-      state: filters.state || undefined,
+      state: filters.regions && filters.regions.length > 0 ? { in: filters.regions } : filters.state || undefined,
       city: filters.city || undefined,
       socialProfiles: filters.platform ? { some: { platform: filters.platform } } : undefined,
     },
@@ -99,31 +100,46 @@ export async function getWeeklySeries(filters: MetricsFilters) {
 
 export async function getFollowersTimeline(filters: MetricsFilters) {
   const periodDays = filters.periodDays ?? 30;
-  const since = daysAgo(periodDays);
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
+  const since = periodDays === null ? undefined : daysAgo(periodDays);
 
   const profiles = await prisma.socialProfile.findMany({
     where: {
       platform: filters.platform || undefined,
       influencer: {
-        state: filters.state || undefined,
+        state: filters.regions && filters.regions.length > 0 ? { in: filters.regions } : filters.state || undefined,
         city: filters.city || undefined,
       },
     },
     include: {
       metrics: {
-        where: { date: { gte: since } },
+        where: since ? { date: { gte: since } } : undefined,
         orderBy: { date: "asc" },
       },
     },
   });
 
-  // Build daily buckets from since to today
+  // Determine range
+  let startDate: Date | null = since ? new Date(since) : null;
+  let endDate: Date | null = new Date();
+  endDate.setUTCHours(0, 0, 0, 0);
+
+  if (!startDate) {
+    profiles.forEach((p) => {
+      if (p.metrics.length > 0) {
+        const first = p.metrics[0].date;
+        if (!startDate || first < startDate) startDate = new Date(first);
+      }
+    });
+  }
+
+  if (!startDate) {
+    return [];
+  }
+
   const dates: string[] = [];
-  const cursor = new Date(since);
+  const cursor = new Date(startDate);
   cursor.setUTCHours(0, 0, 0, 0);
-  while (cursor <= today) {
+  while (cursor <= endDate) {
     dates.push(cursor.toISOString().split("T")[0]);
     cursor.setUTCDate(cursor.getUTCDate() + 1);
   }
@@ -151,13 +167,92 @@ export async function getFollowersTimeline(filters: MetricsFilters) {
   return entries;
 }
 
+type ManualMetricInput = {
+  socialProfileId?: number;
+  influencerId?: number;
+  platform?: Platform;
+  date: string;
+  followersCount: number;
+  postsCount: number;
+};
+
+export async function addManualMetric(input: ManualMetricInput, regions?: string[]) {
+  if (!input.platform) {
+    throw new Error("Platform is required");
+  }
+  const platform = String(input.platform).toLowerCase() as Platform;
+
+  const parsedDate = new Date(input.date);
+  if (isNaN(parsedDate.getTime())) {
+    throw new Error("Invalid date");
+  }
+  parsedDate.setHours(0, 0, 0, 0);
+
+  let profileId = input.socialProfileId;
+
+  if (!profileId && input.influencerId) {
+    const found = await prisma.socialProfile.findFirst({
+      where: {
+        influencerId: input.influencerId,
+        platform,
+      },
+      include: { influencer: true },
+    });
+    if (!found) {
+      throw new Error("Social profile not found for influencer/platform");
+    }
+    profileId = found.id;
+    if (regions && regions.length > 0 && !regions.includes(found.influencer.state)) {
+      throw new Error("Acesso restrito à UF");
+    }
+  }
+
+  if (!profileId) {
+    throw new Error("socialProfileId or influencerId+platform is required");
+  }
+
+  const profile = await prisma.socialProfile.findFirst({
+    where: { id: profileId },
+    include: { influencer: true },
+  });
+
+  if (!profile) {
+    throw new Error("Social profile not found");
+  }
+
+  if (regions && regions.length > 0 && !regions.includes(profile.influencer.state)) {
+    throw new Error("Acesso restrito à UF");
+  }
+
+  const metric = await prisma.metricDaily.upsert({
+    where: {
+      socialProfileId_date: {
+        socialProfileId: profile.id,
+        date: parsedDate,
+      },
+    },
+    update: {
+      followersCount: input.followersCount,
+      postsCount: input.postsCount,
+    },
+    create: {
+      socialProfileId: profile.id,
+      date: parsedDate,
+      followersCount: input.followersCount,
+      postsCount: input.postsCount,
+    },
+  });
+
+  return metric;
+}
+
 async function aggregateInfluencers(filters: MetricsFilters, overrideDays?: number): Promise<AggregatedInfluencerInternal[]> {
   const periodDays = overrideDays ?? filters.periodDays ?? 30;
-  const since = daysAgo(periodDays);
+  const since = periodDays === null ? undefined : daysAgo(periodDays);
 
   const influencers = await prisma.influencer.findMany({
     where: {
-      state: filters.state || undefined,
+      state: filters.regions && filters.regions.length > 0 ? { in: filters.regions } : filters.state || undefined,
       city: filters.city || undefined,
     },
     include: {
@@ -165,7 +260,7 @@ async function aggregateInfluencers(filters: MetricsFilters, overrideDays?: numb
         where: filters.platform ? { platform: filters.platform } : undefined,
         include: {
           metrics: {
-            where: { date: { gte: since } },
+            where: since ? { date: { gte: since } } : undefined,
             orderBy: { date: "asc" },
           },
         },

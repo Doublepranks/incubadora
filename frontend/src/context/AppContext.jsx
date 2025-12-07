@@ -5,7 +5,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-    const [darkMode, setDarkMode] = useState(true);
+    const [darkMode] = useState(true);
     const [selectedState, setSelectedState] = useState('');
     const [selectedMunicipality, setSelectedMunicipality] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -71,12 +71,9 @@ export const AppProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        if (darkMode) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    }, [darkMode]);
+        document.documentElement.classList.add('dark');
+        document.body.classList.add('dark');
+    }, []);
 
     useEffect(() => {
         fetchMe();
@@ -86,9 +83,19 @@ export const AppProvider = ({ children }) => {
     useEffect(() => {
         fetch(`${API_URL}/geo/states`, { credentials: 'include' })
             .then(res => res.json())
-            .then(json => setStates(json.data || []))
+            .then(json => {
+                if (user?.regions && user.regions.length > 0) {
+                    setStates(json.data?.filter((uf) => user.regions.includes(uf)) || []);
+                    // For non-global admins, default state to first allowed
+                    if (!user.regions.includes(selectedState)) {
+                        setSelectedState(user.regions[0] || '');
+                    }
+                } else {
+                    setStates(json.data || []);
+                }
+            })
             .catch(err => console.error('Failed to load states', err));
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         if (!selectedState) {
@@ -116,12 +123,9 @@ export const AppProvider = ({ children }) => {
             .catch(err => console.error('Failed to load influencers', err));
     }, [searchQuery, selectedState, selectedMunicipality, filters.periodDays]);
 
-    const toggleDarkMode = () => setDarkMode(!darkMode);
-
     return (
         <AppContext.Provider value={{
             darkMode,
-            toggleDarkMode,
             selectedState,
             setSelectedState,
             selectedMunicipality,

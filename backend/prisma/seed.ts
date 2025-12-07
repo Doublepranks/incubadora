@@ -20,17 +20,45 @@ async function seedAdmin() {
     update: {
       name,
       passwordHash,
-      role: "admin",
+      role: "admin_global",
     },
     create: {
       email,
       name,
       passwordHash,
-      role: "admin",
+      role: "admin_global",
     },
   });
 
   console.log(`Seeded/updated admin user with email: ${email}`);
+}
+
+async function seedRegional() {
+  const email = process.env.SEED_REGIONAL_EMAIL || "admin.regional@local";
+  const password = process.env.SEED_REGIONAL_PASSWORD || "changeme123";
+  const name = process.env.SEED_REGIONAL_NAME || "Admin Regional";
+  const regions = (process.env.SEED_REGIONAL_UF || "PE,RN")
+    .split(",")
+    .map((r) => r.trim().toUpperCase())
+    .filter(Boolean);
+
+  const passwordHash = await hashPassword(password);
+
+  const user = await prisma.user.upsert({
+    where: { email },
+    update: { name, passwordHash, role: "admin_regional" },
+    create: { email, name, passwordHash, role: "admin_regional" },
+  });
+
+  await prisma.userRegion.deleteMany({ where: { userId: user.id } });
+  if (regions.length > 0) {
+    await prisma.userRegion.createMany({
+      data: regions.map((uf) => ({ userId: user.id, uf })),
+      skipDuplicates: true,
+    });
+  }
+
+  console.log(`Seeded/updated regional admin: ${email} with UFs: ${regions.join(",") || "none"}`);
 }
 
 type ProfileSeed = {
@@ -97,6 +125,7 @@ async function seedInfluencer(name: string, state: string, city: string, avatarU
 
 async function seedData() {
   await seedAdmin();
+  await seedRegional();
 
   const influencers = await prisma.influencer.count();
   if (influencers > 0) {

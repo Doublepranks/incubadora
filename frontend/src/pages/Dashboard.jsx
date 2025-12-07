@@ -161,8 +161,8 @@ const Dashboard = () => {
                             </button>
                         ))}
                         <button
-                            onClick={() => setFilters((prev) => ({ ...prev, periodDays: '' }))}
-                            className={`px-3 py-1 rounded-full border text-xs ${filters.periodDays === '' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'}`}
+                            onClick={() => setFilters((prev) => ({ ...prev, periodDays: 'all' }))}
+                            className={`px-3 py-1 rounded-full border text-xs ${filters.periodDays === 'all' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'}`}
                         >
                             Todo período
                         </button>
@@ -318,3 +318,5 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+

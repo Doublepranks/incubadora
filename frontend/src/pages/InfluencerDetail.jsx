@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Chart from 'react-apexcharts';
-import { ArrowLeft, Instagram, Youtube, Video, Twitter, Loader2 } from 'lucide-react';
+import { ArrowLeft, Instagram, Youtube, Video, Twitter, Loader2, User as UserIcon } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
@@ -10,7 +10,8 @@ const platformIcons = {
     instagram: <Instagram size={20} />,
     youtube: <Youtube size={20} />,
     kwai: <Video size={20} />,
-    x: <Twitter size={20} />
+    x: <Twitter size={20} />,
+    tiktok: <Video size={20} />,
 };
 
 const platformColors = {
@@ -18,12 +19,14 @@ const platformColors = {
     youtube: 'text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400',
     kwai: 'text-orange-500 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400',
     x: 'text-blue-400 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400',
+    tiktok: 'text-purple-500 bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400',
 };
 
 const InfluencerDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { filters, setFilters } = useApp();
+
     const [influencer, setInfluencer] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -33,7 +36,8 @@ const InfluencerDetail = () => {
             setLoading(true);
             setError('');
             try {
-                const res = await fetch(`${API_URL}/influencers/${id}?periodDays=${filters.periodDays}`, { credentials: 'include' });
+                const query = filters.periodDays === 'all' ? '?periodDays=all' : `?periodDays=${filters.periodDays}`;
+                const res = await fetch(`${API_URL}/influencers/${id}${query}`, { credentials: 'include' });
                 if (!res.ok) {
                     throw new Error('Erro ao carregar influenciador');
                 }
@@ -46,15 +50,16 @@ const InfluencerDetail = () => {
                 setLoading(false);
             }
         };
+
         fetchInfluencer();
     }, [id, filters.periodDays]);
 
     const kpis = useMemo(() => {
-        if (!influencer) return { totalFollowers: 0, totalPosts: 0, growthAbsolute: 0, growthPercent: 0 };
+        if (!influencer) return { totalFollowers: 0, totalPosts: 0, growthAbsolute: 0, growthPercent: 0, avgPosts: 0 };
         let totalFollowers = 0;
         let totalPosts = 0;
         let growthAbsolute = 0;
-        let daysCounted = new Set();
+        const daysCounted = new Set();
 
         influencer.socialProfiles.forEach((p) => {
             const metrics = p.metrics || [];
@@ -66,9 +71,11 @@ const InfluencerDetail = () => {
             growthAbsolute += end - start;
             metrics.forEach((m) => daysCounted.add(m.date.split('T')[0]));
         });
+
         const startFollowers = totalFollowers - growthAbsolute;
         const growthPercent = startFollowers > 0 ? (growthAbsolute / startFollowers) * 100 : 0;
         const avgPosts = daysCounted.size > 0 ? totalPosts / daysCounted.size : 0;
+
         return { totalFollowers, totalPosts, growthAbsolute, growthPercent, avgPosts };
     }, [influencer]);
 
@@ -92,6 +99,14 @@ const InfluencerDetail = () => {
         return <div className="text-center text-gray-500 dark:text-gray-400 mt-10">Influenciador não encontrado.</div>;
     }
 
+    const headerAvatar = influencer.avatarUrl ? (
+        <img src={influencer.avatarUrl} alt={influencer.name} className="h-16 w-16 rounded-full object-cover" />
+    ) : (
+        <div className="h-16 w-16 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-500">
+            <UserIcon size={28} />
+        </div>
+    );
+
     return (
         <div className="space-y-6">
             <button
@@ -103,10 +118,13 @@ const InfluencerDetail = () => {
             </button>
 
             <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{influencer.name}</h1>
-                        <p className="text-gray-500 dark:text-gray-400">{influencer.city} - {influencer.state}</p>
+                <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        {headerAvatar}
+                        <div>
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{influencer.name}</h1>
+                            <p className="text-gray-500 dark:text-gray-400">{influencer.city} - {influencer.state}</p>
+                        </div>
                     </div>
                     <div className="flex space-x-3">
                         {influencer.socialProfiles.map((profile) => (
@@ -116,6 +134,7 @@ const InfluencerDetail = () => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className={`p-3 rounded-full ${platformColors[profile.platform] || 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'} hover:opacity-80 transition-opacity`}
+                                title={profile.handle}
                             >
                                 {platformIcons[profile.platform] || null}
                             </a>
@@ -133,15 +152,15 @@ const InfluencerDetail = () => {
                         </button>
                     ))}
                     <button
-                        onClick={() => setFilters((prev) => ({ ...prev, periodDays: '' }))}
-                        className={`px-3 py-1 rounded-full border ${filters.periodDays === '' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'}`}
+                        onClick={() => setFilters((prev) => ({ ...prev, periodDays: 'all' }))}
+                        className={`px-3 py-1 rounded-full border ${filters.periodDays === 'all' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'}`}
                     >
                         Todo período
                     </button>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div className="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
                     <p className="text-xs text-gray-500 dark:text-gray-400">Seguidores totais</p>
                     <p className="text-2xl font-bold text-gray-900 dark:text-white">{kpis.totalFollowers.toLocaleString()}</p>
@@ -170,6 +189,7 @@ const InfluencerDetail = () => {
                     const historyFollowers = profile.metrics.map((m) => m.followersCount);
                     const totalPosts = profile.metrics.reduce((sum, m) => sum + m.postsCount, 0);
                     const postsCounts = profile.metrics.map((m) => m.postsCount);
+                    const hasMetrics = profile.metrics.length > 0;
                     const chartOptions = {
                         chart: { type: 'area', toolbar: { show: false }, background: 'transparent' },
                         dataLabels: { enabled: false },
@@ -178,10 +198,19 @@ const InfluencerDetail = () => {
                         yaxis: { labels: { style: { colors: '#9ca3af' } } },
                         grid: { borderColor: '#374151', strokeDashArray: 4 },
                         theme: { mode: 'dark' },
-                        colors: [profile.platform === 'instagram' ? '#db2777' : profile.platform === 'youtube' ? '#dc2626' : profile.platform === 'kwai' ? '#f97316' : '#3b82f6']
+                        colors: [profile.platform === 'instagram'
+                            ? '#db2777'
+                            : profile.platform === 'youtube'
+                                ? '#dc2626'
+                                : profile.platform === 'kwai'
+                                    ? '#f97316'
+                                    : profile.platform === 'tiktok'
+                                        ? '#8b5cf6'
+                                        : '#3b82f6'],
                     };
 
                     const chartSeries = [{ name: 'Seguidores', data: historyFollowers }];
+
                     const postsChartOptions = {
                         chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
                         plotOptions: { bar: { borderRadius: 4 } },
@@ -207,8 +236,16 @@ const InfluencerDetail = () => {
                                     {historyFollowers.length > 0 ? historyFollowers[historyFollowers.length - 1].toLocaleString() : 0} seguidores
                                 </span>
                             </div>
-                            <Chart options={chartOptions} series={chartSeries} type="area" height={200} />
-                            <Chart options={postsChartOptions} series={postsChartSeries} type="bar" height={200} />
+                            {hasMetrics ? (
+                                <>
+                                    <Chart options={chartOptions} series={chartSeries} type="area" height={200} />
+                                    <Chart options={postsChartOptions} series={postsChartSeries} type="bar" height={200} />
+                                </>
+                            ) : (
+                                <div className="py-8 text-center text-sm text-gray-500 dark:text-gray-400 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
+                                    Sem métricas no período selecionado.
+                                </div>
+                            )}
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
                                     <p className="text-xs text-gray-500 dark:text-gray-400">Posts no período</p>

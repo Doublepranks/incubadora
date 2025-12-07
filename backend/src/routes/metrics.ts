@@ -1,10 +1,21 @@
 import { Router } from "express";
-import { getOverviewHandler, getPlatformDistributionHandler, getStateDistributionHandler, getTimelineHandler, getTopGrowthHandler } from "../controllers/metricsController";
+import {
+  getOverviewHandler,
+  getPlatformDistributionHandler,
+  getStateDistributionHandler,
+  getTimelineHandler,
+  getTopGrowthHandler,
+  addManualMetricHandler,
+} from "../controllers/metricsController";
+import { authorize } from "../middlewares/authorize";
+import { requireAuth } from "../middlewares/requireAuth";
 
 export const metricsRouter = Router();
 
-metricsRouter.get("/overview", getOverviewHandler);
-metricsRouter.get("/top-growth", getTopGrowthHandler);
-metricsRouter.get("/platform-distribution", getPlatformDistributionHandler);
-metricsRouter.get("/state-distribution", getStateDistributionHandler);
-metricsRouter.get("/timeline", getTimelineHandler);
+metricsRouter.use(requireAuth);
+metricsRouter.get("/overview", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), getOverviewHandler);
+metricsRouter.get("/top-growth", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), getTopGrowthHandler);
+metricsRouter.get("/platform-distribution", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), getPlatformDistributionHandler);
+metricsRouter.get("/state-distribution", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), getStateDistributionHandler);
+metricsRouter.get("/timeline", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), getTimelineHandler);
+metricsRouter.post("/manual", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), addManualMetricHandler);

@@ -6,6 +6,7 @@ import { geoRouter } from "./geo";
 import { metricsRouter } from "./metrics";
 import { reportsRouter } from "./reports";
 import { syncRouter } from "./sync";
+import { usersRouter } from "./users";
 
 export const routes = Router();
 
@@ -16,3 +17,4 @@ routes.use("/geo", geoRouter);
 routes.use("/metrics", metricsRouter);
 routes.use("/reports", reportsRouter);
 routes.use("/sync", syncRouter);
+routes.use("/users", usersRouter);

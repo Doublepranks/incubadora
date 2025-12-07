@@ -6,6 +6,8 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import InfluencerDetail from './pages/InfluencerDetail';
 import Reports from './pages/Reports';
+import Users from './pages/Users';
+import Influencers from './pages/Influencers';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, authLoading } = useApp();
@@ -33,6 +35,16 @@ const AppRoutes = () => {
       <Route path="/reports" element={
         <ProtectedRoute>
           <Reports />
+        </ProtectedRoute>
+      } />
+      <Route path="/influencers" element={
+        <ProtectedRoute>
+          <Influencers />
+        </ProtectedRoute>
+      } />
+      <Route path="/users" element={
+        <ProtectedRoute>
+          <Users />
         </ProtectedRoute>
       } />
     </Routes>

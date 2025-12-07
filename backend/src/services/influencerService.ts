@@ -7,7 +7,24 @@ export type InfluencerFilters = {
   state?: string;
   city?: string;
   platform?: Platform;
-  periodDays?: number;
+  periodDays?: number | null;
+  regions?: string[];
+};
+
+export type InfluencerProfileInput = {
+  platform: Platform;
+  handle: string;
+  url?: string | null;
+  externalId?: string | null;
+};
+
+export type InfluencerInput = {
+  name: string;
+  state: string;
+  city?: string | null;
+  avatarUrl?: string | null;
+  notes?: string | null;
+  profiles?: InfluencerProfileInput[];
 };
 
 export type AggregatedInfluencer = {
@@ -16,6 +33,7 @@ export type AggregatedInfluencer = {
   avatarUrl: string | null;
   state: string;
   city: string;
+  notes: string | null;
   platforms: Platform[];
   totalFollowers: number;
   totalPosts: number;
@@ -24,11 +42,11 @@ export type AggregatedInfluencer = {
 };
 
 export async function listInfluencers(filters: InfluencerFilters): Promise<AggregatedInfluencer[]> {
-  const periodDays = filters.periodDays ?? 30;
-  const since = daysAgo(periodDays);
+  const since = filters.periodDays === null ? undefined : daysAgo(filters.periodDays ?? 30);
 
   const where: Prisma.InfluencerWhereInput = {
     AND: [
+      filters.regions && filters.regions.length > 0 ? { state: { in: filters.regions } } : {},
       filters.state ? { state: filters.state } : {},
       filters.city ? { city: filters.city } : {},
       filters.search
@@ -49,7 +67,7 @@ export async function listInfluencers(filters: InfluencerFilters): Promise<Aggre
         where: filters.platform ? { platform: filters.platform } : {},
         include: {
           metrics: {
-            where: { date: { gte: since } },
+            where: since ? { date: { gte: since } } : undefined,
             orderBy: { date: "asc" },
           },
         },
@@ -81,6 +99,7 @@ export async function listInfluencers(filters: InfluencerFilters): Promise<Aggre
       avatarUrl: inf.avatarUrl,
       state: inf.state,
       city: inf.city,
+      notes: inf.notes ?? null,
       platforms: inf.socialProfiles.map((p) => p.platform),
       totalFollowers,
       totalPosts,
@@ -109,15 +128,18 @@ export async function listCities(state?: string) {
   return cities.map((c) => c.city);
 }
 
-export async function getInfluencerById(id: number, periodDays = 30) {
-  const since = daysAgo(periodDays);
-  return prisma.influencer.findUnique({
-    where: { id },
+export async function getInfluencerById(id: number, periodDays: number | null = 30, regions?: string[]) {
+  const since = periodDays === null ? undefined : daysAgo(periodDays);
+  return prisma.influencer.findFirst({
+    where: {
+      id,
+      state: regions && regions.length > 0 ? { in: regions } : undefined,
+    },
     include: {
       socialProfiles: {
         include: {
           metrics: {
-            where: { date: { gte: since } },
+            where: since ? { date: { gte: since } } : undefined,
             orderBy: { date: "asc" },
           },
         },
@@ -135,4 +157,105 @@ export function aggregatePostsPerDay(profileMetrics: { date: Date; postsCount: n
   return Array.from(map.entries())
     .map(([date, posts]) => ({ date, posts }))
     .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+export async function createInfluencer(payload: InfluencerInput) {
+  const state = payload.state.toUpperCase();
+  const city = payload.city ?? "";
+
+  return prisma.influencer.create({
+    data: {
+      name: payload.name,
+      avatarUrl: payload.avatarUrl,
+      state,
+      city,
+      notes: payload.notes,
+      socialProfiles: payload.profiles && payload.profiles.length > 0
+        ? {
+            create: payload.profiles.map((p) => ({
+              platform: p.platform,
+              handle: p.handle,
+              url: p.url,
+              externalId: p.externalId,
+            })),
+          }
+        : undefined,
+    },
+    include: {
+      socialProfiles: true,
+    },
+  });
+}
+
+export async function updateInfluencer(
+  id: number,
+  payload: InfluencerInput,
+  regions?: string[],
+) {
+  const state = payload.state.toUpperCase();
+  const city = payload.city ?? "";
+
+  const existing = await prisma.influencer.findFirst({
+    where: {
+      id,
+      state: regions && regions.length > 0 ? { in: regions } : undefined,
+    },
+    include: { socialProfiles: true },
+  });
+
+  if (!existing) return null;
+
+  // Update or create social profiles without deleting history
+  const existingByPlatform = new Map(existing.socialProfiles.map((p) => [p.platform, p]));
+
+  for (const profile of payload.profiles ?? []) {
+    const found = existingByPlatform.get(profile.platform);
+    if (found) {
+      await prisma.socialProfile.update({
+        where: { id: found.id },
+        data: {
+          handle: profile.handle,
+          url: profile.url,
+          externalId: profile.externalId,
+        },
+      });
+    } else {
+      await prisma.socialProfile.create({
+        data: {
+          influencerId: existing.id,
+          platform: profile.platform,
+          handle: profile.handle,
+          url: profile.url,
+          externalId: profile.externalId,
+        },
+      });
+    }
+  }
+
+  const updated = await prisma.influencer.update({
+    where: { id: existing.id },
+    data: {
+      name: payload.name,
+      avatarUrl: payload.avatarUrl,
+      state,
+      city,
+      notes: payload.notes,
+    },
+    include: { socialProfiles: true },
+  });
+
+  return updated;
+}
+
+export async function deleteInfluencer(id: number, regions?: string[]) {
+  const existing = await prisma.influencer.findFirst({
+    where: {
+      id,
+      state: regions && regions.length > 0 ? { in: regions } : undefined,
+    },
+  });
+  if (!existing) return null;
+
+  await prisma.influencer.delete({ where: { id: existing.id } });
+  return true;
 }

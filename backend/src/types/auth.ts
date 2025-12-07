@@ -3,4 +3,5 @@ export type AuthUser = {
   email: string;
   name: string;
   role?: string | null;
+  regions?: string[];
 };

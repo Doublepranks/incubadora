@@ -41,7 +41,7 @@ export async function login(req: Request, res: Response) {
   res.cookie(SESSION_COOKIE, token, cookieOptions);
   return res.json({
     error: false,
-    user: mapUserToAuth(user),
+    user: mapUserToAuth({ ...user, regions: user.regions?.map((r) => r.uf) }),
   });
 }
 
@@ -58,7 +58,7 @@ export async function me(req: Request, res: Response) {
 
   return res.json({
     error: false,
-    user: mapUserToAuth(user),
+    user: mapUserToAuth({ ...user, regions: user.regions?.map((r) => r.uf) }),
   });
 }
 
