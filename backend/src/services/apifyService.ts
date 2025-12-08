@@ -77,25 +77,7 @@ export async function fetchProfilesBatch(profiles: SocialProfile[], days = 7): P
   return map;
 }
 
-function generateStubMetrics(seed: number, days: number): MetricPoint[] {
-  const metrics: MetricPoint[] = [];
-  let followers = 1000 + seed * 10;
-  for (let i = days; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    const growth = Math.floor(Math.random() * 50) + 10;
-    const posts = Math.floor(Math.random() * 3);
-    followers += growth;
-    metrics.push({
-      date,
-      followersCount: followers,
-      postsCount: posts,
-    });
-  }
-  return metrics;
-}
-
-async function runActorAndGetItems(actorId: string, token: string, profiles: SocialProfile[], days: number) {
+async function runActorAndGetItems(actorId: string, token: string, profiles: SocialProfile[], _days: number) {
   const normalizedActorId = actorId.includes("~") ? actorId : actorId.replace(/\//g, "~");
   const input = {
     profiles: profiles.map((p) => ({

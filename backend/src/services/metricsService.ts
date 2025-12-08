@@ -49,9 +49,16 @@ export async function getTopGrowth(filters: MetricsFilters, limit = 10) {
     .slice(0, limit);
 }
 
-export async function getPlatformDistribution() {
+export async function getPlatformDistribution(filters: MetricsFilters = {}) {
   const profiles = await prisma.socialProfile.groupBy({
     by: ["platform"],
+    where: {
+      platform: filters.platform || undefined,
+      influencer: {
+        state: filters.regions && filters.regions.length > 0 ? { in: filters.regions } : filters.state || undefined,
+        city: filters.city || undefined,
+      },
+    },
     _count: { platform: true },
   });
   return profiles.map((p) => ({ platform: p.platform, count: p._count.platform }));

@@ -8,10 +8,6 @@ type SyncFilter = {
   regions?: string[];
 };
 
-function normalizeHandles(handles: string[]) {
-  return handles.map((h) => h.replace(/^@/, "").toLowerCase());
-}
-
 export async function syncAllProfiles(filter?: SyncFilter) {
   const where: any = {};
   if (filter?.handles && filter.handles.length > 0) {

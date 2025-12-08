@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useMemo } from 'react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -13,7 +13,18 @@ export const AppProvider = ({ children }) => {
     const [authLoading, setAuthLoading] = useState(true);
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
-    const [sidebarResults, setSidebarResults] = useState([]);
+    const [sidebarPool, setSidebarPool] = useState([]);
+    const sidebarResults = useMemo(() => {
+        if (!selectedMunicipality) return sidebarPool;
+        return sidebarPool.filter((inf) => inf.city === selectedMunicipality);
+    }, [sidebarPool, selectedMunicipality]);
+    const cityOptions = useMemo(() => {
+        const list = sidebarPool
+            .filter((inf) => !selectedState || inf.state === selectedState)
+            .map((inf) => inf.city)
+            .filter(Boolean);
+        return Array.from(new Set(list)).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    }, [sidebarPool, selectedState]);
     const [filters, setFilters] = useState({
         periodDays: 30,
         platform: '',
@@ -81,6 +92,7 @@ export const AppProvider = ({ children }) => {
 
     // Geo: states and cities
     useEffect(() => {
+        if (authLoading || !user) return;
         fetch(`${API_URL}/geo/states`, { credentials: 'include' })
             .then(res => res.json())
             .then(json => {
@@ -95,9 +107,10 @@ export const AppProvider = ({ children }) => {
                 }
             })
             .catch(err => console.error('Failed to load states', err));
-    }, [user]);
+    }, [authLoading, user]);
 
     useEffect(() => {
+        if (authLoading || !user) return;
         if (!selectedState) {
             setCities([]);
             return;
@@ -106,22 +119,22 @@ export const AppProvider = ({ children }) => {
             .then(res => res.json())
             .then(json => setCities(json.data || []))
             .catch(err => console.error('Failed to load cities', err));
-    }, [selectedState]);
+    }, [authLoading, user, selectedState]);
 
     useEffect(() => {
+        if (authLoading || !user) return;
         const params = new URLSearchParams();
         if (searchQuery) params.append('search', searchQuery);
         if (selectedState) params.append('state', selectedState);
-        if (selectedMunicipality) params.append('city', selectedMunicipality);
         if (filters.periodDays !== '') {
             params.append('periodDays', filters.periodDays);
         }
         const url = `${API_URL}/influencers?${params.toString()}`;
         fetch(url, { credentials: 'include' })
             .then(res => res.json())
-            .then(json => setSidebarResults(json.data || []))
+            .then(json => setSidebarPool(json.data || []))
             .catch(err => console.error('Failed to load influencers', err));
-    }, [searchQuery, selectedState, selectedMunicipality, filters.periodDays]);
+    }, [authLoading, user, searchQuery, selectedState, filters.periodDays]);
 
     return (
         <AppContext.Provider value={{
@@ -140,6 +153,7 @@ export const AppProvider = ({ children }) => {
             states,
             cities,
             sidebarResults,
+            cityOptions,
             filters,
             setFilters
         }}>

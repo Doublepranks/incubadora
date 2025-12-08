@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { Search, LayoutDashboard, Users, Shield, LogOut } from 'lucide-react';
+import { useMemo } from 'react';
 
 const Sidebar = () => {
     const {
@@ -10,7 +11,7 @@ const Sidebar = () => {
         searchQuery, setSearchQuery,
         sidebarResults,
         states,
-        cities,
+        cityOptions,
         user,
         logout
     } = useApp();
@@ -108,7 +109,7 @@ const Sidebar = () => {
                                 className="w-full p-2 text-sm border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                             >
                                 <option value="">Todos</option>
-                                {cities.map(city => (
+                                {cityOptions.map(city => (
                                     <option key={city} value={city}>{city}</option>
                                 ))}
                             </select>

@@ -70,6 +70,8 @@ const Influencers = () => {
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [formCities, setFormCities] = useState([]);
+  const [cityLoading, setCityLoading] = useState(false);
 
   const [metricModal, setMetricModal] = useState({ open: false, influencer: null, platform: "" });
   const [metricForm, setMetricForm] = useState({
@@ -120,8 +122,32 @@ const Influencers = () => {
     }
   }, [search, selectedState, selectedMunicipality, platformFilter, periodFilter, canManage]);
 
+  const loadFormCities = async (uf) => {
+    if (!uf) {
+      setFormCities([]);
+      setForm((prev) => ({ ...prev, city: "" }));
+      return;
+    }
+    try {
+      setCityLoading(true);
+      const res = await fetch(`${API_URL}/geo/cities?state=${encodeURIComponent(uf)}`, { credentials: "include" });
+      const json = await res.json();
+      setFormCities(json.data || []);
+      // Se cidade atual não estiver mais na lista, limpa
+      if (form.city && !(json.data || []).includes(form.city)) {
+        setForm((prev) => ({ ...prev, city: "" }));
+      }
+    } catch (err) {
+      console.error("Erro ao carregar cidades", err);
+      setFormCities([]);
+    } finally {
+      setCityLoading(false);
+    }
+  };
+
   const openCreate = () => {
-    setForm(emptyForm);
+    const defaultState = allowedStates.length === 1 ? allowedStates[0] : "";
+    setForm({ ...emptyForm, state: defaultState });
     setEditingId(null);
     setModalOpen(true);
     setStatus("");
@@ -166,6 +192,12 @@ const Influencers = () => {
       setSaving(false);
     }
   };
+
+  useEffect(() => {
+    if (!modalOpen) return;
+    loadFormCities(form.state);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modalOpen, form.state]);
 
   const closeModal = () => {
     setModalOpen(false);
@@ -234,8 +266,16 @@ const Influencers = () => {
         credentials: "include",
       });
       if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || "Erro ao remover influenciador");
+        let message = "Erro ao remover influenciador";
+        try {
+          const data = await res.json();
+          if (data?.message) {
+            message = data.message;
+          }
+        } catch {
+          // ignore parse errors
+        }
+        throw new Error(message);
       }
       await loadInfluencers();
       setStatus("Influenciador removido.");
@@ -530,11 +570,22 @@ const Influencers = () => {
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs text-gray-500">Município</label>
-                  <input
+                  <select
                     value={form.city}
                     onChange={(e) => setForm({ ...form, city: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-200"
-                  />
+                    disabled={!form.state || cityLoading}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-200 disabled:opacity-50"
+                  >
+                    <option value="">{form.state ? "Selecione um município" : "Selecione a UF primeiro"}</option>
+                    {formCities.map((city) => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </select>
+                  {cityLoading && (
+                    <p className="text-xs text-gray-500 flex items-center gap-1">
+                      <Loader2 size={14} className="animate-spin" /> Carregando municípios...
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-1">
                   <label className="text-xs text-gray-500">Avatar URL</label>

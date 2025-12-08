@@ -45,7 +45,14 @@ export async function getTopGrowthHandler(req: Request, res: Response) {
 }
 
 export async function getPlatformDistributionHandler(_req: Request, res: Response) {
-  const data = await getPlatformDistribution();
+  const { state, city, platform } = _req.query;
+  const regions = (_req as any).userRegions as string[] | undefined;
+  const data = await getPlatformDistribution({
+    state: state as string | undefined,
+    city: city as string | undefined,
+    platform: platform as Platform | undefined,
+    regions,
+  });
   return res.json({ error: false, data });
 }
 

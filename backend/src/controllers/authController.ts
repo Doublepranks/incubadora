@@ -47,13 +47,13 @@ export async function login(req: Request, res: Response) {
 
 export async function me(req: Request, res: Response) {
   if (!req.user) {
-    return res.status(401).json({ error: true, message: "Unauthorized" });
+    return res.json({ error: false, user: null });
   }
 
   const user = await findUserById(req.user.id);
   if (!user) {
     res.clearCookie(SESSION_COOKIE);
-    return res.status(401).json({ error: true, message: "Unauthorized" });
+    return res.json({ error: false, user: null });
   }
 
   return res.json({
