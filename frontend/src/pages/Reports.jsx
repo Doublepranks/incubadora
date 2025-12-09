@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import Chart from 'react-apexcharts';
-import { Loader2, Share2, Download } from 'lucide-react';
+import { Loader2, Share2, Download, ListOrdered } from 'lucide-react';
 import { toPng } from 'html-to-image';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
@@ -22,6 +22,11 @@ const Reports = () => {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [error, setError] = useState('');
+    const [rankLoading, setRankLoading] = useState(false);
+    const [rankError, setRankError] = useState('');
+    const [rankData, setRankData] = useState([]);
+    const [rankTotals, setRankTotals] = useState(null);
+    const rankRef = useRef(null);
 
     const filteredCards = useMemo(() => {
         return cards.filter(card => {
@@ -85,6 +90,39 @@ const Reports = () => {
         }
     };
 
+    const handleExportRank = async () => {
+        setRankError('');
+        setRankLoading(true);
+        try {
+            const params = new URLSearchParams();
+            if (selectedState) params.append('state', selectedState);
+            if (selectedMunicipality) params.append('city', selectedMunicipality);
+            if (search) params.append('search', search);
+            const res = await fetch(`${API_URL}/reports/rank?${params.toString()}`, { credentials: 'include' });
+            if (!res.ok) {
+                throw new Error('Erro ao carregar ranking');
+            }
+            const json = await res.json();
+            setRankData(json.data || []);
+            setRankTotals(json.totals || null);
+            // aguarda render
+            await new Promise((resolve) => setTimeout(resolve, 50));
+            if (rankRef.current) {
+                const dataUrl = await toPng(rankRef.current, { pixelRatio: 2, cacheBust: true });
+                const link = document.createElement('a');
+                const today = new Date().toISOString().split('T')[0];
+                link.href = dataUrl;
+                link.download = `rank-${today}.png`;
+                link.click();
+            }
+        } catch (err) {
+            console.error(err);
+            setRankError('Não foi possível gerar o rank. Tente novamente.');
+        } finally {
+            setRankLoading(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
@@ -108,13 +146,23 @@ const Reports = () => {
                     <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Relatórios</h2>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Cards 1:1 das últimas 4 semanas</p>
                 </div>
-                <button
-                    onClick={handleExport}
-                    className="flex items-center px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700"
-                >
-                    <Download size={16} className="mr-2" />
-                    Exportar relatório geral
-                </button>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={handleExportRank}
+                        disabled={rankLoading}
+                        className="flex items-center px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+                    >
+                        {rankLoading ? <Loader2 size={16} className="mr-2 animate-spin" /> : <ListOrdered size={16} className="mr-2" />}
+                        Exportar rank
+                    </button>
+                    <button
+                        onClick={handleExport}
+                        className="flex items-center px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700"
+                    >
+                        <Download size={16} className="mr-2" />
+                        Exportar relatório geral
+                    </button>
+                </div>
             </div>
 
             <div className="flex flex-wrap gap-3">
@@ -152,6 +200,64 @@ const Reports = () => {
                 >
                     Próxima
                 </button>
+            </div>
+
+            {rankError && (
+                <div className="p-3 rounded-md bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400">
+                    {rankError}
+                </div>
+            )}
+
+            <div className="absolute -left-[9999px] top-0">
+                <div ref={rankRef} className="min-w-[900px] bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800 p-4">
+                    <div className="flex items-center justify-between mb-3">
+                        <div>
+                            <h3 className="text-lg font-semibold">Ranking - últimas 4 semanas</h3>
+                            {selectedState && <p className="text-xs text-gray-500">Filtro: {selectedState}{selectedMunicipality ? ` / ${selectedMunicipality}` : ''}</p>}
+                        </div>
+                        <span className="text-xs text-gray-500">Gerado em {new Date().toLocaleDateString("pt-BR")}</span>
+                    </div>
+                    <table className="w-full text-sm border-collapse">
+                        <thead>
+                            <tr className="bg-gray-100 dark:bg-gray-800">
+                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-left">Influenciador / UF</th>
+                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-right">Semana -3</th>
+                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-right">Semana -2</th>
+                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-right">Semana -1</th>
+                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-right">Semana atual</th>
+                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-right">Cresc. abs.</th>
+                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-right">Cresc. %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rankData.map((row) => (
+                                <tr key={row.id} className="odd:bg-gray-50 dark:odd:bg-gray-800/40">
+                                    <td className="p-2 border border-gray-200 dark:border-gray-700">
+                                        <div className="font-semibold">{row.name}</div>
+                                        <div className="text-xs text-gray-500">{row.state}</div>
+                                    </td>
+                                    <td className="p-2 border border-gray-200 dark:border-gray-700 text-right">{(row.weeks.w3 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-2 border border-gray-200 dark:border-gray-700 text-right">{(row.weeks.w2 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-2 border border-gray-200 dark:border-gray-700 text-right">{(row.weeks.w1 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-2 border border-gray-200 dark:border-gray-700 text-right">{(row.weeks.w0 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-2 border border-gray-200 dark:border-gray-700 text-right">{(row.growthAbs ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-2 border border-gray-200 dark:border-gray-700 text-right">{(row.growthPct ?? 0).toFixed(1)}%</td>
+                                </tr>
+                            ))}
+                            {rankTotals && (
+                                <tr className="bg-gray-200 dark:bg-gray-800 font-semibold">
+                                    <td className="p-2 border border-gray-300 dark:border-gray-700">Total</td>
+                                    <td className="p-2 border border-gray-300 dark:border-gray-700 text-right">{(rankTotals.w3 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-2 border border-gray-300 dark:border-gray-700 text-right">{(rankTotals.w2 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-2 border border-gray-300 dark:border-gray-700 text-right">{(rankTotals.w1 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-2 border border-gray-300 dark:border-gray-700 text-right">{(rankTotals.w0 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-2 border border-gray-300 dark:border-gray-700 text-right">{(rankTotals.growthAbs ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-2 border border-gray-300 dark:border-gray-700 text-right">{(rankTotals.growthPct ?? 0).toFixed(1)}%</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
