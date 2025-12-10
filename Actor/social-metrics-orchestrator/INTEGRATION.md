@@ -11,8 +11,8 @@ O **Social Metrics Orchestrator** é um Actor da Apify que coleta métricas de r
 | Plataforma | Método de Coleta | Actor/Scraper |
 |------------|------------------|---------------|
 | Instagram | Actor da Store | `apify/instagram-profile-scraper` |
-| TikTok | Actor da Store | `clockworks/tiktok-profile-scraper` |
-| YouTube | Actor da Store | `streamers/youtube-channel-scraper` |
+| TikTok | Actor da Store | `apidojo/tiktok-scraper` |
+| YouTube | Scraping próprio | Puppeteer customizado |
 | X (Twitter) | Actor da Store | `apidojo/twitter-user-scraper` |
 | Kwai | Scraping próprio | Puppeteer customizado |
 
@@ -70,7 +70,11 @@ O Actor gera um **dataset** com um registro por perfil processado:
   "followers_count": 327000000,
   "posts_count": 850,
   "sync_status": "ok",
-  "error_message": null
+  "error_code": null,
+  "error_message": null,
+  "attempt": 1,
+  "runId": "actor-run-id",
+  "sourceActorId": "custom-youtube"
 }
 ```
 
@@ -84,7 +88,11 @@ O Actor gera um **dataset** com um registro por perfil processado:
 | `followers_count` | number \| null | Número de seguidores/inscritos |
 | `posts_count` | number \| null | Número de posts/vídeos |
 | `sync_status` | string | Status: `ok` ou `error` |
+| `error_code` | string \| null | Código categorizado do erro (ex.: `timeout`, `not_found`, `parse_error`, `rate_limit`, `blocked`, `captcha`, `error`) |
 | `error_message` | string \| null | Mensagem de erro (se houver) |
+| `attempt` | number | Tentativa (1 no orquestrador principal) |
+| `runId` | string | ID do run do actor |
+| `sourceActorId` | string \| null | Actor da Store ou scraper que gerou o item |
 
 ---
 
@@ -232,9 +240,10 @@ Para coletar métricas diariamente:
 |---------|------------|
 | **Memória recomendada** | 2048 MB (por causa do Kwai/Puppeteer) |
 | **Timeout recomendado** | 600 segundos (10 min) |
-| **Custo médio** | ~$0.30 por 100 perfis |
+| **Custo médio** | ~$0.30 por 100 perfis (pode variar conforme atores da Store) |
 | **Rate limits** | Respeita os limits de cada Actor da Store |
 | **Kwai** | Mais instável, pode precisar de proxies |
+| **Retry** | O backend pode acionar um segundo orquestrador (retry) para erros `timeout`, `rate_limit`, `blocked`, `captcha`, `parse_error`, `error` |
 
 ---
 
@@ -289,6 +298,8 @@ CREATE INDEX idx_social_metrics_date ON social_metrics (date);
 | Variável | Descrição |
 |----------|-----------|
 | `APIFY_TOKEN` | Token de API da Apify (obrigatório para chamar outros actors) |
+| `APIFY_ACTOR_ID` | ID do orquestrador principal (usado pelo backend) |
+| `APIFY_RETRY_ACTOR_ID` | (Opcional) ID do orquestrador de retry, se habilitado no backend |
 
 ---
 

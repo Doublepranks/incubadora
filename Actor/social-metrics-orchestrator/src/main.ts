@@ -19,7 +19,11 @@ interface MetricResult {
     followers_count: number | null;
     posts_count: number | null;
     sync_status: 'ok' | 'error';
+    error_code: string | null;
     error_message: string | null;
+    attempt: number;
+    runId: string;
+    sourceActorId: string | null;
 }
 
 // IDs dos actors da Apify Store
@@ -36,6 +40,7 @@ if (!input?.profiles) {
     throw new Error('Input must contain profiles array');
 }
 
+const runId = Actor.getEnv().actorRunId ?? 'local-run';
 const client = new ApifyClient({
     token: process.env.APIFY_TOKEN,
 });
@@ -83,7 +88,11 @@ for (const [platform, platformProfiles] of profilesByPlatform) {
                 followers_count: null,
                 posts_count: null,
                 sync_status: 'error',
+                error_code: 'no_actor',
                 error_message: `No actor configured for platform: ${platform}`,
+                attempt: 1,
+                runId,
+                sourceActorId: null,
             });
         }
         continue;
@@ -127,7 +136,11 @@ for (const [platform, platformProfiles] of profilesByPlatform) {
                         followers_count: null,
                         posts_count: null,
                         sync_status: 'error',
+                        error_code: 'not_found',
                         error_message: 'Profile not found or no valid data returned',
+                        attempt: 1,
+                        runId,
+                        sourceActorId: actorId,
                     });
                 }
 
@@ -140,7 +153,11 @@ for (const [platform, platformProfiles] of profilesByPlatform) {
                     followers_count: null,
                     posts_count: null,
                     sync_status: 'error',
+                    error_code: errorCodeFromError(error),
                     error_message: error instanceof Error ? error.message : String(error),
+                    attempt: 1,
+                    runId,
+                    sourceActorId: actorId,
                 });
             }
         }
@@ -189,7 +206,11 @@ for (const [platform, platformProfiles] of profilesByPlatform) {
                     followers_count: null,
                     posts_count: null,
                     sync_status: 'error',
+                    error_code: 'not_found',
                     error_message: 'Profile not found in actor results',
+                    attempt: 1,
+                    runId,
+                    sourceActorId: actorId,
                 });
             }
         }
@@ -206,7 +227,11 @@ for (const [platform, platformProfiles] of profilesByPlatform) {
                 followers_count: null,
                 posts_count: null,
                 sync_status: 'error',
+                error_code: errorCodeFromError(error),
                 error_message: error instanceof Error ? error.message : String(error),
+                attempt: 1,
+                runId,
+                sourceActorId: actorId,
             });
         }
     }
@@ -397,7 +422,11 @@ function normalizeResult(
             followers_count: followers || null,
             posts_count: posts || null,
             sync_status: 'ok',
+            error_code: null,
             error_message: null,
+            attempt: 1,
+            runId,
+            sourceActorId: platform,
         };
 
     } catch (error) {
@@ -490,7 +519,11 @@ async function scrapeKwaiProfiles(profiles: ProfileInput[], date: string): Promi
                     followers_count: followers,
                     posts_count: posts,
                     sync_status: followers ? 'ok' : 'error',
+                    error_code: followers ? null : 'parse_error',
                     error_message: followers ? null : 'Could not extract followers from Kwai page',
+                    attempt: 1,
+                    runId,
+                    sourceActorId: 'custom-kwai',
                 });
 
                 log.info(`✅ Kwai ${username}: ${followers} followers, ${posts} posts`);
@@ -504,7 +537,11 @@ async function scrapeKwaiProfiles(profiles: ProfileInput[], date: string): Promi
                     followers_count: null,
                     posts_count: null,
                     sync_status: 'error',
+                    error_code: errorCodeFromError(error),
                     error_message: error instanceof Error ? error.message : String(error),
+                    attempt: 1,
+                    runId,
+                    sourceActorId: 'custom-kwai',
                 });
             }
 
@@ -522,7 +559,11 @@ async function scrapeKwaiProfiles(profiles: ProfileInput[], date: string): Promi
                 followers_count: null,
                 posts_count: null,
                 sync_status: 'error',
+                error_code: errorCodeFromError(error),
                 error_message: error instanceof Error ? error.message : String(error),
+                attempt: 1,
+                runId,
+                sourceActorId: 'custom-kwai',
             });
         },
     });
@@ -662,7 +703,11 @@ async function scrapeYoutubeProfiles(profiles: ProfileInput[], date: string): Pr
                         followers_count: followers,
                         posts_count: posts,
                         sync_status: 'ok',
+                        error_code: null,
                         error_message: null,
+                        attempt: 1,
+                        runId,
+                        sourceActorId: 'custom-youtube',
                     });
                 } else {
                     log.warning(`⚠️ Could not find subscribers for YouTube: ${username}`);
@@ -673,7 +718,11 @@ async function scrapeYoutubeProfiles(profiles: ProfileInput[], date: string): Pr
                         followers_count: null,
                         posts_count: null,
                         sync_status: 'error',
+                        error_code: 'parse_error',
                         error_message: 'Could not extract subscribers',
+                        attempt: 1,
+                        runId,
+                        sourceActorId: 'custom-youtube',
                     });
                 }
 
@@ -686,7 +735,11 @@ async function scrapeYoutubeProfiles(profiles: ProfileInput[], date: string): Pr
                     followers_count: null,
                     posts_count: null,
                     sync_status: 'error',
+                    error_code: errorCodeFromError(error),
                     error_message: error instanceof Error ? error.message : String(error),
+                    attempt: 1,
+                    runId,
+                    sourceActorId: 'custom-youtube',
                 });
             }
         },
@@ -701,7 +754,11 @@ async function scrapeYoutubeProfiles(profiles: ProfileInput[], date: string): Pr
                 followers_count: null,
                 posts_count: null,
                 sync_status: 'error',
+                error_code: errorCodeFromError(error),
                 error_message: error instanceof Error ? error.message : String(error),
+                attempt: 1,
+                runId,
+                sourceActorId: 'custom-youtube',
             });
         },
     });
@@ -733,4 +790,15 @@ function parseYoutubeCount(text: string): number | null {
     if (!text) return null;
     const clean = text.replace(/subscribers|videos|[^0-9.KMB]/gi, '').trim();
     return parseKwaiCount(clean);
+}
+
+function errorCodeFromError(error: unknown): string {
+    const msg = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
+    if (msg.includes('timeout')) return 'timeout';
+    if (msg.includes('not found') || msg.includes('404')) return 'not_found';
+    if (msg.includes('captcha')) return 'captcha';
+    if (msg.includes('rate') || msg.includes('429') || msg.includes('limit')) return 'rate_limit';
+    if (msg.includes('blocked') || msg.includes('forbidden') || msg.includes('403')) return 'blocked';
+    if (msg.includes('parse') || msg.includes('selector')) return 'parse_error';
+    return 'error';
 }

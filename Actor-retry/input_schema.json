@@ -1,0 +1,76 @@
+{
+  "$schema": "https://schemas.apify.com/input-schema.json",
+  "title": "Retry orchestrator input",
+  "type": "object",
+  "properties": {
+    "profiles": {
+      "type": "array",
+      "title": "Perfis para retry",
+      "description": "Perfis que falharam no ator principal.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": ["instagram", "tiktok", "youtube", "x", "kwai"],
+            "title": "Plataforma"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username (sem @)"
+          },
+          "url": {
+            "type": "string",
+            "title": "URL opcional",
+            "nullable": true
+          },
+          "attempt": {
+            "type": "integer",
+            "title": "Attempt",
+            "default": 2
+          },
+          "error_code": {
+            "type": "string",
+            "title": "Error code anterior",
+            "nullable": true
+          },
+          "error_message": {
+            "type": "string",
+            "title": "Error message anterior",
+            "nullable": true
+          }
+        },
+        "required": ["platform", "username"]
+      }
+    },
+    "actorIds": {
+      "type": "object",
+      "title": "Mapeamento de atores da Store",
+      "properties": {
+        "instagram": { "type": "string", "nullable": true },
+        "tiktok": { "type": "string", "nullable": true },
+        "youtube": { "type": "string", "nullable": true },
+        "x": { "type": "string", "nullable": true },
+        "kwai": { "type": "string", "nullable": true },
+        "generic": { "type": "string", "nullable": true }
+      },
+      "additionalProperties": true
+    },
+    "perRequestTimeoutSecs": {
+      "type": "integer",
+      "title": "Timeout por chamada (s)",
+      "default": 120
+    },
+    "maxConcurrency": {
+      "type": "integer",
+      "title": "Concorrência",
+      "default": 2
+    },
+    "backoffMs": {
+      "type": "integer",
+      "title": "Backoff entre perfis (ms)",
+      "default": 2000
+    }
+  },
+  "required": ["profiles"]
+}

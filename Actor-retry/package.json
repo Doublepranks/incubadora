@@ -1,0 +1,15 @@
+{
+  "name": "social-metrics-retry",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "node dist/main.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "apify": "^3.1.12"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}
