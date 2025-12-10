@@ -25,7 +25,7 @@ interface MetricResult {
 // IDs dos actors da Apify Store
 const ACTOR_IDS: Record<string, string> = {
     instagram: 'apify/instagram-profile-scraper',
-    tiktok: 'clockworks/tiktok-profile-scraper',
+    tiktok: 'apidojo/tiktok-scraper',
     x: 'apidojo/twitter-user-scraper',
 };
 
@@ -237,10 +237,11 @@ function buildActorInput(platform: string, profiles: ProfileInput[]): Record<str
             };
 
         case 'tiktok':
-            // clockworks/tiktok-profile-scraper
+            // apidojo/tiktok-scraper
             return {
-                profiles: usernames.map(u => `https://www.tiktok.com/@${u}`),
-                resultsPerPage: 1,  // Must be >= 1
+                startUrls: usernames.map(u => `https://www.tiktok.com/@${u}`),
+                maxItems: profiles.length * 2, // Give some buffer
+                customMapFunction: "(object) => { return {...object} }",
             };
 
         case 'youtube':
@@ -290,25 +291,52 @@ function normalizeResult(
                 break;
 
             case 'tiktok':
-                // clockworks/tiktok-profile-scraper (returns VIDEO objects when resultsPerPage > 0)
-                // Try from authorMeta if available (video object)
-                if (item.authorMeta && typeof item.authorMeta === 'object') {
-                    const meta = item.authorMeta as any;
-                    username = String(meta.uniqueId || meta.name || meta.nickName || '');
-                } else {
-                    // Try direct profile fields
-                    username = String(item.uniqueId || item.username || '');
+                // apidojo/tiktok-scraper result normalization
+
+                // Case 0: No results or empty
+                if (item.noResults) {
+                    return null;
                 }
 
-                // If it's a video object, followerCount might be in authorMeta or not available directly
-                // Ideally we want profile info, but if we get videos, we might only get stats for that video
-                if (item.authorMeta && (item.authorMeta as any).fans) {
-                    followers = Number((item.authorMeta as any).fans);
-                } else {
-                    followers = Number(item.followerCount || item.fans || 0);
+                // We try multiple locations where user data might appear
+                let authorDetails: any = item.authorMeta || item.authorStats || item.author || null;
+
+                // Case 1: Direct user object
+                if (!authorDetails && item.uniqueId) {
+                    authorDetails = item;
                 }
 
-                posts = Number(item.videoCount || 0);
+                // Case 2: Video object with 'channel' (apidojo common format)
+                if (!authorDetails && item.channel) {
+                    const ch = item.channel as any;
+                    // Prioritize username handle!
+                    username = String(ch.username || ch.id || ch.name || '');
+
+                    // Extract stats from channel
+                    if (ch.followers || ch.followerCount) {
+                        followers = Number(ch.followers || ch.followerCount);
+                    }
+                    if (ch.videos || ch.videoCount) {
+                        posts = Number(ch.videos || ch.videoCount);
+                    }
+
+                    // Debug only if something is weird
+                    // console.log(`🔍 Extracted TikTok: ${username} | Subs: ${followers} | Vids: ${posts}`);
+                }
+
+                if (authorDetails) {
+                    username = String(authorDetails.uniqueId || authorDetails.name || authorDetails.nickName || '');
+
+                    // Stats might be nested in 'stats' object or flat
+                    const stats = (item.stats || authorDetails.stats || authorDetails) as any;
+                    followers = Number(stats.followerCount || stats.followers || stats.fans || 0);
+                    posts = Number(stats.videoCount || stats.heart || 0);
+                }
+
+                // Fallback for debugging
+                if (!username) {
+                    console.log(`⚠️ Unrecognized TikTok item structure. Keys: ${Object.keys(item).join(', ')}`);
+                }
                 break;
 
             case 'youtube':
