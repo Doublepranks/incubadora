@@ -2,75 +2,129 @@
   "$schema": "https://schemas.apify.com/input-schema.json",
   "title": "Retry orchestrator input",
   "type": "object",
+  "schemaVersion": 1,
   "properties": {
     "profiles": {
       "type": "array",
       "title": "Perfis para retry",
       "description": "Perfis que falharam no ator principal.",
+      "editor": "json",
       "items": {
         "type": "object",
         "properties": {
           "platform": {
             "type": "string",
-            "enum": ["instagram", "tiktok", "youtube", "x", "kwai"],
-            "title": "Plataforma"
+            "enum": [
+              "instagram",
+              "tiktok",
+              "youtube",
+              "x",
+              "kwai"
+            ],
+            "title": "Plataforma",
+            "description": "Plataforma social alvo."
           },
           "username": {
             "type": "string",
-            "title": "Username (sem @)"
+            "title": "Username (sem @)",
+            "description": "Nome de usuário do perfil."
           },
           "url": {
             "type": "string",
             "title": "URL opcional",
+            "description": "URL direta do perfil, se disponível.",
             "nullable": true
           },
           "attempt": {
             "type": "integer",
             "title": "Attempt",
+            "description": "Número da tentativa atual.",
             "default": 2
           },
           "error_code": {
             "type": "string",
             "title": "Error code anterior",
+            "description": "Código do erro que causou o retry.",
             "nullable": true
           },
           "error_message": {
             "type": "string",
             "title": "Error message anterior",
+            "description": "Mensagem do erro anterior.",
             "nullable": true
           }
         },
-        "required": ["platform", "username"]
+        "required": [
+          "platform",
+          "username"
+        ]
       }
     },
     "actorIds": {
       "type": "object",
       "title": "Mapeamento de atores da Store",
+      "description": "IDs dos atores Apify a serem usados para cada rede social.",
+      "editor": "json",
       "properties": {
-        "instagram": { "type": "string", "nullable": true },
-        "tiktok": { "type": "string", "nullable": true },
-        "youtube": { "type": "string", "nullable": true },
-        "x": { "type": "string", "nullable": true },
-        "kwai": { "type": "string", "nullable": true },
-        "generic": { "type": "string", "nullable": true }
+        "instagram": {
+          "type": "string",
+          "title": "Instagram Actor ID",
+          "description": "ID do ator para Instagram",
+          "nullable": true
+        },
+        "tiktok": {
+          "type": "string",
+          "title": "TikTok Actor ID",
+          "description": "ID do ator para TikTok",
+          "nullable": true
+        },
+        "youtube": {
+          "type": "string",
+          "title": "YouTube Actor ID",
+          "description": "ID do ator para YouTube",
+          "nullable": true
+        },
+        "x": {
+          "type": "string",
+          "title": "X Actor ID",
+          "description": "ID do ator para X",
+          "nullable": true
+        },
+        "kwai": {
+          "type": "string",
+          "title": "Kwai Actor ID",
+          "description": "ID do ator para Kwai",
+          "nullable": true
+        },
+        "generic": {
+          "type": "string",
+          "title": "Generic Actor ID",
+          "description": "ID do ator genérico",
+          "nullable": true
+        }
       },
       "additionalProperties": true
     },
     "perRequestTimeoutSecs": {
       "type": "integer",
       "title": "Timeout por chamada (s)",
+      "description": "Tempo máximo de espera por chamada de ator.",
       "default": 120
     },
     "maxConcurrency": {
       "type": "integer",
       "title": "Concorrência",
+      "description": "Número máximo de perfis processados em paralelo.",
       "default": 2
     },
     "backoffMs": {
       "type": "integer",
       "title": "Backoff entre perfis (ms)",
+      "description": "Tempo de espera entre processamentos.",
       "default": 2000
     }
   },
-  "required": ["profiles"]
+  "required": [
+    "profiles"
+  ]
 }

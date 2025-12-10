@@ -95,7 +95,7 @@ async function processProfile(profile: ProfileInput): Promise<void> {
 
     const call = await Actor.call(actorId, actorInput, {
       timeoutSecs: perRequestTimeoutSecs,
-    });
+    } as any);
 
     const datasetId = call?.defaultDatasetId;
     let followers = null;
@@ -217,20 +217,22 @@ function normalizeResult(platform: Platform, item: any, requestedUsername: strin
         const channelUrl: string | undefined = item.channel.url;
         const channelId: string | undefined = item.channel.id;
         const channelName: string | undefined = item.channel.name;
-        matchedHandle =
+        matchedHandle = Boolean(
           !handle ||
           (channelUrl && channelUrl.toLowerCase().includes(`/@${handle.toLowerCase()}`)) ||
           (channelId && channelId.toLowerCase() === handle.toLowerCase()) ||
-          (channelName && channelName.toLowerCase() === handle.toLowerCase());
+          (channelName && channelName.toLowerCase() === handle.toLowerCase())
+        );
       } else {
         followers = item.subscriberCount ?? item.subscribers ?? item.numberOfSubscribers ?? null;
         posts = item.videoCount ?? item.numberOfVideos ?? item.videos ?? null;
 
         const channelUrl: string | undefined = item.url || item.channelUrl;
-        matchedHandle =
+        matchedHandle = Boolean(
           !handle ||
           (channelUrl && channelUrl.toLowerCase().includes(`/@${handle.toLowerCase()}`)) ||
-          (item.channelId && String(item.channelId).toLowerCase() === handle.toLowerCase());
+          (item.channelId && String(item.channelId).toLowerCase() === handle.toLowerCase())
+        );
       }
       break;
     case "x":
