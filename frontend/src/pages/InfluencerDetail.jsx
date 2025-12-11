@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Chart from 'react-apexcharts';
 import { ArrowLeft, Instagram, Youtube, Video, Twitter, Loader2, User as UserIcon } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { formatDate } from '../utils/dateUtils';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -204,7 +205,7 @@ const InfluencerDetail = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {influencer.socialProfiles.map((profile) => {
-                    const historyDates = profile.metrics.map((m) => m.date.split('T')[0]);
+                    const historyDates = profile.metrics.map((m) => formatDate(m.date));
                     const historyFollowers = profile.metrics.map((m) => m.followersCount);
                     const totalPosts = profile.metrics.reduce((sum, m) => sum + m.postsCount, 0);
                     const postsCounts = profile.metrics.map((m) => m.postsCount);
@@ -272,7 +273,7 @@ const InfluencerDetail = () => {
                                 </div>
                                 <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
                                     <p className="text-xs text-gray-500 dark:text-gray-400">Última atualização</p>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{lastUpdate ? new Date(lastUpdate).toLocaleDateString() : '-'}</p>
+                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{formatDate(lastUpdate)}</p>
                                 </div>
                             </div>
                         </div>

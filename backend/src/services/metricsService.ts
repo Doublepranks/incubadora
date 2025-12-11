@@ -178,7 +178,8 @@ export async function getFollowersTimeline(filters: MetricsFilters) {
     let lastKnown: number | null = null;
     const metrics = profile.metrics;
     dates.forEach((dateStr) => {
-      const currentDate = new Date(dateStr + "T00:00:00.000Z");
+      // Comparison at end of day to include any metric from that day
+      const currentDate = new Date(dateStr + "T23:59:59.999Z");
       while (idx < metrics.length && metrics[idx].date <= currentDate) {
         lastKnown = metrics[idx].followersCount;
         idx++;
@@ -209,11 +210,12 @@ export async function addManualMetric(input: ManualMetricInput, regions?: string
   }
   const platform = String(input.platform).toLowerCase() as Platform;
 
-  const parsedDate = new Date(input.date);
+  // Force date to be Noon UTC to avoid timezone shifts (e.g., midnight becoming previous day 21h)
+  const parsedDate = new Date(input.date + "T12:00:00Z");
   if (isNaN(parsedDate.getTime())) {
     throw new Error("Invalid date");
   }
-  parsedDate.setHours(0, 0, 0, 0);
+  // parsedDate.setHours(0, 0, 0, 0); // Removed to keep Noon UTC
 
   let profileId = input.socialProfileId;
 

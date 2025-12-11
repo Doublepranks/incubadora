@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import Chart from 'react-apexcharts';
 import { Loader2, Share2, Download, ListOrdered, ArrowUp, ArrowDown, Minus, MessageCircle, Copy } from 'lucide-react';
 import { toPng } from 'html-to-image';
+import { formatDate } from '../utils/dateUtils';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 const PAGE_SIZE = 12;
@@ -215,7 +216,7 @@ const Reports = () => {
                             <h3 className="text-lg font-semibold">Ranking - últimas 4 semanas</h3>
                             {selectedState && <p className="text-xs text-gray-500">Filtro: {selectedState}{selectedMunicipality ? ` / ${selectedMunicipality}` : ''}</p>}
                         </div>
-                        <span className="text-xs text-gray-500">Gerado em {new Date().toLocaleDateString("pt-BR")}</span>
+                        <span className="text-xs text-gray-500">Gerado em {formatDate(new Date())}</span>
                     </div>
                     <table className="w-full text-sm border-collapse">
                         <thead>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
+import { formatDate } from "../utils/dateUtils";
 import { X, Save, Ban, Loader2, User } from "lucide-react";
 import { useApp } from "../context/AppContext";
 
@@ -166,7 +167,7 @@ const HistoryModal = ({ open, onClose, influencer }) => {
                                 <div className="col-span-2 text-right pt-0.5 pr-2">
                                     <div className="flex flex-col items-end">
                                         <span className="text-xs font-medium text-gray-900 dark:text-gray-300 tabular-nums">
-                                            {new Date(note.createdAt).toLocaleDateString()}
+                                            {formatDate(note.createdAt)}
                                         </span>
                                         <span className="text-[10px] text-gray-400 tabular-nums">
                                             {new Date(note.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

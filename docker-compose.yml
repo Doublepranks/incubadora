@@ -25,6 +25,7 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/dashboard?schema=public
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:4173}
+      TZ: America/Sao_Paulo
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -40,6 +41,7 @@ services:
       - "4173:4173"
     environment:
       VITE_API_URL: http://localhost:3000/api
+      TZ: America/Sao_Paulo
     volumes:
       - ./frontend:/app
       - /app/node_modules
