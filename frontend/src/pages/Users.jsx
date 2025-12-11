@@ -4,7 +4,7 @@ import { useApp } from "../context/AppContext";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 const UF_LIST = [
-  "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"
+  "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
 ];
 
 const emptyForm = {
@@ -285,7 +285,8 @@ const Users = () => {
                     setForm({
                       ...form,
                       role: nextRole,
-                      regions: nextRole === "admin_global" ? [] : form.regions,
+                      // Zera a seleção ao mudar de role para evitar inconsistências (ex: múltiplas UFs em admin estadual)
+                      regions: [],
                     });
                   }}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-200"
@@ -307,9 +308,16 @@ const Users = () => {
                           type="button"
                           onClick={() => {
                             if (active) {
+                              // Desmarcar UF selecionada
                               setForm({ ...form, regions: form.regions.filter((r) => r !== uf) });
                             } else {
-                              setForm({ ...form, regions: [...form.regions, uf] });
+                              // Admin estadual: apenas UMA UF permitida (substitui seleção anterior)
+                              if (form.role === "admin_estadual") {
+                                setForm({ ...form, regions: [uf] });
+                              } else {
+                                // Admin regional: múltiplas UFs permitidas
+                                setForm({ ...form, regions: [...form.regions, uf] });
+                              }
                             }
                           }}
                           className={`px-2 py-1 text-xs rounded border ${active ? "bg-blue-600 text-white border-blue-600" : "border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300"}`}
