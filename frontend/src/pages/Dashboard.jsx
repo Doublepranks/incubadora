@@ -76,6 +76,7 @@ const Dashboard = () => {
 
     const baseAxisColors = { labels: { style: { colors: '#6b7280' } } };
     const gridColor = '#e5e7eb';
+    const formatNumber = (val) => Number(val || 0).toLocaleString('pt-BR');
 
     const lineChartOptions = useMemo(() => ({
         chart: { type: 'area', toolbar: { show: false }, background: 'transparent' },
@@ -91,10 +92,11 @@ const Dashboard = () => {
         chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
         plotOptions: { bar: { borderRadius: 4, horizontal: true } },
         dataLabels: { enabled: false },
-        xaxis: { categories: topGrowth.map(inf => inf.name), ...baseAxisColors },
+        xaxis: { categories: topGrowth.map(inf => inf.name || ''), labels: { ...baseAxisColors.labels, formatter: (val) => formatNumber(val) } },
         yaxis: { ...baseAxisColors },
         grid: { borderColor: gridColor, strokeDashArray: 4 },
-        colors: ['#10b981']
+        colors: ['#10b981'],
+        tooltip: { y: { formatter: (val) => formatNumber(val) } },
     }), [topGrowth]);
 
     const platformChartOptions = useMemo(() => ({
@@ -127,7 +129,7 @@ const Dashboard = () => {
 
     const barChartSeries = [{
         name: 'Crescimento',
-        data: topGrowth.map(inf => inf.growthAbsolute),
+        data: topGrowth.map(inf => Number(inf?.growthAbsolute ?? 0)),
     }];
 
     const maxStateCount = stateDistribution.reduce((max, s) => Math.max(max, s.count), 0) || 1;
@@ -263,7 +265,13 @@ const Dashboard = () => {
 
                 <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
                     <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Top Crescimento</h3>
-                    <Chart options={barChartOptions} series={barChartSeries} type="bar" height={300} />
+                    {topGrowth.length > 0 ? (
+                        <Chart options={barChartOptions} series={barChartSeries} type="bar" height={300} />
+                    ) : (
+                        <div className="flex items-center justify-center h-[300px] text-gray-500 dark:text-gray-400">
+                            Sem dados de crescimento no período selecionado
+                        </div>
+                    )}
                 </div>
             </div>
 
