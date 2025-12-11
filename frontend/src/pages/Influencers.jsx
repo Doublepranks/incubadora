@@ -19,11 +19,11 @@ const UF_LIST = [
 ];
 
 const platformBadgeClasses = {
-  instagram: "bg-pink-600/20 text-pink-200 border border-pink-500/40",
-  x: "bg-slate-600/30 text-slate-200 border border-slate-500/50",
-  youtube: "bg-red-600/20 text-red-200 border border-red-500/40",
-  kwai: "bg-amber-500/20 text-amber-100 border border-amber-400/50",
-  tiktok: "bg-purple-500/20 text-purple-100 border border-purple-400/50",
+  instagram: "bg-pink-100 text-pink-800 border border-pink-300 dark:bg-pink-600/20 dark:text-pink-200 dark:border-pink-500/40",
+  x: "bg-slate-200 text-slate-800 border border-slate-300 dark:bg-slate-600/30 dark:text-slate-200 dark:border-slate-500/50",
+  youtube: "bg-red-100 text-red-800 border border-red-300 dark:bg-red-600/20 dark:text-red-200 dark:border-red-500/40",
+  kwai: "bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-500/20 dark:text-amber-100 dark:border-amber-400/50",
+  tiktok: "bg-purple-100 text-purple-800 border border-purple-300 dark:bg-purple-500/20 dark:text-purple-100 dark:border-purple-400/50",
 };
 
 const formatNumber = (value) => {
