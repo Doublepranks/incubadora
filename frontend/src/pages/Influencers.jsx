@@ -473,10 +473,10 @@ const Influencers = () => {
                       ))}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-100 font-semibold">{formatNumber(inf.totalFollowers)}</td>
-                  <td className="px-6 py-4 text-gray-100">{formatNumber(inf.totalPosts)}</td>
+                  <td className="px-6 py-4 text-gray-800 dark:text-gray-100 font-semibold">{formatNumber(inf.totalFollowers)}</td>
+                  <td className="px-6 py-4 text-gray-800 dark:text-gray-100">{formatNumber(inf.totalPosts)}</td>
                   <td className="px-6 py-4">
-                    <span className={`font-semibold ${inf.growthPercent >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                    <span className={`font-semibold ${inf.growthPercent >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}>
                       {inf.growthPercent ? `${inf.growthPercent.toFixed(1)}%` : "0%"}
                     </span>
                   </td>
@@ -484,34 +484,34 @@ const Influencers = () => {
                     <div className="flex items-center gap-2 justify-end flex-wrap">
                       <button
                         onClick={() => openEdit(inf)}
-                        className="px-3 py-1 text-xs rounded-md border border-blue-500/60 text-blue-100 bg-blue-500/10 hover:bg-blue-500/20"
+                        className="px-3 py-1 text-xs rounded-md border border-blue-500/60 text-blue-700 dark:text-blue-100 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20"
                         title="Editar"
                       >
                         <div className="flex items-center gap-1"><Edit2 size={14} /> Editar</div>
                       </button>
                       <button
                         onClick={() => openNote(inf)}
-                        className="px-3 py-1 text-xs rounded-md border border-gray-500/60 text-gray-100 bg-gray-500/10 hover:bg-gray-500/20"
+                        className="px-3 py-1 text-xs rounded-md border border-gray-500/60 text-gray-700 dark:text-gray-100 bg-gray-50 dark:bg-gray-500/10 hover:bg-gray-100 dark:hover:bg-gray-500/20"
                         title="Notas"
                       >
                         <div className="flex items-center gap-1"><FileText size={14} /> Nota</div>
                       </button>
                       <button
                         onClick={() => openMetric(inf)}
-                        className="px-3 py-1 text-xs rounded-md border border-amber-500/70 text-amber-100 bg-amber-500/10 hover:bg-amber-500/20"
+                        className="px-3 py-1 text-xs rounded-md border border-amber-500/70 text-amber-700 dark:text-amber-100 bg-amber-50 dark:bg-amber-500/10 hover:bg-amber-100 dark:hover:bg-amber-500/20"
                         title="Adicionar métrica manual"
                       >
                         <div className="flex items-center gap-1"><Activity size={14} /> Métrica</div>
                       </button>
                       <button
                         onClick={() => navigate(`/influencer/${inf.id}`)}
-                        className="px-3 py-1 text-xs rounded-md border border-indigo-500/70 text-indigo-100 bg-indigo-500/10 hover:bg-indigo-500/20"
+                        className="px-3 py-1 text-xs rounded-md border border-indigo-500/70 text-indigo-700 dark:text-indigo-100 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20"
                       >
                         Detalhe
                       </button>
                       <button
                         onClick={() => handleDelete(inf.id)}
-                        className="px-3 py-1 text-xs rounded-md border border-red-500/70 text-red-100 bg-red-500/10 hover:bg-red-500/20"
+                        className="px-3 py-1 text-xs rounded-md border border-red-500/70 text-red-700 dark:text-red-100 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20"
                         title="Remover"
                       >
                         <div className="flex items-center gap-1"><Trash2 size={14} /> Remover</div>
