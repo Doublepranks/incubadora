@@ -4,6 +4,12 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
+/* Evita artefatos de background: força cor sólida e remove qualquer imagem */
+body {
+  background-color: #0b1220;
+  background-image: none !important;
+}
+
 /* Scrollbar styling (WebKit/Chromium) */
 * {
   scrollbar-width: thin;
