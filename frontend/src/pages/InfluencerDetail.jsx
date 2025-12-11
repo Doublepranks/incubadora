@@ -203,12 +203,13 @@ const InfluencerDetail = () => {
                     const totalPosts = profile.metrics.reduce((sum, m) => sum + m.postsCount, 0);
                     const postsCounts = profile.metrics.map((m) => m.postsCount);
                     const hasMetrics = profile.metrics.length > 0;
+                    const formatInt = (val) => Math.round(Number(val) || 0);
                     const chartOptions = {
                         chart: { type: 'area', toolbar: { show: false }, background: 'transparent' },
                         dataLabels: { enabled: false },
                         stroke: { curve: 'smooth' },
                         xaxis: { categories: historyDates, labels: { style: { colors: '#9ca3af' } } },
-                        yaxis: { labels: { style: { colors: '#9ca3af' } } },
+                        yaxis: { labels: { style: { colors: '#9ca3af' }, formatter: (val) => formatInt(val) } },
                         grid: { borderColor: '#374151', strokeDashArray: 4 },
                         theme: { mode: 'dark' },
                         colors: [profile.platform === 'instagram'
@@ -222,19 +223,20 @@ const InfluencerDetail = () => {
                                         : '#3b82f6'],
                     };
 
-                    const chartSeries = [{ name: 'Seguidores', data: historyFollowers }];
+                    const chartSeries = [{ name: 'Seguidores', data: historyFollowers.map((v) => formatInt(v)) }];
 
                     const postsChartOptions = {
                         chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
                         plotOptions: { bar: { borderRadius: 4 } },
                         dataLabels: { enabled: false },
                         xaxis: { categories: historyDates, labels: { style: { colors: '#9ca3af' } } },
-                        yaxis: { labels: { style: { colors: '#9ca3af' } } },
+                        yaxis: { labels: { style: { colors: '#9ca3af' }, formatter: (val) => formatInt(val) } },
                         grid: { borderColor: '#374151', strokeDashArray: 4 },
                         theme: { mode: 'dark' },
                         colors: ['#f59e0b'],
+                        tooltip: { y: { formatter: (val) => formatInt(val).toLocaleString() } },
                     };
-                    const postsChartSeries = [{ name: 'Posts', data: postsCounts }];
+                    const postsChartSeries = [{ name: 'Posts', data: postsCounts.map((v) => formatInt(v)) }];
 
                     const lastUpdate = profile.metrics[profile.metrics.length - 1]?.date;
 
