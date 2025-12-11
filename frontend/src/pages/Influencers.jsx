@@ -422,14 +422,14 @@ const Influencers = () => {
       ) : error ? (
         <div className="p-4 rounded-md bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400">{error}</div>
       ) : (
-        <div className="bg-gray-950 text-gray-100 rounded-xl border border-gray-800 overflow-hidden shadow-lg">
+        <div className="bg-white dark:bg-gray-950 text-gray-800 dark:text-gray-100 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-lg">
           {status && (
             <div className="px-4 py-3 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300 border-b border-green-200 dark:border-green-800">
               {status}
             </div>
           )}
-          <table className="w-full text-sm text-left text-gray-400">
-            <thead className="text-xs uppercase bg-gray-900/80 text-gray-500">
+          <table className="w-full text-sm text-left text-gray-600 dark:text-gray-400">
+            <thead className="text-xs uppercase bg-gray-100 dark:bg-gray-900/80 text-gray-600 dark:text-gray-500">
               <tr>
                 <th className="px-6 py-3">Nome</th>
                 <th className="px-6 py-3">UF</th>
@@ -443,8 +443,8 @@ const Influencers = () => {
             </thead>
             <tbody>
               {influencers.map((inf) => (
-                <tr key={inf.id} className="border-b border-gray-800/60 bg-gray-900/60 hover:bg-gray-900 transition-colors">
-                  <td className="px-6 py-4 text-gray-50">
+                <tr key={inf.id} className="border-b border-gray-200 dark:border-gray-800/60 bg-white dark:bg-gray-900/60 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
+                  <td className="px-6 py-4 text-gray-800 dark:text-gray-50">
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-full bg-gray-800 overflow-hidden flex items-center justify-center text-gray-400">
                         {inf.avatarUrl ? (
@@ -454,13 +454,13 @@ const Influencers = () => {
                         )}
                       </div>
                       <div>
-                        <div className="text-sm font-semibold text-gray-50">{inf.name}</div>
-                        <div className="text-xs text-gray-400">{inf.city || "-"} - {inf.state}</div>
+                        <div className="text-sm font-semibold text-gray-900 dark:text-gray-50">{inf.name}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">{inf.city || "-"} - {inf.state}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-200">{inf.state}</td>
-                  <td className="px-6 py-4 text-gray-200">{inf.city || "-"}</td>
+                  <td className="px-6 py-4 text-gray-800 dark:text-gray-200">{inf.state}</td>
+                  <td className="px-6 py-4 text-gray-800 dark:text-gray-200">{inf.city || "-"}</td>
                   <td className="px-6 py-4">
                     <div className="flex flex-wrap gap-2">
                       {inf.platforms?.map((p) => (
