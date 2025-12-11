@@ -81,10 +81,7 @@ export const AppProvider = ({ children }) => {
         }
     }, []);
 
-    useEffect(() => {
-        document.documentElement.classList.add('dark');
-        document.body.classList.add('dark');
-    }, []);
+
 
     useEffect(() => {
         fetchMe();
