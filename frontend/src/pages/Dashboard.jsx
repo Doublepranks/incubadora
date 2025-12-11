@@ -128,6 +128,19 @@ const Dashboard = () => {
 
     const maxStateCount = stateDistribution.reduce((max, s) => Math.max(max, s.count), 0) || 1;
 
+    const formatSigned = (value) => {
+        if (value > 0) return `+${value.toLocaleString()}`;
+        if (value < 0) return `-${Math.abs(value).toLocaleString()}`;
+        return '0';
+    };
+
+    const formatSignedPercent = (value, fractionDigits = 2) => {
+        const formatted = Math.abs(value).toFixed(fractionDigits);
+        if (value > 0) return `+${formatted}%`;
+        if (value < 0) return `-${formatted}%`;
+        return `0%`;
+    };
+
     if (error) {
         return (
             <div className="p-6 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg">
@@ -215,7 +228,7 @@ const Dashboard = () => {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm text-gray-500 dark:text-gray-400">Crescimento (Período)</p>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">+{overview.growthPercent.toFixed(2)}%</h3>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{formatSignedPercent(overview.growthPercent || 0, 2)}</h3>
                         </div>
                         <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full text-purple-600 dark:text-purple-400">
                             <TrendingUp size={24} />
