@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import Chart from 'react-apexcharts';
 import { Users, TrendingUp, Activity, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '../utils/dateUtils';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -82,7 +83,7 @@ const Dashboard = () => {
         chart: { type: 'area', toolbar: { show: false }, background: 'transparent' },
         dataLabels: { enabled: false },
         stroke: { curve: 'smooth' },
-        xaxis: { categories: timeline.map(t => t.date), ...baseAxisColors },
+        xaxis: { categories: timeline.map(t => formatDate(t.date)), ...baseAxisColors },
         yaxis: { ...baseAxisColors },
         grid: { borderColor: gridColor, strokeDashArray: 4 },
         colors: ['#3b82f6']
