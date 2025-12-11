@@ -80,9 +80,12 @@ const InfluencerDetail = () => {
             const start = metrics[0].followersCount;
             const end = metrics[metrics.length - 1].followersCount;
             totalFollowers += end;
-            totalPosts += metrics.reduce((sum, m) => sum + m.postsCount, 0);
+            // Para posts, ignorar X (Twitter)
+            if (p.platform !== 'x') {
+                totalPosts += metrics.reduce((sum, m) => sum + m.postsCount, 0);
+                metrics.forEach((m) => daysCounted.add(m.date.split('T')[0]));
+            }
             growthAbsolute += end - start;
-            metrics.forEach((m) => daysCounted.add(m.date.split('T')[0]));
         });
 
         const startFollowers = totalFollowers - growthAbsolute;
@@ -200,8 +203,8 @@ const InfluencerDetail = () => {
                 {influencer.socialProfiles.map((profile) => {
                     const historyDates = profile.metrics.map((m) => m.date.split('T')[0]);
                     const historyFollowers = profile.metrics.map((m) => m.followersCount);
-                    const totalPosts = profile.metrics.reduce((sum, m) => sum + m.postsCount, 0);
-                    const postsCounts = profile.metrics.map((m) => m.postsCount);
+                    const totalPosts = profile.platform === 'x' ? 0 : profile.metrics.reduce((sum, m) => sum + m.postsCount, 0);
+                    const postsCounts = profile.platform === 'x' ? [] : profile.metrics.map((m) => m.postsCount);
                     const hasMetrics = profile.metrics.length > 0;
                     const formatInt = (val) => Math.round(Number(val) || 0);
                     const chartOptions = {

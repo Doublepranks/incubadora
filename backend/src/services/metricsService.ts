@@ -285,7 +285,10 @@ async function aggregateInfluencers(filters: MetricsFilters, overrideDays?: numb
       const start = p.metrics[0].followersCount;
       const end = p.metrics[p.metrics.length - 1].followersCount;
       totalFollowers += end;
-      totalPosts += p.metrics.reduce((sum, m) => sum + m.postsCount, 0);
+      // Excluir X da contagem de posts
+      if (p.platform !== "x") {
+        totalPosts += p.metrics.reduce((sum, m) => sum + m.postsCount, 0);
+      }
       growthAbsolute += end - start;
     });
 
