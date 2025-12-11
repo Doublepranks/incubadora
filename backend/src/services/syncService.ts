@@ -97,10 +97,14 @@ export async function syncAllProfiles(filter?: SyncFilter) {
       }));
 
       if (data.length > 0) {
-        await prisma.metricDaily.createMany({
-          data,
-          skipDuplicates: true,
-        });
+        // upsert para evitar manter valores antigos (ex.: posts_count 0)
+        for (const row of data) {
+          await prisma.metricDaily.upsert({
+            where: { socialProfileId_date: { socialProfileId: row.socialProfileId, date: row.date } },
+            create: row,
+            update: { followersCount: row.followersCount, postsCount: row.postsCount },
+          });
+        }
       }
 
       await prisma.syncLog.update({
@@ -146,10 +150,13 @@ export async function syncAllProfiles(filter?: SyncFilter) {
             postsCount: m.postsCount,
           }));
 
-          await prisma.metricDaily.createMany({
-            data,
-            skipDuplicates: true,
-          });
+          for (const row of data) {
+            await prisma.metricDaily.upsert({
+              where: { socialProfileId_date: { socialProfileId: row.socialProfileId, date: row.date } },
+              create: row,
+              update: { followersCount: row.followersCount, postsCount: row.postsCount },
+            });
+          }
 
           await prisma.syncLog.update({
             where: { id: logId },
