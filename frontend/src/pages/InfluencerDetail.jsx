@@ -211,7 +211,7 @@ const InfluencerDetail = () => {
                     const hasMetrics = profile.metrics.length > 0;
                     const formatInt = (val) => Math.round(Number(val) || 0);
                     const chartOptions = {
-                        chart: { type: 'area', toolbar: { show: false }, background: 'transparent' },
+                        chart: { type: 'area', toolbar: { show: false }, background: '#111827' },
                         dataLabels: { enabled: false },
                         stroke: { curve: 'smooth' },
                         xaxis: { categories: historyDates, labels: { style: { colors: '#9ca3af' } } },
@@ -232,7 +232,7 @@ const InfluencerDetail = () => {
                     const chartSeries = [{ name: 'Seguidores', data: historyFollowers.map((v) => formatInt(v)) }];
 
                     const postsChartOptions = {
-                        chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
+                        chart: { type: 'bar', toolbar: { show: false }, background: '#111827' },
                         plotOptions: { bar: { borderRadius: 4 } },
                         dataLabels: { enabled: false },
                         xaxis: { categories: historyDates, labels: { style: { colors: '#9ca3af' } } },

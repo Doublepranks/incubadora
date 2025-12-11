@@ -74,7 +74,7 @@ const Dashboard = () => {
     }, [params]);
 
     const lineChartOptions = useMemo(() => ({
-        chart: { type: 'area', toolbar: { show: false }, background: 'transparent' },
+        chart: { type: 'area', toolbar: { show: false }, background: '#111827' },
         dataLabels: { enabled: false },
         stroke: { curve: 'smooth' },
         xaxis: { categories: timeline.map(t => t.date), labels: { style: { colors: '#9ca3af' } } },
@@ -85,7 +85,7 @@ const Dashboard = () => {
     }), [timeline]);
 
     const barChartOptions = useMemo(() => ({
-        chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
+        chart: { type: 'bar', toolbar: { show: false }, background: '#111827' },
         plotOptions: { bar: { borderRadius: 4, horizontal: true } },
         dataLabels: { enabled: false },
         xaxis: { categories: topGrowth.map(inf => inf.name), labels: { style: { colors: '#9ca3af' } } },
@@ -95,19 +95,20 @@ const Dashboard = () => {
     }), [topGrowth]);
 
     const platformChartOptions = useMemo(() => ({
-        chart: { type: 'donut', toolbar: { show: false }, background: 'transparent' },
+        chart: { type: 'donut', toolbar: { show: false }, background: '#111827' },
         labels: platformDistribution.map((p) => p.platform),
-        legend: { position: 'bottom' },
+        legend: { position: 'bottom', labels: { colors: '#9ca3af' } },
     }), [platformDistribution]);
 
     const platformChartSeries = platformDistribution.map((p) => p.count);
 
     const stateChartOptions = useMemo(() => ({
-        chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
+        chart: { type: 'bar', toolbar: { show: false }, background: '#111827' },
         plotOptions: { bar: { horizontal: true, borderRadius: 4 } },
-        xaxis: { categories: stateDistribution.map((s) => s.state) },
+        xaxis: { categories: stateDistribution.map((s) => s.state), labels: { style: { colors: '#9ca3af' } } },
+        yaxis: { labels: { style: { colors: '#9ca3af' } } },
         dataLabels: { enabled: false },
-        grid: { strokeDashArray: 4 },
+        grid: { borderColor: '#374151', strokeDashArray: 4 },
         colors: ['#6366f1'],
     }), [stateDistribution]);
 
