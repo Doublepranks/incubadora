@@ -5,7 +5,8 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-    const [darkMode] = useState(true);
+    const prefersDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const [darkMode, setDarkMode] = useState(prefersDark);
     const [selectedState, setSelectedState] = useState('');
     const [selectedMunicipality, setSelectedMunicipality] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -105,6 +106,16 @@ export const AppProvider = ({ children }) => {
             })
             .catch(err => console.error('Failed to load states', err));
     }, [authLoading, user]);
+
+    useEffect(() => {
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+            document.body.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.body.classList.remove('dark');
+        }
+    }, [darkMode]);
 
     useEffect(() => {
         if (authLoading || !user) return;
