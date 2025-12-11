@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const Dashboard = () => {
-    const { user, selectedState, selectedMunicipality, filters, setFilters } = useApp();
+    const { user, authLoading, selectedState, selectedMunicipality, filters, setFilters } = useApp();
     const navigate = useNavigate();
 
     const [overview, setOverview] = useState({ totalInfluencers: 0, totalFollowers: 0, totalPosts: 0, growthPercent: 0 });
@@ -29,6 +29,7 @@ const Dashboard = () => {
     }, [selectedState, selectedMunicipality, filters]);
 
     useEffect(() => {
+        if (authLoading || !user) return;
         const fetchData = async () => {
             setLoading(true);
             setError('');
@@ -71,7 +72,7 @@ const Dashboard = () => {
         };
 
         fetchData();
-    }, [params]);
+    }, [params, authLoading]);
 
     const baseAxisColors = { labels: { style: { colors: '#6b7280' } } };
     const gridColor = '#e5e7eb';
