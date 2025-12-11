@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import Chart from 'react-apexcharts';
-import { Loader2, Share2, Download, ListOrdered } from 'lucide-react';
+import { Loader2, Share2, Download, ListOrdered, ArrowUp, ArrowDown, Minus, MessageCircle, Copy } from 'lucide-react';
 import { toPng } from 'html-to-image';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
@@ -265,6 +265,7 @@ const Reports = () => {
 
 const ReportCard = ({ card }) => {
     const cardRef = useRef(null);
+    const [copyFeedback, setCopyFeedback] = useState('');
 
     const weeks = useMemo(() => {
         const unique = Array.from(new Set(card.weekly.map((w) => w.weekStart)));
@@ -317,26 +318,97 @@ const ReportCard = ({ card }) => {
         return badges;
     }, [card.weekly]);
 
-    const handleShare = async () => {
-        if (!cardRef.current) return;
-        try {
-            const blob = await toPng(cardRef.current, {
+    const generateImageBlob = async () => {
+        if (!cardRef.current) return null;
+        const generate = async (options = {}) => {
+            return await toPng(cardRef.current, {
                 pixelRatio: 2,
-                cacheBust: true,
-                useCORS: false,
+                cacheBust: false,
+                backgroundColor: null,
+                ...options,
                 filter: (node) => !node?.dataset?.htmlToImageIgnore
             });
-            const res = await fetch(blob);
-            const pngBlob = await res.blob();
-            const file = new File([pngBlob], `${card.name}.png`, { type: 'image/png' });
+        };
 
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({
-                    files: [file],
-                    title: card.name,
-                    text: 'Desempenho das últimas 4 semanas'
-                });
-            } else {
+        try {
+            // Tentativa 1: CORS habilitado
+            const blobUrl = await generate({ useCORS: true });
+            const res = await fetch(blobUrl);
+            return await res.blob();
+        } catch (err) {
+            console.warn("Retrying without avatar...", err);
+            // Fallback Logic
+            const avatarImg = cardRef.current.querySelector('img');
+            const avatarInitials = cardRef.current.querySelector('span.z-0');
+            let originalDisplay = '';
+
+            if (avatarImg) {
+                originalDisplay = avatarImg.style.display;
+                avatarImg.style.display = 'none';
+                avatarImg.dataset.htmlToImageIgnore = 'true';
+                if (avatarInitials) avatarInitials.classList.remove('hidden');
+            }
+
+            try {
+                const blobUrl = await generate({ useCORS: false });
+                const res = await fetch(blobUrl);
+                return await res.blob();
+            } finally {
+                if (avatarImg) {
+                    avatarImg.style.display = originalDisplay;
+                    delete avatarImg.dataset.htmlToImageIgnore;
+                    if (avatarInitials) avatarInitials.classList.add('hidden');
+                }
+            }
+        }
+        return null;
+    };
+
+    const handleShare = async () => {
+        const pngBlob = await generateImageBlob();
+        if (!pngBlob) return;
+
+        const file = new File([pngBlob], `${card.name}.png`, { type: 'image/png' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+                files: [file],
+                title: card.name,
+                text: 'Desempenho das últimas 4 semanas'
+            });
+        } else {
+            // Fallback download if generic share isn't supported
+            const url = URL.createObjectURL(pngBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${card.name}.png`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    };
+
+    const handleWhatsApp = async () => {
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            // Mobile: Tenta share nativo direto (melhor experiência)
+            await handleShare();
+        } else {
+            // Desktop: Apenas copia para o Clipboard (UX solicitada)
+            const pngBlob = await generateImageBlob();
+            if (!pngBlob) return;
+
+            try {
+                await navigator.clipboard.write([
+                    new ClipboardItem({ 'image/png': pngBlob })
+                ]);
+
+                setCopyFeedback('Copiado! Cole no WhatsApp (Ctrl+V)');
+                setTimeout(() => setCopyFeedback(''), 4000);
+
+            } catch (err) {
+                console.error('Clipboard failed', err);
+                alert('Não foi possível copiar a imagem automaticamente. O download será feito.');
                 const url = URL.createObjectURL(pngBlob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -344,45 +416,97 @@ const ReportCard = ({ card }) => {
                 a.click();
                 URL.revokeObjectURL(url);
             }
-        } catch (err) {
-            console.error('Erro ao compartilhar', err);
         }
     };
 
     return (
-        <div ref={cardRef} className="aspect-square bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4 flex flex-col">
-            <div className="flex items-center justify-between mb-3">
-                <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">{card.name}</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{card.city} - {card.state}</p>
+        <div className="flex flex-col">
+            {/* Capture Area: arredondado em cima, reto embaixo */}
+            <div
+                ref={cardRef}
+                className="aspect-square bg-white dark:bg-gray-900 rounded-t-xl rounded-b-none border border-gray-200 dark:border-gray-800 p-4 flex flex-col"
+            >
+                <div className="flex items-center justify-between mb-3">
+                    <div>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">{card.name}</h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{card.city} - {card.state}</p>
+                    </div>
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-gray-200 to-gray-400 text-gray-800 flex items-center justify-center text-sm font-semibold border border-gray-100 dark:border-gray-700">
+                        {card.avatarUrl ? (
+                            <img
+                                src={card.avatarUrl}
+                                crossOrigin="anonymous"
+                                alt={card.name}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.style.display = 'none';
+                                    e.target.nextSibling.classList.remove('hidden');
+                                }}
+                            />
+                        ) : null}
+                        <span className={`${card.avatarUrl ? 'hidden' : ''} z-0`}>{card.name?.[0] ?? '?'}</span>
+                    </div>
                 </div>
-                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-gray-200 to-gray-400 text-gray-800 flex items-center justify-center text-sm font-semibold">
-                    <span className="z-0">{card.name?.[0] ?? '?'}</span>
+
+                <div className="flex-1">
+                    <Chart options={chartOptions} series={series} type="line" height={220} />
+                </div>
+
+                <div className="mt-3 space-y-1">
+                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Total seguidores: {card.totalFollowers?.toLocaleString()}</p>
+                    <div className="flex flex-wrap gap-2">
+                        {variationBadges.map((badge) => {
+                            let colorClass = "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400";
+                            let Icon = Minus;
+                            let prefix = "";
+
+                            if (badge.pct > 0) {
+                                colorClass = "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800/50";
+                                Icon = ArrowUp;
+                                prefix = "+";
+                            } else if (badge.pct < 0) {
+                                colorClass = "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800/50";
+                                Icon = ArrowDown;
+                            }
+
+                            return (
+                                <span
+                                    key={badge.platform}
+                                    className={`px-2.5 py-1 text-xs font-semibold rounded-full flex items-center gap-1.5 ${colorClass}`}
+                                >
+                                    <span className="uppercase tracking-wide text-[10px] opacity-75">{badge.platform}</span>
+                                    <span className="flex items-center gap-0.5">
+                                        <Icon size={12} strokeWidth={3} />
+                                        {prefix}{badge.pct.toFixed(1)}%
+                                    </span>
+                                </span>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
 
-            <div className="flex-1">
-                <Chart options={chartOptions} series={series} type="line" height={220} />
-            </div>
-
-            <div className="mt-3 space-y-1">
-                <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Total seguidores: {card.totalFollowers?.toLocaleString()}</p>
-                <div className="flex flex-wrap gap-2">
-                    {variationBadges.map((badge) => (
-                        <span key={badge.platform} className="px-2 py-1 text-xs rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200">
-                            {badge.platform}: {badge.pct.toFixed(1)}%
-                        </span>
-                    ))}
-                </div>
-            </div>
-
-            <div className="mt-4 flex justify-end">
+            {/* Footer Area with Buttons (Excluded from capture) */}
+            <div className="bg-gray-50 dark:bg-gray-800/50 border-t-0 border border-gray-200 dark:border-gray-800 rounded-b-xl p-3 flex items-center justify-end gap-2 relative">
+                {copyFeedback && (
+                    <span className="absolute left-3 text-xs text-green-600 font-medium animate-pulse">
+                        {copyFeedback}
+                    </span>
+                )}
+                <button
+                    onClick={handleWhatsApp}
+                    className="flex items-center justify-center p-2 rounded-md bg-green-600 text-white hover:bg-green-700 w-10 h-10 transition-colors"
+                    title="Copiar imagem para WhatsApp"
+                >
+                    <Copy size={18} />
+                </button>
                 <button
                     onClick={handleShare}
-                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700"
+                    className="flex items-center justify-center p-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 w-10 h-10 transition-colors"
+                    title="Compartilhar"
                 >
-                    <Share2 size={16} className="mr-2" />
-                    Compartilhar
+                    <Share2 size={18} />
                 </button>
             </div>
         </div>

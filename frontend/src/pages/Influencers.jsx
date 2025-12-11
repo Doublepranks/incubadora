@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Activity, Edit2, FileText, Loader2, Plus, Trash2, X, Users } from "lucide-react";
 import { useApp } from "../context/AppContext";
+import HistoryModal from "../components/HistoryModal";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
@@ -36,7 +37,7 @@ const emptyForm = {
   state: "",
   city: "",
   avatarUrl: "",
-  notes: "",
+  // notes: "", // Legacy
   profiles: {
     instagram: { handle: "", url: "", externalId: "" },
     x: { handle: "", url: "", externalId: "" },
@@ -79,8 +80,14 @@ const Influencers = () => {
     followersCount: "",
     postsCount: "",
   });
+  const [metricNotification, setMetricNotification] = useState({
+    show: false,
+    type: "",
+    message: "",
+    platform: ""
+  });
 
-  const [noteModal, setNoteModal] = useState({ open: false, note: "", name: "" });
+  const [historyModal, setHistoryModal] = useState({ open: false, influencer: null });
 
   const allowedStates = useMemo(() => {
     if (user?.role === "admin_global") return UF_LIST;
@@ -172,7 +179,7 @@ const Influencers = () => {
         state: detail.state || "",
         city: detail.city || "",
         avatarUrl: detail.avatarUrl || "",
-        notes: detail.notes || "",
+        // notes: detail.notes || "",
         profiles: { ...emptyForm.profiles },
       };
       detail.socialProfiles?.forEach((p) => {
@@ -230,7 +237,7 @@ const Influencers = () => {
         state: form.state,
         city: form.city,
         avatarUrl: form.avatarUrl || null,
-        notes: form.notes || null,
+        // notes: form.notes || null,
         profiles,
       };
 
@@ -285,12 +292,8 @@ const Influencers = () => {
     }
   };
 
-  const openNote = (row) => {
-    setNoteModal({
-      open: true,
-      note: row.notes || "Nenhuma nota registrada.",
-      name: row.name,
-    });
+  const openHistory = (row) => {
+    setHistoryModal({ open: true, influencer: row });
   };
 
   const openMetric = (row) => {
@@ -307,7 +310,7 @@ const Influencers = () => {
     e.preventDefault();
     if (!metricModal.influencer || !metricModal.platform) return;
     setSaving(true);
-    setError("");
+    setMetricNotification({ show: false, type: "", message: "", platform: "" });
     try {
       const payload = {
         influencerId: metricModal.influencer.id,
@@ -326,12 +329,43 @@ const Influencers = () => {
         const text = await res.text();
         throw new Error(text || "Erro ao registrar métrica");
       }
-      setStatus("Métrica adicionada.");
-      setMetricModal({ open: false, influencer: null, platform: "" });
+
+      // Show success notification
+      const platformLabel = PLATFORMS.find(p => p.value === metricModal.platform)?.label || metricModal.platform;
+      setMetricNotification({
+        show: true,
+        type: "success",
+        message: "Métrica salva com sucesso!",
+        platform: platformLabel
+      });
+
+      // Reset form but keep influencer and modal open
+      setMetricForm({
+        date: new Date().toISOString().split("T")[0],
+        followersCount: "",
+        postsCount: "",
+      });
+
+      // Auto-hide notification after 3 seconds
+      setTimeout(() => {
+        setMetricNotification({ show: false, type: "", message: "", platform: "" });
+      }, 3000);
+
       await loadInfluencers();
     } catch (err) {
       console.error(err);
-      setError(err.message || "Erro ao registrar métrica.");
+      const platformLabel = PLATFORMS.find(p => p.value === metricModal.platform)?.label || metricModal.platform;
+      setMetricNotification({
+        show: true,
+        type: "error",
+        message: err.message || "Erro ao registrar métrica.",
+        platform: platformLabel
+      });
+
+      // Auto-hide error notification after 3 seconds
+      setTimeout(() => {
+        setMetricNotification({ show: false, type: "", message: "", platform: "" });
+      }, 3000);
     } finally {
       setSaving(false);
     }
@@ -490,11 +524,11 @@ const Influencers = () => {
                         <div className="flex items-center gap-1"><Edit2 size={14} /> Editar</div>
                       </button>
                       <button
-                        onClick={() => openNote(inf)}
+                        onClick={() => openHistory(inf)}
                         className="px-3 py-1 text-xs rounded-md border border-gray-500/60 text-gray-700 dark:text-gray-100 bg-gray-50 dark:bg-gray-500/10 hover:bg-gray-100 dark:hover:bg-gray-500/20"
-                        title="Notas"
+                        title="Histórico de Notas"
                       >
-                        <div className="flex items-center gap-1"><FileText size={14} /> Nota</div>
+                        <div className="flex items-center gap-1"><FileText size={14} /> Notas</div>
                       </button>
                       <button
                         onClick={() => openMetric(inf)}
@@ -597,15 +631,7 @@ const Influencers = () => {
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs text-gray-500">Notas</label>
-                <textarea
-                  value={form.notes}
-                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-200"
-                  rows={3}
-                />
-              </div>
+              {/* Notes field removed in favor of History System */}
 
               <div className="border border-gray-200 dark:border-gray-800 rounded-lg">
                 <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-800 text-sm font-semibold text-gray-700 dark:text-gray-200">
@@ -689,6 +715,12 @@ const Influencers = () => {
         </div>
       )}
 
+      <HistoryModal
+        open={historyModal.open}
+        onClose={() => setHistoryModal({ open: false, influencer: null })}
+        influencer={historyModal.influencer}
+      />
+
       {metricModal.open && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
           <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl w-full max-w-md border border-gray-200 dark:border-gray-800">
@@ -699,6 +731,17 @@ const Influencers = () => {
               </button>
             </div>
             <form onSubmit={submitMetric} className="p-4 space-y-4">
+              {metricNotification.show && (
+                <div className={`px-4 py-3 rounded-lg border ${metricNotification.type === 'success'
+                    ? 'bg-green-50 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-200'
+                    : 'bg-red-50 border-red-200 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-200'
+                  }`}>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">{metricNotification.platform}:</span>
+                    <span>{metricNotification.message}</span>
+                  </div>
+                </div>
+              )}
               <div className="text-sm text-gray-700 dark:text-gray-200 font-medium">
                 {metricModal.influencer?.name}
               </div>
@@ -774,21 +817,7 @@ const Influencers = () => {
         </div>
       )}
 
-      {noteModal.open && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg w-full max-w-md border border-gray-200 dark:border-gray-800">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800">
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Notas - {noteModal.name}</h3>
-              <button onClick={() => setNoteModal({ open: false, note: "", name: "" })} className="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200">
-                <X size={18} />
-              </button>
-            </div>
-            <div className="p-4 text-sm text-gray-700 dark:text-gray-200 whitespace-pre-wrap">
-              {noteModal.note || "Nenhuma nota registrada."}
-            </div>
-          </div>
-        </div>
-      )}
+
     </div>
   );
 };

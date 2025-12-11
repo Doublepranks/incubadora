@@ -1,8 +1,7 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { Search, LayoutDashboard, Users, Shield, LogOut } from 'lucide-react';
-import { useMemo } from 'react';
+import { Search, LayoutDashboard, Users, Shield, LogOut, FileBarChart } from 'lucide-react';
 
 const Sidebar = () => {
     const {
@@ -17,7 +16,18 @@ const Sidebar = () => {
     } = useApp();
 
     const navigate = useNavigate();
+    const location = useLocation();
     const canAccessInfluencers = ['admin_global', 'admin_regional', 'admin_estadual'].includes(user?.role);
+
+    const isActive = (path) => {
+        if (path === '/' && location.pathname === '/') return true;
+        if (path !== '/' && location.pathname.startsWith(path)) return true;
+        return false;
+    };
+
+    const linkBaseClass = "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors";
+    const activeClass = "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400";
+    const inactiveClass = "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800";
 
     return (
         <div className="w-64 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col fixed left-0 top-0 transition-colors duration-300">
@@ -46,22 +56,34 @@ const Sidebar = () => {
                 <div>
                     <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Menu</h2>
                     <div className="space-y-1">
-                        <Link to="/" className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
+                        <Link
+                            to="/"
+                            className={`${linkBaseClass} ${isActive('/') ? activeClass : inactiveClass}`}
+                        >
                             <LayoutDashboard size={18} className="mr-3" />
                             Dashboard Geral
                         </Link>
                         {canAccessInfluencers && (
-                            <Link to="/influencers" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                            <Link
+                                to="/influencers"
+                                className={`${linkBaseClass} ${isActive('/influencers') ? activeClass : inactiveClass}`}
+                            >
                                 <Users size={18} className="mr-3" />
                                 Influenciadores
                             </Link>
                         )}
-                        <Link to="/reports" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
-                            <LayoutDashboard size={18} className="mr-3" />
+                        <Link
+                            to="/reports"
+                            className={`${linkBaseClass} ${isActive('/reports') ? activeClass : inactiveClass}`}
+                        >
+                            <FileBarChart size={18} className="mr-3" />
                             Relatórios
                         </Link>
                         {user?.role === 'admin_global' && (
-                            <Link to="/users" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                            <Link
+                                to="/users"
+                                className={`${linkBaseClass} ${isActive('/users') ? activeClass : inactiveClass}`}
+                            >
                                 <Shield size={18} className="mr-3" />
                                 Usuários
                             </Link>

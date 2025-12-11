@@ -29,6 +29,7 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
   regions      UserRegion[]
+  createdNotes InfluencerNote[]
   @@index([role])
 }
 
@@ -42,6 +43,21 @@ model Influencer {
   socialProfiles  SocialProfile[]
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @updatedAt @map("updated_at")
+  notesHistory    InfluencerNote[]
+}
+
+model InfluencerNote {
+  id           Int        @id @default(autoincrement())
+  content      String
+  createdAt    DateTime   @default(now()) @map("created_at")
+  
+  influencer   Influencer @relation(fields: [influencerId], references: [id], onDelete: Cascade)
+  influencerId Int        @map("influencer_id")
+  
+  user         User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId       Int?       @map("user_id")
+
+  @@index([influencerId])
 }
 
 model SocialProfile {
