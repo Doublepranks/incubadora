@@ -22,6 +22,19 @@ const platformColors = {
     tiktok: 'text-purple-500 bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400',
 };
 
+const formatSigned = (value) => {
+    if (value > 0) return `+${value.toLocaleString()}`;
+    if (value < 0) return `-${Math.abs(value).toLocaleString()}`;
+    return '0';
+};
+
+const formatSignedPercent = (value, fractionDigits = 2) => {
+    const formatted = Math.abs(value).toFixed(fractionDigits);
+    if (value > 0) return `+${formatted}%`;
+    if (value < 0) return `-${formatted}%`;
+    return `0%`;
+};
+
 const InfluencerDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -167,11 +180,11 @@ const InfluencerDetail = () => {
                 </div>
                 <div className="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
                     <p className="text-xs text-gray-500 dark:text-gray-400">Crescimento</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">+{kpis.growthAbsolute.toLocaleString()}</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatSigned(kpis.growthAbsolute)}</p>
                 </div>
                 <div className="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
                     <p className="text-xs text-gray-500 dark:text-gray-400">Crescimento %</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">+{kpis.growthPercent.toFixed(2)}%</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatSignedPercent(kpis.growthPercent, 2)}</p>
                 </div>
                 <div className="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
                     <p className="text-xs text-gray-500 dark:text-gray-400">Posts no período</p>
