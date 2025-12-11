@@ -196,6 +196,9 @@ const InfluencerDetail = () => {
                 <div className="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
                     <p className="text-xs text-gray-500 dark:text-gray-400">Média de posts/dia</p>
                     <p className="text-2xl font-bold text-gray-900 dark:text-white">{kpis.avgPosts.toFixed(1)}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        (X não entra no cálculo da média por ser rede de microposts)
+                    </p>
                 </div>
             </div>
 
@@ -203,8 +206,8 @@ const InfluencerDetail = () => {
                 {influencer.socialProfiles.map((profile) => {
                     const historyDates = profile.metrics.map((m) => m.date.split('T')[0]);
                     const historyFollowers = profile.metrics.map((m) => m.followersCount);
-                    const totalPosts = profile.platform === 'x' ? 0 : profile.metrics.reduce((sum, m) => sum + m.postsCount, 0);
-                    const postsCounts = profile.platform === 'x' ? [] : profile.metrics.map((m) => m.postsCount);
+                    const totalPosts = profile.metrics.reduce((sum, m) => sum + m.postsCount, 0);
+                    const postsCounts = profile.metrics.map((m) => m.postsCount);
                     const hasMetrics = profile.metrics.length > 0;
                     const formatInt = (val) => Math.round(Number(val) || 0);
                     const chartOptions = {

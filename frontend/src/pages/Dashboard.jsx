@@ -241,6 +241,7 @@ const Dashboard = () => {
                         <div>
                             <p className="text-sm text-gray-500 dark:text-gray-400">Posts no Período</p>
                             <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{overview.totalPosts}</h3>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">(X não entra na soma de posts do período)</p>
                         </div>
                         <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-full text-orange-600 dark:text-orange-400">
                             <Activity size={24} />
