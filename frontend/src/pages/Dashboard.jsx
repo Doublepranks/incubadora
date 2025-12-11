@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const Dashboard = () => {
-    const { selectedState, selectedMunicipality, filters, setFilters } = useApp();
+    const { user, selectedState, selectedMunicipality, filters, setFilters } = useApp();
     const navigate = useNavigate();
 
     const [overview, setOverview] = useState({ totalInfluencers: 0, totalFollowers: 0, totalPosts: 0, growthPercent: 0 });
@@ -271,24 +271,26 @@ const Dashboard = () => {
                     <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Distribuição por Plataforma</h3>
                     <Chart options={platformChartOptions} series={platformChartSeries} type="donut" height={300} />
                 </div>
-                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Distribuição por UF</h3>
-                    <Chart options={stateChartOptions} series={stateChartSeries} type="bar" height={300} />
-                    <div className="mt-4 space-y-2">
-                        {stateDistribution.map((s) => (
-                            <div key={s.state} className="flex items-center space-x-3">
-                                <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 w-10">{s.state}</span>
-                                <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-blue-500"
-                                        style={{ width: `${(s.count / maxStateCount) * 100}%` }}
-                                    />
+                {user?.role !== 'admin_estadual' && (
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
+                        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Distribuição por UF</h3>
+                        <Chart options={stateChartOptions} series={stateChartSeries} type="bar" height={300} />
+                        <div className="mt-4 space-y-2">
+                            {stateDistribution.map((s) => (
+                                <div key={s.state} className="flex items-center space-x-3">
+                                    <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 w-10">{s.state}</span>
+                                    <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                        <div
+                                            className="h-full bg-blue-500"
+                                            style={{ width: `${(s.count / maxStateCount) * 100}%` }}
+                                        />
+                                    </div>
+                                    <span className="text-xs text-gray-500 dark:text-gray-400 w-10 text-right">{s.count}</span>
                                 </div>
-                                <span className="text-xs text-gray-500 dark:text-gray-400 w-10 text-right">{s.count}</span>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
 
             {/* Table */}
