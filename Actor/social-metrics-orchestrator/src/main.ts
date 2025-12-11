@@ -674,6 +674,40 @@ async function scrapeYoutubeProfiles(profiles: ProfileInput[], date: string): Pr
                         const videoMatch = strData.match(/"videoCountText":\s*{[^}]*"simpleText":\s*"([^"]+)"/);
                         if (videoMatch) {
                             posts = parseYoutubeCount(videoMatch[1]);
+                        } else {
+                            const videoTextMatch = strData.match(/(\d+(?:\.\d+)?[KMB]?)\s+videos/i);
+                            if (videoTextMatch) {
+                                posts = parseYoutubeCount(videoTextMatch[1]);
+                            }
+                        }
+
+                        // Method 1b: contentMetadataViewModel (New Layout 2024/2025)
+                        if (followers === null || posts === null) {
+                            try {
+                                const header = (initialData as any)?.header?.pageHeaderRenderer?.content?.pageHeaderViewModel;
+                                if (header?.metadata?.contentMetadataViewModel?.metadataRows) {
+                                    const rows = header.metadata.contentMetadataViewModel.metadataRows;
+                                    for (const row of rows) {
+                                        if (row.metadataParts) {
+                                            for (const part of row.metadataParts) {
+                                                const text = part?.text?.content;
+                                                if (text) {
+                                                    // Check for subscribers
+                                                    if (followers === null && text.match(/subscribers|inscritos/i)) {
+                                                        followers = parseYoutubeCount(text);
+                                                    }
+                                                    // Check for videos
+                                                    if (posts === null && text.match(/videos|vídeos/i)) {
+                                                        posts = parseYoutubeCount(text);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (e) {
+                                log.warning(`Failed to parse pageHeaderViewModel: ${e}`);
+                            }
                         }
                     }
                 } catch (e) {
