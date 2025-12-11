@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .env
+docker-compose.yml
 
 # Local build outputs per package
 /frontend/dist
