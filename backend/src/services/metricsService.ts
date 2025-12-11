@@ -50,8 +50,9 @@ export async function getTopGrowth(filters: MetricsFilters, limit = 10) {
 }
 
 export async function getPlatformDistribution(filters: MetricsFilters = {}) {
-  const profiles = await prisma.socialProfile.groupBy({
-    by: ["platform"],
+  // Instead of grouping by platform (which counts profiles), we fetch all profiles
+  // and sum their latest follower count.
+  const profiles = await prisma.socialProfile.findMany({
     where: {
       platform: filters.platform || undefined,
       influencer: {
@@ -59,9 +60,28 @@ export async function getPlatformDistribution(filters: MetricsFilters = {}) {
         city: filters.city || undefined,
       },
     },
-    _count: { platform: true },
+    select: {
+      platform: true,
+      metrics: {
+        orderBy: { date: "desc" },
+        take: 1,
+        select: { followersCount: true },
+      },
+    },
   });
-  return profiles.map((p) => ({ platform: p.platform, count: p._count.platform }));
+
+  const aggregation = new Map<string, number>();
+
+  profiles.forEach((p) => {
+    const currentTotal = aggregation.get(p.platform) || 0;
+    const latestFollowers = p.metrics[0]?.followersCount || 0;
+    aggregation.set(p.platform, currentTotal + latestFollowers);
+  });
+
+  return Array.from(aggregation.entries()).map(([platform, count]) => ({
+    platform,
+    count,
+  }));
 }
 
 export async function getStateDistribution(filters: MetricsFilters) {
