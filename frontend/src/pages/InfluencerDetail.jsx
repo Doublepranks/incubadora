@@ -211,13 +211,12 @@ const InfluencerDetail = () => {
                     const hasMetrics = profile.metrics.length > 0;
                     const formatInt = (val) => Math.round(Number(val) || 0);
                     const chartOptions = {
-                        chart: { type: 'area', toolbar: { show: false }, background: '#111827' },
+                        chart: { type: 'area', toolbar: { show: false }, background: 'transparent' },
                         dataLabels: { enabled: false },
                         stroke: { curve: 'smooth' },
-                        xaxis: { categories: historyDates, labels: { style: { colors: '#9ca3af' } } },
-                        yaxis: { labels: { style: { colors: '#9ca3af' }, formatter: (val) => formatInt(val) } },
-                        grid: { borderColor: '#374151', strokeDashArray: 4 },
-                        theme: { mode: 'dark' },
+                        xaxis: { categories: historyDates, labels: { style: { colors: '#6b7280' } } },
+                        yaxis: { labels: { style: { colors: '#6b7280' }, formatter: (val) => formatInt(val) } },
+                        grid: { borderColor: '#e5e7eb', strokeDashArray: 4 },
                         colors: [profile.platform === 'instagram'
                             ? '#db2777'
                             : profile.platform === 'youtube'
@@ -232,13 +231,12 @@ const InfluencerDetail = () => {
                     const chartSeries = [{ name: 'Seguidores', data: historyFollowers.map((v) => formatInt(v)) }];
 
                     const postsChartOptions = {
-                        chart: { type: 'bar', toolbar: { show: false }, background: '#111827' },
+                        chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
                         plotOptions: { bar: { borderRadius: 4 } },
                         dataLabels: { enabled: false },
-                        xaxis: { categories: historyDates, labels: { style: { colors: '#9ca3af' } } },
-                        yaxis: { labels: { style: { colors: '#9ca3af' }, formatter: (val) => formatInt(val) } },
-                        grid: { borderColor: '#374151', strokeDashArray: 4 },
-                        theme: { mode: 'dark' },
+                        xaxis: { categories: historyDates, labels: { style: { colors: '#6b7280' } } },
+                        yaxis: { labels: { style: { colors: '#6b7280' }, formatter: (val) => formatInt(val) } },
+                        grid: { borderColor: '#e5e7eb', strokeDashArray: 4 },
                         colors: ['#f59e0b'],
                         tooltip: { y: { formatter: (val) => formatInt(val).toLocaleString() } },
                     };
