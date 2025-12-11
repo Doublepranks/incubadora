@@ -73,42 +73,44 @@ const Dashboard = () => {
         fetchData();
     }, [params]);
 
+    const baseAxisColors = { labels: { style: { colors: '#6b7280' } } };
+    const gridColor = '#e5e7eb';
+
     const lineChartOptions = useMemo(() => ({
-        chart: { type: 'area', toolbar: { show: false }, background: '#111827' },
+        chart: { type: 'area', toolbar: { show: false }, background: 'transparent' },
         dataLabels: { enabled: false },
         stroke: { curve: 'smooth' },
-        xaxis: { categories: timeline.map(t => t.date), labels: { style: { colors: '#9ca3af' } } },
-        yaxis: { labels: { style: { colors: '#9ca3af' } } },
-        grid: { borderColor: '#374151', strokeDashArray: 4 },
-        theme: { mode: 'dark' },
+        xaxis: { categories: timeline.map(t => t.date), ...baseAxisColors },
+        yaxis: { ...baseAxisColors },
+        grid: { borderColor: gridColor, strokeDashArray: 4 },
         colors: ['#3b82f6']
     }), [timeline]);
 
     const barChartOptions = useMemo(() => ({
-        chart: { type: 'bar', toolbar: { show: false }, background: '#111827' },
+        chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
         plotOptions: { bar: { borderRadius: 4, horizontal: true } },
         dataLabels: { enabled: false },
-        xaxis: { categories: topGrowth.map(inf => inf.name), labels: { style: { colors: '#9ca3af' } } },
-        yaxis: { labels: { style: { colors: '#9ca3af' } } },
-        grid: { borderColor: '#374151', strokeDashArray: 4 },
+        xaxis: { categories: topGrowth.map(inf => inf.name), ...baseAxisColors },
+        yaxis: { ...baseAxisColors },
+        grid: { borderColor: gridColor, strokeDashArray: 4 },
         colors: ['#10b981']
     }), [topGrowth]);
 
     const platformChartOptions = useMemo(() => ({
-        chart: { type: 'donut', toolbar: { show: false }, background: '#111827' },
+        chart: { type: 'donut', toolbar: { show: false }, background: 'transparent' },
         labels: platformDistribution.map((p) => p.platform),
-        legend: { position: 'bottom', labels: { colors: '#9ca3af' } },
+        legend: { position: 'bottom' },
     }), [platformDistribution]);
 
     const platformChartSeries = platformDistribution.map((p) => p.count);
 
     const stateChartOptions = useMemo(() => ({
-        chart: { type: 'bar', toolbar: { show: false }, background: '#111827' },
+        chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
         plotOptions: { bar: { horizontal: true, borderRadius: 4 } },
-        xaxis: { categories: stateDistribution.map((s) => s.state), labels: { style: { colors: '#9ca3af' } } },
-        yaxis: { labels: { style: { colors: '#9ca3af' } } },
+        xaxis: { categories: stateDistribution.map((s) => s.state), ...baseAxisColors },
+        yaxis: { ...baseAxisColors },
         dataLabels: { enabled: false },
-        grid: { borderColor: '#374151', strokeDashArray: 4 },
+        grid: { borderColor: gridColor, strokeDashArray: 4 },
         colors: ['#6366f1'],
     }), [stateDistribution]);
 
