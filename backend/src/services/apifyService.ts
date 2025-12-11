@@ -87,6 +87,9 @@ export async function fetchProfilesBatch(profiles: SocialProfile[], days = 7): P
     }
 
     const metricsFromActor: MetricPoint[] = [];
+    const followersCountValue = normalizeNumber(item.followers_count);
+    const postsCountValue = normalizeNumber(item.posts_count);
+
     if (item.metrics && item.metrics.length > 0) {
       item.metrics.forEach((m) => {
         metricsFromActor.push({
@@ -98,8 +101,8 @@ export async function fetchProfilesBatch(profiles: SocialProfile[], days = 7): P
     } else if (item.followers_count !== undefined || item.posts_count !== undefined) {
       metricsFromActor.push({
         date: item.date ? new Date(item.date) : new Date(),
-        followersCount: item.followers_count ?? 0,
-        postsCount: item.posts_count ?? 0,
+        followersCount: followersCountValue ?? 0,
+        postsCount: postsCountValue ?? 0,
       });
     }
 
@@ -233,4 +236,13 @@ async function runActorAndGetItems(actorId: string, token: string, profiles: Soc
 
   const data = await itemsRes.json();
   return Array.isArray(data) ? (data as ApifyOutputItem[]) : [];
+}
+
+function normalizeNumber(value: unknown): number | null {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") {
+    const parsed = Number(value.replace(/\./g, "").replace(",", "."));
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
 }
