@@ -7,7 +7,8 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 const ROLE_MAP = {
     admin_global: { label: "Admin Global", bg: "bg-purple-100 dark:bg-purple-900/30", text: "text-purple-700 dark:text-purple-300", border: "border-purple-200 dark:border-purple-800/50" },
-    admin_regional: { label: "Admin Regional", bg: "bg-indigo-100 dark:bg-indigo-900/30", text: "text-indigo-700 dark:text-indigo-300", border: "border-indigo-200 dark:border-indigo-800/50" },
+    system_admin: { label: "System Admin", bg: "bg-indigo-100 dark:bg-indigo-900/30", text: "text-indigo-700 dark:text-indigo-300", border: "border-indigo-200 dark:border-indigo-800/50" },
+    admin_regional: { label: "Admin Regional", bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-blue-700 dark:text-blue-300", border: "border-blue-200 dark:border-blue-800/50" },
     admin_estadual: { label: "Admin Estadual", bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-blue-700 dark:text-blue-300", border: "border-blue-200 dark:border-blue-800/50" },
 };
 

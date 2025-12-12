@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/prisma";
 
-type Role = "admin_global" | "admin_regional" | "admin_estadual";
+type Role = "admin_global" | "admin_regional" | "admin_estadual" | "system_admin";
 
 type AuthorizeOptions = {
   roles?: Role[];
@@ -22,8 +22,8 @@ export function authorize(options: AuthorizeOptions = {}) {
       return res.status(403).json({ error: true, message: "Access denied" });
     }
 
-    // admin_global bypass
-    if (role === "admin_global" || scopeUF === "all") {
+    // admin_global / system_admin bypass
+    if (role === "admin_global" || role === "system_admin" || scopeUF === "all") {
       return next();
     }
 

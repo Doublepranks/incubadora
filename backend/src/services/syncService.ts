@@ -190,3 +190,104 @@ export async function syncAllProfiles(filter?: SyncFilter) {
 
   return { success, failed, total: profiles.length, retryable };
 }
+
+export async function retryFailedSyncs(options?: { sinceDays?: number; limit?: number; profileIds?: number[] }) {
+  const sinceDays = options?.sinceDays ?? 7;
+  const limit = options?.limit ?? 100;
+  const since = new Date(Date.now() - sinceDays * 24 * 60 * 60 * 1000);
+
+  const where: any = {
+    status: SyncStatus.error,
+    socialProfileId: { not: null },
+  };
+  if (options?.profileIds?.length) {
+    where.socialProfileId = { in: options.profileIds };
+  } else {
+    where.startedAt = { gte: since };
+  }
+
+  const failedProfiles = await prisma.syncLog.findMany({
+    where,
+    select: { socialProfileId: true },
+    distinct: ["socialProfileId"],
+    take: limit,
+  });
+
+  const profileIds = failedProfiles.map((f) => f.socialProfileId).filter((id): id is number => Boolean(id));
+  if (profileIds.length === 0) {
+    return { success: 0, failed: 0, total: 0 };
+  }
+
+  const profiles = await prisma.socialProfile.findMany({
+    where: { id: { in: profileIds } },
+  });
+
+  const { metrics, errors } = await fetchRetryBatch(profiles);
+  const errorMap = new Map<number, RetryCandidate[]>();
+  errors.forEach((e) => {
+    const list = errorMap.get(e.profileId) ?? [];
+    list.push(e);
+    errorMap.set(e.profileId, list);
+  });
+
+  let success = 0;
+  let failed = 0;
+
+  for (const profile of profiles) {
+    const log = await prisma.syncLog.create({
+      data: { socialProfileId: profile.id, startedAt: new Date(), status: SyncStatus.success },
+    });
+
+    try {
+      const profileErrors = errorMap.get(profile.id) ?? [];
+      const profileMetrics = metrics.get(profile.id) ?? [];
+
+      if (profileErrors.length > 0 || profileMetrics.length === 0) {
+        const message =
+          profileErrors.length > 0
+            ? profileErrors.map((e) => `[retry:${e.errorCode ?? "error"}] ${e.errorMessage ?? "unknown"}`).join(" | ")
+            : "Retry returned no data for profile";
+
+        await prisma.syncLog.update({
+          where: { id: log.id },
+          data: { finishedAt: new Date(), status: SyncStatus.error, errorMessage: message },
+        });
+        failed += 1;
+        continue;
+      }
+
+      const data = profileMetrics.map((m) => ({
+        socialProfileId: profile.id,
+        date: m.date,
+        followersCount: m.followersCount,
+        postsCount: m.postsCount,
+      }));
+
+      for (const row of data) {
+        await prisma.metricDaily.upsert({
+          where: { socialProfileId_date: { socialProfileId: row.socialProfileId, date: row.date } },
+          create: row,
+          update: { followersCount: row.followersCount, postsCount: row.postsCount },
+        });
+      }
+
+      await prisma.syncLog.update({
+        where: { id: log.id },
+        data: { finishedAt: new Date(), status: SyncStatus.success, errorMessage: null },
+      });
+      success += 1;
+    } catch (err) {
+      failed += 1;
+      await prisma.syncLog.update({
+        where: { id: log.id },
+        data: {
+          finishedAt: new Date(),
+          status: SyncStatus.error,
+          errorMessage: err instanceof Error ? err.message : "Unknown retry error",
+        },
+      });
+    }
+  }
+
+  return { success, failed, total: profiles.length };
+}

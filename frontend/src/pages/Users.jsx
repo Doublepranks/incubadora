@@ -117,6 +117,11 @@ const Users = () => {
   };
 
   const handleDelete = async (id) => {
+    const target = users.find((u) => u.id === id);
+    if (target?.role === "system_admin" && user?.role !== "system_admin") {
+      alert("Apenas system_admin pode remover outro system_admin.");
+      return;
+    }
     if (!window.confirm("Remover este usuário?")) return;
     try {
       const res = await fetch(`${API_URL}/users/${id}`, {
@@ -132,7 +137,7 @@ const Users = () => {
     }
   };
 
-  if (user?.role !== "admin_global") {
+  if (!["admin_global", "system_admin"].includes(user?.role)) {
     return (
       <div className="p-6">
         <div className="text-red-500">Acesso restrito aos administradores globais.</div>
@@ -207,19 +212,25 @@ const Users = () => {
                   <td className="px-4 py-3">{(u.regions || []).join(", ") || "—"}</td>
                   <td className="px-4 py-3 flex items-center gap-2">
                     <button
-                      onClick={() => openEdit(u)}
-                      className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-blue-600"
+                      onClick={() => {
+                        if (u.role === "system_admin" && user?.role !== "system_admin") return;
+                        openEdit(u);
+                      }}
+                      disabled={u.role === "system_admin" && user?.role !== "system_admin"}
+                      className="p-1 rounded text-blue-600 disabled:text-gray-400 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-800 disabled:hover:bg-transparent"
                       title="Editar"
                     >
                       <Edit2 size={16} />
                     </button>
-                    <button
-                      onClick={() => handleDelete(u.id)}
-                      className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-red-600"
-                      title="Remover"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    {(u.role !== "system_admin" || user?.role === "system_admin") && (
+                      <button
+                        onClick={() => handleDelete(u.id)}
+                        className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-red-600"
+                        title="Remover"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -296,7 +307,7 @@ const Users = () => {
                   <option value="admin_estadual">Admin estadual</option>
                 </select>
               </div>
-              {form.role !== "admin_global" && (
+              {form.role !== "admin_global" && form.role !== "system_admin" && (
                 <div className="space-y-1">
                   <label className="text-xs text-gray-500">UFs autorizadas</label>
                   <div className="flex flex-wrap gap-2 max-h-32 overflow-auto border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-900">
@@ -345,7 +356,10 @@ const Users = () => {
                 </button>
                 <button
                   type="submit"
-                  disabled={submitting || (form.role !== "admin_global" && form.regions.length === 0)}
+                  disabled={
+                    submitting ||
+                    ((form.role !== "admin_global" && form.role !== "system_admin") && form.regions.length === 0)
+                  }
                   className="px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
                 >
                   {submitting ? <Loader2 className="animate-spin inline mr-2" size={16} /> : null}

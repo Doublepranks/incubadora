@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { Search, LayoutDashboard, Users, Shield, LogOut, FileBarChart } from 'lucide-react';
+import { Search, LayoutDashboard, Users, Shield, LogOut, FileBarChart, ServerCog } from 'lucide-react';
 
 const Sidebar = () => {
     const {
@@ -17,7 +17,7 @@ const Sidebar = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const canAccessInfluencers = ['admin_global', 'admin_regional', 'admin_estadual'].includes(user?.role);
+    const canAccessInfluencers = ['admin_global', 'system_admin', 'admin_regional', 'admin_estadual'].includes(user?.role);
 
     const isActive = (path) => {
         if (path === '/' && location.pathname === '/') return true;
@@ -79,17 +79,34 @@ const Sidebar = () => {
                             <FileBarChart size={18} className="mr-3" />
                             Relatórios
                         </Link>
-                        {user?.role === 'admin_global' && (
-                            <Link
-                                to="/users"
-                                className={`${linkBaseClass} ${isActive('/users') ? activeClass : inactiveClass}`}
-                            >
-                                <Shield size={18} className="mr-3" />
-                                Usuários
-                            </Link>
-                        )}
                     </div>
                 </div>
+
+                {(user?.role === 'system_admin' || user?.role === 'admin_global') && (
+                    <div>
+                        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Administração</h2>
+                        <div className="space-y-1">
+                            {user?.role === 'system_admin' && (
+                                <Link
+                                    to="/sysadmin"
+                                    className={`${linkBaseClass} ${isActive('/sysadmin') ? activeClass : inactiveClass}`}
+                                >
+                                    <ServerCog size={18} className="mr-3" />
+                                    Sysadmin
+                                </Link>
+                            )}
+                            {(user?.role === 'admin_global' || user?.role === 'system_admin') && (
+                                <Link
+                                    to="/users"
+                                    className={`${linkBaseClass} ${isActive('/users') ? activeClass : inactiveClass}`}
+                                >
+                                    <Shield size={18} className="mr-3" />
+                                    Usuários
+                                </Link>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 <div>
                     <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Explorar</h2>

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../context/AppContext';
-import Chart from 'react-apexcharts';
+import LazyChart from '../components/LazyChart';
 import { Users, TrendingUp, Activity, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '../utils/dateUtils';
@@ -261,13 +261,13 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
                     <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Evolução de Seguidores</h3>
-                    <Chart options={lineChartOptions} series={followersSeries} type="area" height={300} />
+                    <LazyChart options={lineChartOptions} series={followersSeries} type="area" height={300} />
                 </div>
 
                 <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
                     <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Top Crescimento</h3>
                     {topGrowth.length > 0 ? (
-                        <Chart options={barChartOptions} series={barChartSeries} type="bar" height={300} />
+                        <LazyChart options={barChartOptions} series={barChartSeries} type="bar" height={300} />
                     ) : (
                         <div className="flex items-center justify-center h-[300px] text-gray-500 dark:text-gray-400">
                             Sem dados de crescimento no período selecionado
@@ -279,12 +279,12 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
                     <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Distribuição por Plataforma</h3>
-                    <Chart options={platformChartOptions} series={platformChartSeries} type="donut" height={300} />
+                    <LazyChart options={platformChartOptions} series={platformChartSeries} type="donut" height={300} />
                 </div>
                 {user?.role !== 'admin_estadual' && (
                     <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Distribuição por UF</h3>
-                        <Chart options={stateChartOptions} series={stateChartSeries} type="bar" height={300} />
+                        <LazyChart options={stateChartOptions} series={stateChartSeries} type="bar" height={300} />
                         <div className="mt-4 space-y-2">
                             {stateDistribution.map((s) => (
                                 <div key={s.state} className="flex items-center space-x-3">
@@ -347,5 +347,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
-

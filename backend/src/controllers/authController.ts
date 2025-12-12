@@ -3,6 +3,8 @@ import { comparePassword, generateToken, mapUserToAuth } from "../services/authS
 import { findUserByEmail, findUserById } from "../repositories/userRepository";
 import { env } from "../config/env";
 import { SESSION_COOKIE } from "../middlewares/requireAuth";
+import { logActivity, logSystem } from "../services/logService";
+import { LogLevel } from "@prisma/client";
 
 const cookieOptions = {
   httpOnly: true,
@@ -23,11 +25,21 @@ export async function login(req: Request, res: Response) {
 
   const user = await findUserByEmail(email);
   if (!user) {
+    await logSystem({
+      level: LogLevel.warn,
+      message: "Tentativa de login falhou: usuário não encontrado",
+      meta: { email, ip: req.ip },
+    });
     return res.status(401).json({ error: true, message: "Invalid credentials" });
   }
 
   const passwordOk = await comparePassword(password, user.passwordHash);
   if (!passwordOk) {
+    await logSystem({
+      level: LogLevel.warn,
+      message: "Tentativa de login falhou: senha inválida",
+      meta: { email, ip: req.ip, userId: user.id },
+    });
     return res.status(401).json({ error: true, message: "Invalid credentials" });
   }
 
@@ -39,6 +51,11 @@ export async function login(req: Request, res: Response) {
   });
 
   res.cookie(SESSION_COOKIE, token, cookieOptions);
+  await logActivity({
+    userId: user.id,
+    message: "Login bem-sucedido",
+    meta: { ip: req.ip, userAgent: req.headers["user-agent"] },
+  });
   return res.json({
     error: false,
     user: mapUserToAuth({ ...user, regions: user.regions?.map((r) => r.uf) }),

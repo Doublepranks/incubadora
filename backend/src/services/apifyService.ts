@@ -42,7 +42,7 @@ type FetchBatchResult = {
   errors: RetryCandidate[];
 };
 
-export async function fetchProfilesBatch(profiles: SocialProfile[], days = 7): Promise<FetchBatchResult> {
+export async function fetchProfilesBatch(profiles: SocialProfile[], _days = 7): Promise<FetchBatchResult> {
   const actorId = process.env.APIFY_ACTOR_ID;
   const token = process.env.APIFY_TOKEN;
 

@@ -131,7 +131,7 @@ export async function generateExcel(filters: ReportFilters) {
 }
 
 type RankRow = {
-  id: string;
+  id: number;
   name: string;
   state: string;
   city: string | null;

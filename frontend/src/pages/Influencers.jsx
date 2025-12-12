@@ -90,12 +90,12 @@ const Influencers = () => {
   const [historyModal, setHistoryModal] = useState({ open: false, influencer: null });
 
   const allowedStates = useMemo(() => {
-    if (user?.role === "admin_global") return UF_LIST;
+    if (["admin_global", "system_admin"].includes(user?.role)) return UF_LIST;
     if (user?.regions?.length) return user.regions;
     return states;
   }, [user, states]);
 
-  const canManage = ["admin_global", "admin_regional", "admin_estadual"].includes(user?.role);
+  const canManage = ["admin_global", "system_admin", "admin_regional", "admin_estadual"].includes(user?.role);
 
   const loadInfluencers = async () => {
     setLoading(true);

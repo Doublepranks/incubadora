@@ -23,4 +23,16 @@ export default defineConfig({
       'frontend',
     ],
   },
+  build: {
+    chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom', 'react-router-dom'],
+          charts: ['apexcharts', 'react-apexcharts'],
+          icons: ['lucide-react'],
+        },
+      },
+    },
+  },
 })

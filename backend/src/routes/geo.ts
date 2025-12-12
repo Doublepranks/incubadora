@@ -6,5 +6,5 @@ import { requireAuth } from "../middlewares/requireAuth";
 export const geoRouter = Router();
 
 geoRouter.use(requireAuth);
-geoRouter.get("/states", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), getStates);
-geoRouter.get("/cities", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), getCities);
+geoRouter.get("/states", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), getStates);
+geoRouter.get("/cities", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), getCities);

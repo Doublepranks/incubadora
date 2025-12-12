@@ -7,6 +7,7 @@ import { metricsRouter } from "./metrics";
 import { reportsRouter } from "./reports";
 import { syncRouter } from "./sync";
 import { usersRouter } from "./users";
+import { adminRouter } from "./admin";
 
 export const routes = Router();
 
@@ -18,3 +19,4 @@ routes.use("/metrics", metricsRouter);
 routes.use("/reports", reportsRouter);
 routes.use("/sync", syncRouter);
 routes.use("/users", usersRouter);
+routes.use("/admin", adminRouter);

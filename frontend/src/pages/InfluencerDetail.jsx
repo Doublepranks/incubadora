@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Chart from 'react-apexcharts';
+import LazyChart from '../components/LazyChart';
 import { ArrowLeft, Instagram, Youtube, Video, Twitter, Loader2, User as UserIcon } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { formatDate } from '../utils/dateUtils';
@@ -258,8 +258,8 @@ const InfluencerDetail = () => {
                             </div>
                             {hasMetrics ? (
                                 <>
-                                    <Chart options={chartOptions} series={chartSeries} type="area" height={200} />
-                                    <Chart options={postsChartOptions} series={postsChartSeries} type="bar" height={200} />
+                                    <LazyChart options={chartOptions} series={chartSeries} type="area" height={200} />
+                                    <LazyChart options={postsChartOptions} series={postsChartSeries} type="bar" height={200} />
                                 </>
                             ) : (
                                 <div className="py-8 text-center text-sm text-gray-500 dark:text-gray-400 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg">

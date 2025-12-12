@@ -149,9 +149,9 @@ export async function deleteInfluencerHandler(req: Request, res: Response) {
   }
 
   const metricsTotal = existing.socialProfiles.reduce((sum, p) => sum + (p._count?.metrics ?? 0), 0);
-  if (metricsTotal > 0 && role !== "admin_global") {
+  if (metricsTotal > 0 && role !== "admin_global" && role !== "system_admin") {
     const admins = await prisma.user.findMany({
-      where: { role: "admin_global" },
+      where: { role: { in: ["admin_global", "system_admin"] } },
       select: { email: true, name: true },
     });
     const emails = admins.map((a) => `${a.name} <${a.email}>`).join(", ");

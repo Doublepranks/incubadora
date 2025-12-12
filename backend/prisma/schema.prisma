@@ -20,6 +20,18 @@ enum SyncStatus {
   error
 }
 
+enum LogType {
+  system
+  activity
+}
+
+enum LogLevel {
+  info
+  warn
+  error
+  debug
+}
+
 model User {
   id           Int      @id @default(autoincrement())
   name         String
@@ -30,6 +42,7 @@ model User {
   updatedAt    DateTime @updatedAt @map("updated_at")
   regions      UserRegion[]
   createdNotes InfluencerNote[]
+  logs         LogEntry[]
   @@index([role])
 }
 
@@ -109,5 +122,20 @@ model UserRegion {
   uf     String @db.Char(2)
 
   @@unique([userId, uf])
+  @@index([userId])
+}
+
+model LogEntry {
+  id        Int       @id @default(autoincrement())
+  type      LogType
+  level     LogLevel  @default(info)
+  message   String
+  meta      Json?
+  userId    Int?      @map("user_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([type, createdAt])
   @@index([userId])
 }

@@ -5,8 +5,8 @@ import { requireAuth } from "../middlewares/requireAuth";
 
 export const usersRouter = Router();
 
-// Admin global only
-usersRouter.use(requireAuth, authorize({ roles: ["admin_global"], scopeUF: "all" }));
+// Admin global ou system_admin
+usersRouter.use(requireAuth, authorize({ roles: ["admin_global", "system_admin"], scopeUF: "all" }));
 
 usersRouter.get("/", listUsers);
 usersRouter.post("/", createUser);

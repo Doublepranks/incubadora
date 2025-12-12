@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
 import { hashPassword } from "../services/authService";
 
-const ROLES = ["admin_global", "admin_regional", "admin_estadual"];
+const ROLES = ["admin_global", "system_admin", "admin_regional", "admin_estadual"];
 
 export async function listUsers(_req: Request, res: Response) {
   const users = await prisma.user.findMany({

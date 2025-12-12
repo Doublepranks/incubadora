@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp } from '../context/AppContext';
-import Chart from 'react-apexcharts';
+import LazyChart from '../components/LazyChart';
 import { Loader2, Share2, Download, ListOrdered, ArrowUp, ArrowDown, Minus, MessageCircle, Copy } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { formatDate } from '../utils/dateUtils';
@@ -451,7 +451,7 @@ const ReportCard = ({ card }) => {
                 </div>
 
                 <div className="flex-1">
-                    <Chart options={chartOptions} series={series} type="line" height={220} />
+                    <LazyChart options={chartOptions} series={series} type="line" height={220} />
                 </div>
 
                 <div className="mt-3 space-y-1">

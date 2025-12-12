@@ -5,4 +5,5 @@ import { requireAuth } from "../middlewares/requireAuth";
 
 export const syncRouter = Router();
 
-syncRouter.post("/run", requireAuth, authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), runSync);
+// Execução manual de sync somente por system_admin
+syncRouter.post("/run", requireAuth, authorize({ roles: ["system_admin"] }), runSync);

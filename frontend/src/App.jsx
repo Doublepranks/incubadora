@@ -1,51 +1,83 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 import Layout from './components/Layout';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import InfluencerDetail from './pages/InfluencerDetail';
-import Reports from './pages/Reports';
-import Users from './pages/Users';
-import Influencers from './pages/Influencers';
 
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, authLoading } = useApp();
+const Login = lazy(() => import('./pages/Login'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const InfluencerDetail = lazy(() => import('./pages/InfluencerDetail'));
+const Reports = lazy(() => import('./pages/Reports'));
+const Users = lazy(() => import('./pages/Users'));
+const Influencers = lazy(() => import('./pages/Influencers'));
+const SysAdmin = lazy(() => import('./pages/SysAdmin'));
+
+const ProtectedRoute = ({ children, requireAdmin = false }) => {
+  const { isAuthenticated, authLoading, user } = useApp();
   if (authLoading) return null;
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
+  if (requireAdmin && user?.role !== 'system_admin') {
+    return <Navigate to="/" replace />;
+  }
   return <Layout>{children}</Layout>;
 };
+
+const SuspenseWrapper = ({ children }) => (
+  <Suspense fallback={<div className="p-6 text-sm text-gray-600 dark:text-gray-300">Carregando...</div>}>
+    {children}
+  </Suspense>
+);
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={
+        <SuspenseWrapper>
+          <Login />
+        </SuspenseWrapper>
+      } />
       <Route path="/" element={
-        <ProtectedRoute>
-          <Dashboard />
-        </ProtectedRoute>
+        <SuspenseWrapper>
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        </SuspenseWrapper>
       } />
       <Route path="/influencer/:id" element={
-        <ProtectedRoute>
-          <InfluencerDetail />
-        </ProtectedRoute>
+        <SuspenseWrapper>
+          <ProtectedRoute>
+            <InfluencerDetail />
+          </ProtectedRoute>
+        </SuspenseWrapper>
       } />
       <Route path="/reports" element={
-        <ProtectedRoute>
-          <Reports />
-        </ProtectedRoute>
+        <SuspenseWrapper>
+          <ProtectedRoute>
+            <Reports />
+          </ProtectedRoute>
+        </SuspenseWrapper>
       } />
       <Route path="/influencers" element={
-        <ProtectedRoute>
-          <Influencers />
-        </ProtectedRoute>
+        <SuspenseWrapper>
+          <ProtectedRoute>
+            <Influencers />
+          </ProtectedRoute>
+        </SuspenseWrapper>
+      } />
+      <Route path="/sysadmin" element={
+        <SuspenseWrapper>
+          <ProtectedRoute requireAdmin>
+            <SysAdmin />
+          </ProtectedRoute>
+        </SuspenseWrapper>
       } />
       <Route path="/users" element={
-        <ProtectedRoute>
-          <Users />
-        </ProtectedRoute>
+        <SuspenseWrapper>
+          <ProtectedRoute>
+            <Users />
+          </ProtectedRoute>
+        </SuspenseWrapper>
       } />
     </Routes>
   );

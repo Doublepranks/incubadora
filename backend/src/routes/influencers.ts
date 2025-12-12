@@ -13,12 +13,12 @@ import { requireAuth } from "../middlewares/requireAuth";
 export const influencersRouter = Router();
 
 influencersRouter.use(requireAuth);
-influencersRouter.get("/", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), getInfluencers);
-influencersRouter.post("/", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), createInfluencerHandler);
-influencersRouter.get("/:id", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), getInfluencer);
-influencersRouter.put("/:id", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), updateInfluencerHandler);
-influencersRouter.delete("/:id", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), deleteInfluencerHandler);
+influencersRouter.get("/", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), getInfluencers);
+influencersRouter.post("/", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), createInfluencerHandler);
+influencersRouter.get("/:id", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), getInfluencer);
+influencersRouter.put("/:id", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), updateInfluencerHandler);
+influencersRouter.delete("/:id", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), deleteInfluencerHandler);
 
 // Notes History
-influencersRouter.get("/:id/notes", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), getNotesHandler);
-influencersRouter.post("/:id/notes", authorize({ roles: ["admin_global", "admin_regional", "admin_estadual"] }), addNoteHandler);
+influencersRouter.get("/:id/notes", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), getNotesHandler);
+influencersRouter.post("/:id/notes", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), addNoteHandler);
