@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LazyChart from '../components/LazyChart';
-import { ArrowLeft, Instagram, Youtube, Video, Twitter, Loader2, User as UserIcon } from 'lucide-react';
+import { ArrowLeft, Instagram, Youtube, Video, Twitter, Loader2, User as UserIcon, Calendar, TrendingUp } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { formatDate } from '../utils/dateUtils';
 
@@ -16,11 +16,11 @@ const platformIcons = {
 };
 
 const platformColors = {
-    instagram: 'text-pink-600 bg-pink-100 dark:bg-pink-900/30 dark:text-pink-400',
-    youtube: 'text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400',
-    kwai: 'text-orange-500 bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400',
-    x: 'text-blue-400 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400',
-    tiktok: 'text-purple-500 bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400',
+    instagram: 'bg-[#E1306C]/10 text-[#E1306C] border-[#E1306C]/20 hover:bg-[#E1306C]/20',
+    youtube: 'bg-[#FF0000]/10 text-[#FF0000] border-[#FF0000]/20 hover:bg-[#FF0000]/20',
+    kwai: 'bg-[#FF8F00]/10 text-[#FF8F00] border-[#FF8F00]/20 hover:bg-[#FF8F00]/20',
+    x: 'bg-white/5 text-white border-white/10 hover:bg-white/10',
+    tiktok: 'bg-[#00F2EA]/10 text-[#00F2EA] border-[#00F2EA]/20 hover:bg-[#00F2EA]/20',
 };
 
 const formatSigned = (value) => {
@@ -96,111 +96,107 @@ const InfluencerDetail = () => {
         return { totalFollowers, totalPosts, growthAbsolute, growthPercent, avgPosts };
     }, [influencer]);
 
+    const baseAxisColors = { labels: { style: { colors: '#a1a1aa', fontFamily: 'Inter' } }, axisBorder: { show: false }, axisTicks: { show: false } };
+    const gridColor = '#27272a';
+
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
-                <Loader2 className="animate-spin mr-2" size={20} /> Carregando...
+            <div className="flex items-center justify-center h-[calc(100vh-100px)] text-zinc-500">
+                <Loader2 className="animate-spin mr-2" size={24} /> Carregando perfil...
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="p-6 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg">
+            <div className="p-6 text-red-400 bg-red-900/20 rounded-xl border border-red-900/50">
                 {error}
             </div>
         );
     }
 
     if (!influencer) {
-        return <div className="text-center text-gray-500 dark:text-gray-400 mt-10">Influenciador não encontrado.</div>;
+        return <div className="text-center text-zinc-500 mt-10">Influenciador não encontrado.</div>;
     }
 
     const headerAvatar = influencer.avatarUrl ? (
-        <img src={influencer.avatarUrl} alt={influencer.name} className="h-16 w-16 rounded-full object-cover" />
+        <img src={influencer.avatarUrl} alt={influencer.name} className="h-20 w-20 rounded-full object-cover ring-4 ring-white/5 bg-zinc-800" />
     ) : (
-        <div className="h-16 w-16 rounded-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center text-gray-500">
-            <UserIcon size={28} />
+        <div className="h-20 w-20 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-500 ring-4 ring-white/5">
+            <UserIcon size={32} />
         </div>
     );
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8 animate-fade-in">
             <button
                 onClick={() => navigate('/')}
-                className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                className="flex items-center text-zinc-400 hover:text-white transition-colors text-sm font-medium hover:bg-white/5 py-2 px-3 rounded-lg w-fit"
             >
-                <ArrowLeft size={20} className="mr-2" />
+                <ArrowLeft size={18} className="mr-2" />
                 Voltar para Dashboard
             </button>
 
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-                <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
+            <div className="glass-panel p-8 rounded-2xl relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent pointer-events-none" />
+                <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-6">
                         {headerAvatar}
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{influencer.name}</h1>
-                            <p className="text-gray-500 dark:text-gray-400">{influencer.city} - {influencer.state}</p>
+                            <h1 className="text-3xl font-bold text-white tracking-tight">{influencer.name}</h1>
+                            <p className="text-zinc-400 text-lg">{influencer.city} - {influencer.state}</p>
                         </div>
                     </div>
-                    <div className="flex space-x-3">
-                        {influencer.socialProfiles.map((profile) => (
-                            <a
-                                key={profile.id}
-                                href={profile.url || '#'}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`p-3 rounded-full ${platformColors[profile.platform] || 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'} hover:opacity-80 transition-opacity`}
-                                title={profile.handle}
+                    <div className="flex flex-col items-end gap-4">
+                        <div className="flex flex-wrap justify-end gap-2">
+                            {influencer.socialProfiles.map((profile) => (
+                                <a
+                                    key={profile.id}
+                                    href={profile.url || '#'}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`p-3 rounded-xl border transition-all ${platformColors[profile.platform] || 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}
+                                    title={profile.handle}
+                                >
+                                    {platformIcons[profile.platform] || null}
+                                </a>
+                            ))}
+                        </div>
+                        <div className="flex bg-zinc-900/50 p-1 rounded-lg border border-white/5">
+                            {[7, 30, 90].map(days => (
+                                <button
+                                    key={days}
+                                    onClick={() => setFilters((prev) => ({ ...prev, periodDays: days }))}
+                                    className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${filters.periodDays === days ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-400 hover:text-white'}`}
+                                >
+                                    {days}d
+                                </button>
+                            ))}
+                            <button
+                                onClick={() => setFilters((prev) => ({ ...prev, periodDays: 'all' }))}
+                                className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${filters.periodDays === 'all' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-400 hover:text-white'}`}
                             >
-                                {platformIcons[profile.platform] || null}
-                            </a>
-                        ))}
+                                Tudo
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div className="mt-4 flex flex-wrap gap-3 text-sm text-gray-600 dark:text-gray-400">
-                    {[7, 30, 90].map(days => (
-                        <button
-                            key={days}
-                            onClick={() => setFilters((prev) => ({ ...prev, periodDays: days }))}
-                            className={`px-3 py-1 rounded-full border ${filters.periodDays === days ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'}`}
-                        >
-                            {days} dias
-                        </button>
-                    ))}
-                    <button
-                        onClick={() => setFilters((prev) => ({ ...prev, periodDays: 'all' }))}
-                        className={`px-3 py-1 rounded-full border ${filters.periodDays === 'all' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'}`}
-                    >
-                        Todo período
-                    </button>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                <div className="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Seguidores totais</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{kpis.totalFollowers.toLocaleString()}</p>
-                </div>
-                <div className="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Crescimento</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatSigned(kpis.growthAbsolute)}</p>
-                </div>
-                <div className="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Crescimento %</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatSignedPercent(kpis.growthPercent, 2)}</p>
-                </div>
-                <div className="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Posts no período</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{kpis.totalPosts}</p>
-                </div>
-                <div className="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800">
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Média de posts/dia</p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{kpis.avgPosts.toFixed(1)}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        (X não entra no cálculo da média por ser rede de microposts)
-                    </p>
-                </div>
+                {[
+                    { label: 'Seguidores Totais', value: kpis.totalFollowers.toLocaleString(), sub: null },
+                    { label: 'Crescimento', value: formatSigned(kpis.growthAbsolute), sub: null },
+                    { label: 'Crescimento %', value: formatSignedPercent(kpis.growthPercent, 2), sub: null },
+                    { label: 'Posts no Período', value: kpis.totalPosts, sub: null },
+                    { label: 'Média Posts/Dia', value: kpis.avgPosts.toFixed(1), sub: '(Exceto X)' },
+                ].map((stat, idx) => (
+                    <div key={idx} className="glass-card p-5 rounded-xl">
+                        <p className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">{stat.label}</p>
+                        <p className="text-2xl font-bold text-white tracking-tight">{stat.value}</p>
+                        {stat.sub && <p className="text-[10px] text-zinc-600 mt-1">{stat.sub}</p>}
+                    </div>
+                ))}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -211,70 +207,83 @@ const InfluencerDetail = () => {
                     const postsCounts = profile.metrics.map((m) => m.postsCount);
                     const hasMetrics = profile.metrics.length > 0;
                     const formatInt = (val) => Math.round(Number(val) || 0);
+
+                    const chartColor = profile.platform === 'instagram' ? '#db2777' :
+                        profile.platform === 'youtube' ? '#dc2626' :
+                            profile.platform === 'kwai' ? '#f97316' :
+                                profile.platform === 'tiktok' ? '#8b5cf6' : '#3b82f6';
+
                     const chartOptions = {
-                        chart: { type: 'area', toolbar: { show: false }, background: 'transparent' },
+                        chart: { type: 'area', toolbar: { show: false }, background: 'transparent', zoom: { enabled: false } },
                         dataLabels: { enabled: false },
-                        stroke: { curve: 'smooth' },
-                        xaxis: { categories: historyDates, labels: { style: { colors: '#6b7280' } } },
-                        yaxis: { labels: { style: { colors: '#6b7280' }, formatter: (val) => formatInt(val) } },
-                        grid: { borderColor: '#e5e7eb', strokeDashArray: 4 },
-                        colors: [profile.platform === 'instagram'
-                            ? '#db2777'
-                            : profile.platform === 'youtube'
-                                ? '#dc2626'
-                                : profile.platform === 'kwai'
-                                    ? '#f97316'
-                                    : profile.platform === 'tiktok'
-                                        ? '#8b5cf6'
-                                        : '#3b82f6'],
+                        stroke: { curve: 'smooth', width: 2 },
+                        xaxis: { categories: historyDates, ...baseAxisColors, tooltip: { enabled: false } },
+                        yaxis: { ...baseAxisColors, labels: { style: { colors: '#a1a1aa' }, formatter: (val) => formatInt(val) } },
+                        grid: { borderColor: gridColor, strokeDashArray: 0, yaxis: { lines: { show: true } } },
+                        colors: [chartColor],
+                        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.05, stops: [0, 90, 100] } },
+                        theme: { mode: 'dark' }
                     };
 
                     const chartSeries = [{ name: 'Seguidores', data: historyFollowers.map((v) => formatInt(v)) }];
 
                     const postsChartOptions = {
                         chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
-                        plotOptions: { bar: { borderRadius: 4 } },
+                        plotOptions: { bar: { borderRadius: 2, columnWidth: '60%' } },
                         dataLabels: { enabled: false },
-                        xaxis: { categories: historyDates, labels: { style: { colors: '#6b7280' } } },
-                        yaxis: { labels: { style: { colors: '#6b7280' }, formatter: (val) => formatInt(val) } },
-                        grid: { borderColor: '#e5e7eb', strokeDashArray: 4 },
-                        colors: ['#f59e0b'],
-                        tooltip: { y: { formatter: (val) => formatInt(val).toLocaleString() } },
+                        xaxis: { categories: historyDates, ...baseAxisColors, labels: { show: false } },
+                        yaxis: { ...baseAxisColors, labels: { style: { colors: '#a1a1aa' }, formatter: (val) => formatInt(val) } },
+                        grid: { show: false },
+                        colors: ['#6D28D9'], // violet-700
+                        tooltip: { theme: 'dark', y: { formatter: (val) => formatInt(val).toLocaleString() } },
                     };
                     const postsChartSeries = [{ name: 'Posts', data: postsCounts.map((v) => formatInt(v)) }];
 
                     const lastUpdate = profile.metrics[profile.metrics.length - 1]?.date;
 
                     return (
-                        <div key={profile.id} className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 space-y-4">
+                        <div key={profile.id} className="glass-panel p-6 rounded-2xl space-y-6">
                             <div className="flex items-center justify-between">
-                                <div>
-                                    <h3 className="text-lg font-semibold text-gray-800 dark:text-white capitalize">{profile.platform}</h3>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">Total posts no período: {totalPosts}</p>
+                                <div className="flex items-center gap-3">
+                                    <div className={`p-2 rounded-lg ${platformColors[profile.platform]} bg-transparent border-0`}>
+                                        {platformIcons[profile.platform]}
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-white capitalize">{profile.platform}</h3>
+                                        <p className="text-xs text-zinc-500">@{profile.handle}</p>
+                                    </div>
                                 </div>
-                                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                    {historyFollowers.length > 0 ? historyFollowers[historyFollowers.length - 1].toLocaleString() : 0} seguidores
-                                </span>
+                                <div className="text-right">
+                                    <div className="text-2xl font-bold text-white">{historyFollowers.length > 0 ? historyFollowers[historyFollowers.length - 1].toLocaleString() : 0}</div>
+                                    <div className="text-xs text-zinc-500">Seguidores Atuais</div>
+                                </div>
                             </div>
+
                             {hasMetrics ? (
-                                <>
-                                    <LazyChart options={chartOptions} series={chartSeries} type="area" height={200} />
-                                    <LazyChart options={postsChartOptions} series={postsChartSeries} type="bar" height={200} />
-                                </>
+                                <div className="space-y-6">
+                                    <div className="h-[200px]">
+                                        <LazyChart options={chartOptions} series={chartSeries} type="area" height="100%" />
+                                    </div>
+                                    <div className="bg-zinc-900/50 rounded-xl p-4 border border-white/5">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h4 className="text-sm font-semibold text-zinc-300">Atividade de Posts</h4>
+                                            <span className="text-xs text-zinc-500">{totalPosts} posts no período</span>
+                                        </div>
+                                        <LazyChart options={postsChartOptions} series={postsChartSeries} type="bar" height={100} />
+                                    </div>
+                                </div>
                             ) : (
-                                <div className="py-8 text-center text-sm text-gray-500 dark:text-gray-400 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
+                                <div className="py-12 text-center text-sm text-zinc-500 border border-dashed border-zinc-800 rounded-xl bg-zinc-900/30">
                                     Sem métricas no período selecionado.
                                 </div>
                             )}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">Posts no período</p>
-                                    <p className="text-lg font-bold text-gray-900 dark:text-white">{totalPosts}</p>
+
+                            <div className="flex items-center justify-between text-xs text-zinc-500 pt-4 border-t border-white/5">
+                                <div className="flex items-center gap-1">
+                                    <Calendar size={12} />
+                                    Última atualização: {formatDate(lastUpdate)}
                                 </div>
-                                <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">Última atualização</p>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-white">{formatDate(lastUpdate)}</p>
-                                </div>
+                                {profile.externalId && <span>ID: {profile.externalId}</span>}
                             </div>
                         </div>
                     );

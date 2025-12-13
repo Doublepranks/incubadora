@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import LazyChart from '../components/LazyChart';
-import { Users, TrendingUp, Activity, Loader2 } from 'lucide-react';
+import { Users, TrendingUp, Activity, Loader2, Filter, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '../utils/dateUtils';
 
@@ -75,47 +75,64 @@ const Dashboard = () => {
         fetchData();
     }, [params, authLoading]);
 
-    const baseAxisColors = { labels: { style: { colors: '#6b7280' } } };
-    const gridColor = '#e5e7eb';
+    const baseAxisColors = { labels: { style: { colors: '#a1a1aa', fontFamily: 'Inter' } }, axisBorder: { show: false }, axisTicks: { show: false } };
+    const gridColor = '#27272a'; // zinc-800
     const formatNumber = (val) => Number(val || 0).toLocaleString('pt-BR');
 
     const lineChartOptions = useMemo(() => ({
-        chart: { type: 'area', toolbar: { show: false }, background: 'transparent' },
+        chart: { type: 'area', toolbar: { show: false }, background: 'transparent', zoom: { enabled: false } },
         dataLabels: { enabled: false },
-        stroke: { curve: 'smooth' },
-        xaxis: { categories: timeline.map(t => formatDate(t.date)), ...baseAxisColors },
+        stroke: { curve: 'smooth', width: 2 },
+        xaxis: { categories: timeline.map(t => formatDate(t.date)), ...baseAxisColors, tooltip: { enabled: false } },
         yaxis: { ...baseAxisColors },
-        grid: { borderColor: gridColor, strokeDashArray: 4 },
-        colors: ['#3b82f6']
+        grid: { borderColor: gridColor, strokeDashArray: 0, yaxis: { lines: { show: true } } },
+        colors: ['#8b5cf6'], // violet-500
+        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 90, 100] } },
+        theme: { mode: 'dark' }
     }), [timeline]);
 
     const barChartOptions = useMemo(() => ({
         chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
-        plotOptions: { bar: { borderRadius: 4, horizontal: true } },
+        plotOptions: { bar: { borderRadius: 4, horizontal: true, barHeight: '60%' } },
         dataLabels: { enabled: false },
         xaxis: { categories: topGrowth.map(inf => inf.name || ''), labels: { ...baseAxisColors.labels, formatter: (val) => formatNumber(val) } },
         yaxis: { ...baseAxisColors },
         grid: { borderColor: gridColor, strokeDashArray: 4 },
-        colors: ['#10b981'],
-        tooltip: { y: { formatter: (val) => formatNumber(val) } },
+        colors: ['#10b981'], // emerald-500
+        tooltip: { theme: 'dark', y: { formatter: (val) => formatNumber(val) } },
     }), [topGrowth]);
 
-    const platformChartOptions = useMemo(() => ({
-        chart: { type: 'donut', toolbar: { show: false }, background: 'transparent' },
-        labels: platformDistribution.map((p) => p.platform),
-        legend: { position: 'bottom' },
-    }), [platformDistribution]);
+    const platformChartOptions = useMemo(() => {
+        const colorMap = {
+            instagram: '#db2777',
+            x: '#3b82f6',
+            youtube: '#c32324',
+            kwai: '#be5a15',
+            tiktok: '#7d54dc'
+        };
+
+        return {
+            chart: { type: 'donut', toolbar: { show: false }, background: 'transparent' },
+            labels: platformDistribution.map((p) => p.platform),
+            legend: { position: 'bottom', labels: { colors: '#a1a1aa' } },
+            stroke: { show: false },
+            plotOptions: { pie: { donut: { size: '70%', labels: { show: true, name: { color: '#a1a1aa' }, value: { color: '#ffffff' } } } } },
+            colors: platformDistribution.map(p => colorMap[p.platform] || '#71717a'),
+            tooltip: { theme: 'dark' }
+        };
+    }, [platformDistribution]);
 
     const platformChartSeries = platformDistribution.map((p) => p.count);
 
     const stateChartOptions = useMemo(() => ({
         chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
-        plotOptions: { bar: { horizontal: true, borderRadius: 4 } },
-        xaxis: { categories: stateDistribution.map((s) => s.state), ...baseAxisColors },
+        plotOptions: { bar: { horizontal: true, borderRadius: 2, barHeight: '50%' } },
+        xaxis: { categories: stateDistribution.map((s) => s.state), ...baseAxisColors, labels: { show: false } },
         yaxis: { ...baseAxisColors },
         dataLabels: { enabled: false },
-        grid: { borderColor: gridColor, strokeDashArray: 4 },
+        grid: { show: false },
         colors: ['#6366f1'],
+        tooltip: { theme: 'dark' }
     }), [stateDistribution]);
 
     const stateChartSeries = [{
@@ -135,12 +152,6 @@ const Dashboard = () => {
 
     const maxStateCount = stateDistribution.reduce((max, s) => Math.max(max, s.count), 0) || 1;
 
-    const formatSigned = (value) => {
-        if (value > 0) return `+${value.toLocaleString()}`;
-        if (value < 0) return `-${Math.abs(value).toLocaleString()}`;
-        return '0';
-    };
-
     const formatSignedPercent = (value, fractionDigits = 2) => {
         const formatted = Math.abs(value).toFixed(fractionDigits);
         if (value > 0) return `+${formatted}%`;
@@ -150,7 +161,7 @@ const Dashboard = () => {
 
     if (error) {
         return (
-            <div className="p-6 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg">
+            <div className="p-6 text-red-400 bg-red-900/20 rounded-xl border border-red-900/50">
                 {error}
             </div>
         );
@@ -158,43 +169,49 @@ const Dashboard = () => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
-                <Loader2 className="animate-spin mr-2" size={20} /> Carregando...
+            <div className="flex items-center justify-center h-[calc(100vh-200px)] text-zinc-500">
+                <Loader2 className="animate-spin mr-2" size={24} /> Carregando Dashboard...
             </div>
         );
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Dashboard Geral</h2>
-                <div className="flex items-center space-x-3 text-sm text-gray-500 dark:text-gray-400">
-                    <div className="flex items-center space-x-2">
-                        <span>Período:</span>
+        <div className="space-y-8">
+            {/* Header / Filters */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 glass-panel rounded-2xl">
+                <div>
+                    <h2 className="text-2xl font-bold text-white tracking-tight">Dashboard Geral</h2>
+                    <p className="text-sm text-zinc-400">Visão geral e métricas de desempenho</p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center bg-zinc-900/50 rounded-lg p-1 border border-white/5">
+                        <div className="px-2 py-1 text-xs text-zinc-500 font-medium">Período</div>
                         {[7, 30, 90].map(days => (
                             <button
                                 key={days}
                                 onClick={() => setFilters((prev) => ({ ...prev, periodDays: days }))}
-                                className={`px-3 py-1 rounded-full border text-xs ${filters.periodDays === days ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'}`}
+                                className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${filters.periodDays === days ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-400 hover:text-white'}`}
                             >
                                 {days}d
                             </button>
                         ))}
                         <button
                             onClick={() => setFilters((prev) => ({ ...prev, periodDays: 'all' }))}
-                            className={`px-3 py-1 rounded-full border text-xs ${filters.periodDays === 'all' ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'}`}
+                            className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${filters.periodDays === 'all' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-400 hover:text-white'}`}
                         >
-                            Todo período
+                            Tudo
                         </button>
                     </div>
-                    <div className="flex items-center space-x-2">
-                        <span>Plataforma:</span>
+
+                    <div className="relative group">
+                        <Filter size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
                         <select
                             value={filters.platform}
                             onChange={(e) => setFilters((prev) => ({ ...prev, platform: e.target.value }))}
-                            className="px-2 py-1 border border-gray-300 dark:border-gray-700 rounded text-xs bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200"
+                            className="pl-9 pr-4 py-1.5 h-[34px] border border-white/5 rounded-lg text-xs bg-zinc-900/50 text-zinc-300 focus:outline-none focus:ring-1 focus:ring-primary/50 appearance-none cursor-pointer hover:bg-zinc-800/50 transition-colors"
                         >
-                            <option value="">Todas</option>
+                            <option value="">Todas Plataformas</option>
                             <option value="instagram">Instagram</option>
                             <option value="x">X</option>
                             <option value="youtube">YouTube</option>
@@ -207,95 +224,77 @@ const Dashboard = () => {
 
             {/* KPIs */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-                    <div className="flex items-center justify-between">
+                {[
+                    { label: 'Influenciadores', value: overview.totalInfluencers, icon: Users, color: 'text-blue-400', bg: 'bg-blue-400/10' },
+                    { label: 'Seguidores Totais', value: overview.totalFollowers.toLocaleString(), icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+                    { label: 'Crescimento', value: formatSignedPercent(overview.growthPercent || 0, 2), icon: TrendingUp, color: 'text-violet-400', bg: 'bg-violet-400/10' },
+                    { label: 'Posts no Período', value: overview.totalPosts, icon: Activity, color: 'text-orange-400', bg: 'bg-orange-400/10', sub: '(Exceto X)' }
+                ].map((kpi, idx) => (
+                    <div key={idx} className="glass-card p-6 rounded-2xl flex items-start justify-between group">
                         <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Influenciadores</p>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{overview.totalInfluencers}</h3>
+                            <p className="text-sm font-medium text-zinc-400 mb-1">{kpi.label}</p>
+                            <h3 className="text-3xl font-bold text-white tracking-tight">{kpi.value}</h3>
+                            {kpi.sub && <p className="text-[10px] text-zinc-500 mt-1">{kpi.sub}</p>}
                         </div>
-                        <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400">
-                            <Users size={24} />
+                        <div className={`p-3 rounded-xl ${kpi.bg} ${kpi.color} group-hover:scale-110 transition-transform duration-300`}>
+                            <kpi.icon size={24} />
                         </div>
                     </div>
-                </div>
-
-                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Seguidores Totais</p>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{overview.totalFollowers.toLocaleString()}</h3>
-                        </div>
-                        <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full text-green-600 dark:text-green-400">
-                            <Users size={24} />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Crescimento (Período)</p>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{formatSignedPercent(overview.growthPercent || 0, 2)}</h3>
-                        </div>
-                        <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full text-purple-600 dark:text-purple-400">
-                            <TrendingUp size={24} />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Posts no Período</p>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{overview.totalPosts}</h3>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">(X não entra na soma de posts do período)</p>
-                        </div>
-                        <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-full text-orange-600 dark:text-orange-400">
-                            <Activity size={24} />
-                        </div>
-                    </div>
-                </div>
+                ))}
             </div>
 
-            {/* Charts */}
+            {/* Charts Row 1 */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Evolução de Seguidores</h3>
-                    <LazyChart options={lineChartOptions} series={followersSeries} type="area" height={300} />
+                <div className="glass-card p-6 rounded-2xl">
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-lg font-bold text-white">Evolução de Seguidores</h3>
+                        <div className="p-2 bg-zinc-800/50 rounded-lg text-zinc-400">
+                            <TrendingUp size={16} />
+                        </div>
+                    </div>
+                    <LazyChart options={lineChartOptions} series={followersSeries} type="area" height={320} />
                 </div>
 
-                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Top Crescimento</h3>
+                <div className="glass-card p-6 rounded-2xl">
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="text-lg font-bold text-white">Top Crescimento</h3>
+                        <div className="p-2 bg-zinc-800/50 rounded-lg text-zinc-400">
+                            <Activity size={16} />
+                        </div>
+                    </div>
                     {topGrowth.length > 0 ? (
-                        <LazyChart options={barChartOptions} series={barChartSeries} type="bar" height={300} />
+                        <LazyChart options={barChartOptions} series={barChartSeries} type="bar" height={320} />
                     ) : (
-                        <div className="flex items-center justify-center h-[300px] text-gray-500 dark:text-gray-400">
-                            Sem dados de crescimento no período selecionado
+                        <div className="flex items-center justify-center h-[320px] text-zinc-500">
+                            Sem dados de crescimento
                         </div>
                     )}
                 </div>
             </div>
 
+            {/* Charts Row 2 */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Distribuição por Plataforma</h3>
-                    <LazyChart options={platformChartOptions} series={platformChartSeries} type="donut" height={300} />
+                <div className="glass-card p-6 rounded-2xl">
+                    <h3 className="text-lg font-bold text-white mb-6">Distribuição por Plataforma</h3>
+                    <div className="flex items-center justify-center">
+                        <LazyChart options={platformChartOptions} series={platformChartSeries} type="donut" height={320} />
+                    </div>
                 </div>
+
                 {user?.role !== 'admin_estadual' && (
-                    <div className="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-                        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Distribuição por UF</h3>
-                        <LazyChart options={stateChartOptions} series={stateChartSeries} type="bar" height={300} />
-                        <div className="mt-4 space-y-2">
+                    <div className="glass-card p-6 rounded-2xl">
+                        <h3 className="text-lg font-bold text-white mb-6">Distribuição por UF</h3>
+                        <div className="space-y-3 max-h-[320px] overflow-y-auto custom-scrollbar pr-2">
                             {stateDistribution.map((s) => (
-                                <div key={s.state} className="flex items-center space-x-3">
-                                    <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 w-10">{s.state}</span>
-                                    <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                <div key={s.state} className="group flex items-center gap-3 p-2 hover:bg-white/5 rounded-lg transition-colors">
+                                    <div className="w-8 text-xs font-bold text-zinc-400 text-center">{s.state}</div>
+                                    <div className="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
                                         <div
-                                            className="h-full bg-blue-500"
+                                            className="h-full bg-violet-500 rounded-full"
                                             style={{ width: `${(s.count / maxStateCount) * 100}%` }}
                                         />
                                     </div>
-                                    <span className="text-xs text-gray-500 dark:text-gray-400 w-10 text-right">{s.count}</span>
+                                    <div className="w-12 text-xs text-right font-medium text-white">{s.count}</div>
                                 </div>
                             ))}
                         </div>
@@ -304,34 +303,41 @@ const Dashboard = () => {
             </div>
 
             {/* Table */}
-            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Influenciadores</h3>
+            <div className="glass-card rounded-2xl overflow-hidden">
+                <div className="px-6 py-5 border-b border-white/5 flex items-center justify-between">
+                    <h3 className="text-lg font-bold text-white">Influenciadores Recentes</h3>
+                    <button onClick={() => navigate('/influencers')} className="text-xs text-primary hover:text-primary/80 transition-colors">Ver todos</button>
                 </div>
                 <div className="overflow-x-auto">
-                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
+                    <table className="w-full text-sm text-left">
+                        <thead className="text-xs text-zinc-500 uppercase bg-zinc-900/50">
                             <tr>
-                                <th className="px-6 py-3">Nome</th>
-                                <th className="px-6 py-3">Estado</th>
-                                <th className="px-6 py-3">Município</th>
-                                <th className="px-6 py-3">Seguidores</th>
-                                <th className="px-6 py-3">Posts</th>
-                                <th className="px-6 py-3">Ações</th>
+                                <th className="px-6 py-4 font-medium">Nome</th>
+                                <th className="px-6 py-4 font-medium">Local</th>
+                                <th className="px-6 py-4 font-medium">Seguidores</th>
+                                <th className="px-6 py-4 font-medium">Posts</th>
+                                <th className="px-6 py-4 font-medium text-right">Ações</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="divide-y divide-white/5">
                             {tableData.map((inf) => (
-                                <tr key={inf.id} className="bg-white dark:bg-gray-900 border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800">
-                                    <td className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">{inf.name}</td>
-                                    <td className="px-6 py-4">{inf.state}</td>
-                                    <td className="px-6 py-4">{inf.city}</td>
-                                    <td className="px-6 py-4">{inf.totalFollowers?.toLocaleString() ?? 0}</td>
-                                    <td className="px-6 py-4">{inf.totalPosts ?? 0}</td>
-                                    <td className="px-6 py-4">
+                                <tr key={inf.id} className="hover:bg-white/5 transition-colors group">
+                                    <td className="px-6 py-4 font-medium text-white">
+                                        {inf.name}
+                                    </td>
+                                    <td className="px-6 py-4 text-zinc-400">
+                                        {inf.city} - {inf.state}
+                                    </td>
+                                    <td className="px-6 py-4 text-zinc-300">
+                                        {inf.totalFollowers?.toLocaleString() ?? 0}
+                                    </td>
+                                    <td className="px-6 py-4 text-zinc-300">
+                                        {inf.totalPosts ?? 0}
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
                                         <button
                                             onClick={() => navigate(`/influencer/${inf.id}`)}
-                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                            className="text-xs font-medium text-primary hover:text-primary/80 hover:underline opacity-0 group-hover:opacity-100 transition-opacity"
                                         >
                                             Ver detalhes
                                         </button>

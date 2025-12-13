@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import LazyChart from '../components/LazyChart';
-import { Loader2, Share2, Download, ListOrdered, ArrowUp, ArrowDown, Minus, MessageCircle, Copy } from 'lucide-react';
+import { Loader2, Share2, Download, ListOrdered, ArrowUp, ArrowDown, Minus, MessageCircle, Copy, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { formatDate } from '../utils/dateUtils';
 
@@ -13,7 +13,7 @@ const platformColors = {
     youtube: '#dc2626',
     kwai: '#f97316',
     x: '#3b82f6',
-    tiktok: '#0f172a'
+    tiktok: '#7d54dc'
 };
 
 const Reports = () => {
@@ -126,57 +126,60 @@ const Reports = () => {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
-                <Loader2 className="animate-spin mr-2" size={20} /> Carregando...
+            <div className="flex items-center justify-center h-[calc(100vh-200px)] text-zinc-500">
+                <Loader2 className="animate-spin mr-2" size={24} /> Carregando relatórios...
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="p-6 text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg">
+            <div className="p-6 text-red-400 bg-red-900/20 rounded-xl border border-red-900/50">
                 {error}
             </div>
         );
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
+        <div className="space-y-8 animate-fade-in">
+            <div className="glass-panel p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Relatórios</h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Cards 1:1 das últimas 4 semanas</p>
+                    <h2 className="text-2xl font-bold text-white tracking-tight">Relatórios</h2>
+                    <p className="text-sm text-zinc-400">Cards 1:1 das últimas 4 semanas para redes sociais</p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     <button
                         onClick={handleExportRank}
                         disabled={rankLoading}
-                        className="flex items-center px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+                        className="flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-zinc-800 text-white hover:bg-zinc-700 border border-white/5 disabled:opacity-50 transition-colors"
                     >
                         {rankLoading ? <Loader2 size={16} className="mr-2 animate-spin" /> : <ListOrdered size={16} className="mr-2" />}
-                        Exportar rank
+                        Exportar Ranking
                     </button>
                     <button
                         onClick={handleExport}
-                        className="flex items-center px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700"
+                        className="flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-primary text-white hover:bg-primary/90 shadow-[0_0_15px_rgba(124,58,237,0.3)] transition-all"
                     >
                         <Download size={16} className="mr-2" />
-                        Exportar relatório geral
+                        Exportar Geral (.xlsx)
                     </button>
                 </div>
             </div>
 
-            <div className="flex flex-wrap gap-3">
-                <input
-                    type="text"
-                    placeholder="Buscar influenciador..."
-                    value={search}
-                    onChange={(e) => {
-                        setSearch(e.target.value);
-                        setPage(1);
-                    }}
-                    className="px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-900 text-sm text-gray-700 dark:text-gray-200"
-                />
+            <div className="flex flex-wrap gap-4">
+                <div className="relative flex-1 max-w-sm">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={18} />
+                    <input
+                        type="text"
+                        placeholder="Buscar por nome..."
+                        value={search}
+                        onChange={(e) => {
+                            setSearch(e.target.value);
+                            setPage(1);
+                        }}
+                        className="w-full pl-10 pr-4 py-2.5 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-zinc-600"
+                    />
+                </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -185,75 +188,81 @@ const Reports = () => {
                 ))}
             </div>
 
-            <div className="flex items-center justify-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+            {paginatedCards.length === 0 && (
+                <div className="text-center py-20 bg-zinc-900/30 border border-dashed border-zinc-800 rounded-2xl text-zinc-500">
+                    Nenhum relatório encontrado para os filtros selecionados.
+                </div>
+            )}
+
+            <div className="flex items-center justify-center space-x-2 text-sm text-zinc-400 mt-6">
                 <button
                     disabled={page === 1}
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    className="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-2 border border-white/10 rounded-lg hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
-                    Anterior
+                    <ChevronLeft size={16} />
                 </button>
-                <span>Página {page} de {totalPages}</span>
+                <span className="font-medium px-4">Página {page} de {totalPages}</span>
                 <button
                     disabled={page >= totalPages}
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    className="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-2 border border-white/10 rounded-lg hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
-                    Próxima
+                    <ChevronRight size={16} />
                 </button>
             </div>
 
             {rankError && (
-                <div className="p-3 rounded-md bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400">
+                <div className="p-4 rounded-xl bg-red-900/20 text-red-400 border border-red-900/50">
                     {rankError}
                 </div>
             )}
 
             <div className="absolute -left-[9999px] top-0">
-                <div ref={rankRef} className="min-w-[900px] bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800 p-4">
-                    <div className="flex items-center justify-between mb-3">
+                <div ref={rankRef} className="min-w-[900px] bg-zinc-950 text-white rounded-xl shadow-2xl p-6 border border-zinc-800">
+                    <div className="flex items-center justify-between mb-4">
                         <div>
-                            <h3 className="text-lg font-semibold">Ranking - últimas 4 semanas</h3>
-                            {selectedState && <p className="text-xs text-gray-500">Filtro: {selectedState}{selectedMunicipality ? ` / ${selectedMunicipality}` : ''}</p>}
+                            <h3 className="text-xl font-bold">Ranking de Engajamento</h3>
+                            <p className="text-sm text-zinc-400">Últimas 4 semanas • {selectedState || 'Brasil'}{selectedMunicipality ? ` / ${selectedMunicipality}` : ''}</p>
                         </div>
-                        <span className="text-xs text-gray-500">Gerado em {formatDate(new Date())}</span>
+                        <span className="text-xs text-zinc-500 bg-zinc-900 px-3 py-1 rounded-full border border-zinc-800">Gerado em {formatDate(new Date())}</span>
                     </div>
-                    <table className="w-full text-sm border-collapse">
+                    <table className="w-full text-sm border-separate border-spacing-0">
                         <thead>
-                            <tr className="bg-gray-100 dark:bg-gray-800">
-                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-left">Influenciador / UF</th>
-                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-right">Semana -3</th>
-                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-right">Semana -2</th>
-                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-right">Semana -1</th>
-                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-right">Semana atual</th>
-                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-right">Cresc. abs.</th>
-                                <th className="p-2 border border-gray-200 dark:border-gray-700 text-right">Cresc. %</th>
+                            <tr className="bg-zinc-900/50 text-zinc-400">
+                                <th className="p-3 text-left border-y border-zinc-800 rounded-l-lg font-medium">Influenciador</th>
+                                <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana -3</th>
+                                <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana -2</th>
+                                <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana -1</th>
+                                <th className="p-3 text-right border-y border-zinc-800 font-medium">Atual</th>
+                                <th className="p-3 text-right border-y border-zinc-800 font-medium">Cresc.</th>
+                                <th className="p-3 text-right border-y border-zinc-800 rounded-r-lg font-medium">%</th>
                             </tr>
                         </thead>
                         <tbody>
                             {rankData.map((row) => (
-                                <tr key={row.id} className="odd:bg-gray-50 dark:odd:bg-gray-800/40">
-                                    <td className="p-2 border border-gray-200 dark:border-gray-700">
-                                        <div className="font-semibold">{row.name}</div>
-                                        <div className="text-xs text-gray-500">{row.state}</div>
+                                <tr key={row.id}>
+                                    <td className="p-3 border-b border-zinc-800/50">
+                                        <div className="font-bold text-white">{row.name}</div>
+                                        <div className="text-xs text-zinc-500">{row.state}</div>
                                     </td>
-                                    <td className="p-2 border border-gray-200 dark:border-gray-700 text-right">{(row.weeks.w3 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-2 border border-gray-200 dark:border-gray-700 text-right">{(row.weeks.w2 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-2 border border-gray-200 dark:border-gray-700 text-right">{(row.weeks.w1 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-2 border border-gray-200 dark:border-gray-700 text-right">{(row.weeks.w0 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-2 border border-gray-200 dark:border-gray-700 text-right">{(row.growthAbs ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-2 border border-gray-200 dark:border-gray-700 text-right">{(row.growthPct ?? 0).toFixed(1)}%</td>
+                                    <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w3 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w2 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w1 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-3 text-right border-b border-zinc-800/50 font-medium text-white">{(row.weeks.w0 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-3 text-right border-b border-zinc-800/50 text-emerald-400">{(row.growthAbs ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-3 text-right border-b border-zinc-800/50 text-emerald-400 font-bold">{(row.growthPct ?? 0).toFixed(1)}%</td>
                                 </tr>
                             ))}
                             {rankTotals && (
-                                <tr className="bg-gray-200 dark:bg-gray-800 font-semibold">
-                                    <td className="p-2 border border-gray-300 dark:border-gray-700">Total</td>
-                                    <td className="p-2 border border-gray-300 dark:border-gray-700 text-right">{(rankTotals.w3 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-2 border border-gray-300 dark:border-gray-700 text-right">{(rankTotals.w2 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-2 border border-gray-300 dark:border-gray-700 text-right">{(rankTotals.w1 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-2 border border-gray-300 dark:border-gray-700 text-right">{(rankTotals.w0 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-2 border border-gray-300 dark:border-gray-700 text-right">{(rankTotals.growthAbs ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-2 border border-gray-300 dark:border-gray-700 text-right">{(rankTotals.growthPct ?? 0).toFixed(1)}%</td>
+                                <tr className="bg-zinc-900/80 font-bold">
+                                    <td className="p-3 rounded-l-lg text-zinc-300">Total</td>
+                                    <td className="p-3 text-right text-zinc-300">{(rankTotals.w3 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-3 text-right text-zinc-300">{(rankTotals.w2 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-3 text-right text-zinc-300">{(rankTotals.w1 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-3 text-right text-white">{(rankTotals.w0 ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-3 text-right text-emerald-400">{(rankTotals.growthAbs ?? 0).toLocaleString('pt-BR')}</td>
+                                    <td className="p-3 text-right text-emerald-400 rounded-r-lg">{(rankTotals.growthPct ?? 0).toFixed(1)}%</td>
                                 </tr>
                             )}
                         </tbody>
@@ -292,12 +301,21 @@ const ReportCard = ({ card }) => {
     }, [card.weekly, weeks]);
 
     const chartOptions = useMemo(() => ({
-        chart: { type: 'line', toolbar: { show: false }, animations: { enabled: false } },
+        chart: { type: 'line', toolbar: { show: false }, animations: { enabled: false }, background: 'transparent' },
         dataLabels: { enabled: false },
-        stroke: { curve: 'smooth' },
-        xaxis: { categories: weeks.map((w, idx) => `Semana ${idx + 1}`) },
+        stroke: { curve: 'smooth', width: 3 },
+        xaxis: {
+            categories: weeks.map((w, idx) => `S${idx + 1}`),
+            axisBorder: { show: false },
+            axisTicks: { show: false },
+            labels: { style: { colors: '#71717a' } }
+        },
+        yaxis: {
+            labels: { style: { colors: '#71717a' }, formatter: (val) => val >= 1000 ? `${(val / 1000).toFixed(1)}k` : val }
+        },
         legend: { show: false },
-        grid: { strokeDashArray: 4 },
+        grid: { borderColor: '#27272a', strokeDashArray: 4 },
+        theme: { mode: 'dark' }
     }), [weeks]);
 
     const variationBadges = useMemo(() => {
@@ -325,14 +343,14 @@ const ReportCard = ({ card }) => {
             return await toPng(cardRef.current, {
                 pixelRatio: 2,
                 cacheBust: false,
-                backgroundColor: null,
+                backgroundColor: '#09090b', // zinc-950 explicitly for capture
                 ...options,
                 filter: (node) => !node?.dataset?.htmlToImageIgnore
             });
         };
 
         try {
-            // Tentativa 1: CORS habilitado
+            // Attempt 1: CORS enabled
             const blobUrl = await generate({ useCORS: true });
             const res = await fetch(blobUrl);
             return await res.blob();
@@ -378,7 +396,6 @@ const ReportCard = ({ card }) => {
                 text: 'Desempenho das últimas 4 semanas'
             });
         } else {
-            // Fallback download if generic share isn't supported
             const url = URL.createObjectURL(pngBlob);
             const a = document.createElement('a');
             a.href = url;
@@ -392,10 +409,8 @@ const ReportCard = ({ card }) => {
         const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
         if (isMobile) {
-            // Mobile: Tenta share nativo direto (melhor experiência)
             await handleShare();
         } else {
-            // Desktop: Apenas copia para o Clipboard (UX solicitada)
             const pngBlob = await generateImageBlob();
             if (!pngBlob) return;
 
@@ -421,18 +436,19 @@ const ReportCard = ({ card }) => {
     };
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col group">
             {/* Capture Area: arredondado em cima, reto embaixo */}
             <div
                 ref={cardRef}
-                className="aspect-square bg-white dark:bg-gray-900 rounded-t-xl rounded-b-none border border-gray-200 dark:border-gray-800 p-4 flex flex-col"
+                className="glass-card rounded-t-2xl rounded-b-none p-5 flex flex-col border-b-0"
+                style={{ backgroundColor: '#09090b', borderColor: 'rgba(255,255,255,0.05)' }} // Inline style for robust image capture
             >
-                <div className="flex items-center justify-between mb-3">
-                    <div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">{card.name}</h3>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{card.city} - {card.state}</p>
+                <div className="flex items-center justify-between mb-4">
+                    <div className="overflow-hidden">
+                        <h3 className="text-lg font-bold text-white truncate leading-tight">{card.name}</h3>
+                        <p className="text-xs text-zinc-400">{card.city} - {card.state}</p>
                     </div>
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-gray-200 to-gray-400 text-gray-800 flex items-center justify-center text-sm font-semibold border border-gray-100 dark:border-gray-700">
+                    <div className="flex-shrink-0 relative w-12 h-12 rounded-full overflow-hidden bg-zinc-800 text-zinc-500 flex items-center justify-center text-sm font-semibold border border-white/5 ring-2 ring-white/5">
                         {card.avatarUrl ? (
                             <img
                                 src={card.avatarUrl}
@@ -450,36 +466,40 @@ const ReportCard = ({ card }) => {
                     </div>
                 </div>
 
-                <div className="flex-1">
-                    <LazyChart options={chartOptions} series={series} type="line" height={220} />
+                <div className="flex-1 -mx-2">
+                    <LazyChart options={chartOptions} series={series} type="line" height={180} />
                 </div>
 
-                <div className="mt-3 space-y-1">
-                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Total seguidores: {card.totalFollowers?.toLocaleString()}</p>
+                <div className="mt-4 space-y-3">
+                    <div className="flex items-baseline justify-between">
+                        <span className="text-xs text-zinc-500 uppercase tracking-wider font-medium">Total</span>
+                        <span className="text-xl font-bold text-white">{card.totalFollowers?.toLocaleString()}</span>
+                    </div>
+
                     <div className="flex flex-wrap gap-2">
                         {variationBadges.map((badge) => {
-                            let colorClass = "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400";
+                            let colorClass = "bg-zinc-800 text-zinc-400 border border-zinc-700";
                             let Icon = Minus;
                             let prefix = "";
 
                             if (badge.pct > 0) {
-                                colorClass = "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800/50";
+                                colorClass = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
                                 Icon = ArrowUp;
                                 prefix = "+";
                             } else if (badge.pct < 0) {
-                                colorClass = "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800/50";
+                                colorClass = "bg-red-500/10 text-red-400 border border-red-500/20";
                                 Icon = ArrowDown;
                             }
 
                             return (
                                 <span
                                     key={badge.platform}
-                                    className={`px-2.5 py-1 text-xs font-semibold rounded-full flex items-center gap-1.5 ${colorClass}`}
+                                    className={`px-2 py-1 text-[10px] font-bold rounded-lg flex items-center gap-1 ${colorClass}`}
                                 >
-                                    <span className="uppercase tracking-wide text-[10px] opacity-75">{badge.platform}</span>
-                                    <span className="flex items-center gap-0.5">
-                                        <Icon size={12} strokeWidth={3} />
-                                        {prefix}{badge.pct.toFixed(1)}%
+                                    <span className="uppercase opacity-80">{badge.platform}</span>
+                                    <span className="flex items-center">
+                                        <Icon size={10} strokeWidth={3} className="mr-0.5" />
+                                        {prefix}{badge.pct.toFixed(0)}%
                                     </span>
                                 </span>
                             );
@@ -488,27 +508,30 @@ const ReportCard = ({ card }) => {
                 </div>
             </div>
 
-            {/* Footer Area with Buttons (Excluded from capture) */}
-            <div className="bg-gray-50 dark:bg-gray-800/50 border-t-0 border border-gray-200 dark:border-gray-800 rounded-b-xl p-3 flex items-center justify-end gap-2 relative">
-                {copyFeedback && (
-                    <span className="absolute left-3 text-xs text-green-600 font-medium animate-pulse">
-                        {copyFeedback}
-                    </span>
-                )}
-                <button
-                    onClick={handleWhatsApp}
-                    className="flex items-center justify-center p-2 rounded-md bg-green-600 text-white hover:bg-green-700 w-10 h-10 transition-colors"
-                    title="Copiar imagem para WhatsApp"
-                >
-                    <Copy size={18} />
-                </button>
-                <button
-                    onClick={handleShare}
-                    className="flex items-center justify-center p-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 w-10 h-10 transition-colors"
-                    title="Compartilhar"
-                >
-                    <Share2 size={18} />
-                </button>
+            {/* Footer Area with Buttons */}
+            <div className="bg-zinc-900/50 backdrop-blur-md border border-t-0 border-white/5 rounded-b-2xl p-3 flex items-center justify-between gap-2 relative">
+                <span className="text-[10px] text-zinc-600 pl-2">Dados das últimas 4 semanas</span>
+                <div className="flex items-center gap-2">
+                    {copyFeedback && (
+                        <span className="text-[10px] text-emerald-400 font-medium animate-fade-in mr-2">
+                            {copyFeedback}
+                        </span>
+                    )}
+                    <button
+                        onClick={handleWhatsApp}
+                        className="flex items-center justify-center p-2 rounded-lg bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-emerald-600/30 transition-all w-9 h-9"
+                        title="Copiar imagem para WhatsApp"
+                    >
+                        <Copy size={16} />
+                    </button>
+                    <button
+                        onClick={handleShare}
+                        className="flex items-center justify-center p-2 rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white border border-blue-600/30 transition-all w-9 h-9"
+                        title="Compartilhar"
+                    >
+                        <Share2 size={16} />
+                    </button>
+                </div>
             </div>
         </div>
     );
