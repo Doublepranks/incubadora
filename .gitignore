@@ -13,7 +13,7 @@ dist-ssr
 *.local
 .env
 docker-compose.yml
-
+D:\Antigravity coding\Incubadora\docker-compose.yml
 # Local build outputs per package
 /frontend/dist
 /backend/dist
@@ -36,3 +36,4 @@ sysadmin_guia_operacional.md
 Data/roadmap to update frontend UX.md
 Data/.env - vps.txt
 Data/caddyfile - vps.odg
+Data/caddyfile - vps.txt
