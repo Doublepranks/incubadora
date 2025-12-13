@@ -4,7 +4,7 @@ import { prisma } from "../src/config/prisma";
 import { hashPassword } from "../src/services/authService";
 
 async function run() {
-    const email = "sampantoja@incubadora.app.br";
+    const email = "sampantoja@local";
     const password = "changeme123";
     const name = "Sam Pantoja";
     const role = "system_admin"; // Matches existing role convention

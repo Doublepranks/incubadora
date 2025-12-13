@@ -3,7 +3,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
-  const email = process.env.ADMIN_EMAIL || "sampantoja@incubadora.app.br";
+  const email = process.env.ADMIN_EMAIL || "sampantoja@local";
   const name = process.env.ADMIN_NAME || "Sam Pantoja";
   const passwordHash =
     process.env.ADMIN_HASH ||
