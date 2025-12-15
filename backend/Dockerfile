@@ -11,6 +11,7 @@ ENV DATABASE_URL=postgresql://postgres:postgres@postgres:5432/dashboard?schema=p
 RUN npx prisma generate
 
 COPY src ./src
+COPY scripts ./scripts
 
 EXPOSE 3000
 
