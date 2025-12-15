@@ -93,14 +93,14 @@ export async function fetchProfilesBatch(profiles: SocialProfile[], _days = 7): 
     if (item.metrics && item.metrics.length > 0) {
       item.metrics.forEach((m) => {
         metricsFromActor.push({
-          date: new Date(m.date),
+          date: normalizeDateOnly(m.date),
           followersCount: m.followers,
           postsCount: m.posts,
         });
       });
     } else if (item.followers_count !== undefined || item.posts_count !== undefined) {
       metricsFromActor.push({
-        date: item.date ? new Date(item.date) : new Date(),
+        date: normalizeDateOnly(item.date ?? new Date()),
         followersCount: followersCountValue ?? 0,
         postsCount: postsCountValue ?? 0,
       });
@@ -245,4 +245,10 @@ function normalizeNumber(value: unknown): number | null {
     return Number.isFinite(parsed) ? parsed : null;
   }
   return null;
+}
+
+function normalizeDateOnly(value: unknown): Date {
+  const d = new Date(value as any);
+  d.setUTCHours(0, 0, 0, 0);
+  return d;
 }

@@ -1,0 +1,9 @@
+{
+	"actorSpecification": 1,
+	"name": "social-metrics-retry",
+	"title": "Social Metrics Retry Orchestrator",
+	"description": "Secondary orchestrator that retries failed social media metrics collection from the primary orchestrator",
+	"version": "1.0",
+	"input": "./INPUT_SCHEMA.json",
+	"dockerfile": "./Dockerfile"
+}

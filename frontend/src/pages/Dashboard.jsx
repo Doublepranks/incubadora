@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import LazyChart from '../components/LazyChart';
 import { Users, TrendingUp, Activity, Loader2, Filter, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { formatDate } from '../utils/dateUtils';
+import { formatDateOnly } from '../utils/dateUtils';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -17,6 +17,8 @@ const Dashboard = () => {
     const [tableData, setTableData] = useState([]);
     const [platformDistribution, setPlatformDistribution] = useState([]);
     const [stateDistribution, setStateDistribution] = useState([]);
+    const [genderDistribution, setGenderDistribution] = useState([]);
+    const [genderByRegion, setGenderByRegion] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -42,12 +44,14 @@ const Dashboard = () => {
                     fetch(`${API_URL}/influencers?${params.toString()}`, { credentials: 'include' }),
                 ]);
 
-                const [platformRes, stateRes] = await Promise.all([
+                const [platformRes, stateRes, genderRes, genderRegionRes] = await Promise.all([
                     fetch(`${API_URL}/metrics/platform-distribution`, { credentials: 'include' }),
                     fetch(`${API_URL}/metrics/state-distribution?${params.toString()}`, { credentials: 'include' }),
+                    fetch(`${API_URL}/metrics/gender-distribution?${params.toString()}`, { credentials: 'include' }),
+                    fetch(`${API_URL}/metrics/gender-by-region?${params.toString()}`, { credentials: 'include' }),
                 ]);
 
-                if (!overviewRes.ok || !timelineRes.ok || !topGrowthRes.ok || !tableRes.ok || !platformRes.ok || !stateRes.ok) {
+                if (!overviewRes.ok || !timelineRes.ok || !topGrowthRes.ok || !tableRes.ok || !platformRes.ok || !stateRes.ok || !genderRes.ok || !genderRegionRes.ok) {
                     throw new Error('Erro ao carregar dados do dashboard');
                 }
 
@@ -57,6 +61,8 @@ const Dashboard = () => {
                 const tableJson = await tableRes.json();
                 const platformJson = await platformRes.json();
                 const stateJson = await stateRes.json();
+                const genderJson = await genderRes.json();
+                const genderRegionJson = await genderRegionRes.json();
 
                 setOverview(overviewJson.data || { totalInfluencers: 0, totalFollowers: 0, totalPosts: 0, growthPercent: 0 });
                 setTimeline(timelineJson.data || []);
@@ -64,6 +70,8 @@ const Dashboard = () => {
                 setTableData(tableJson.data || []);
                 setPlatformDistribution(platformJson.data || []);
                 setStateDistribution(stateJson.data || []);
+                setGenderDistribution(genderJson.data || []);
+                setGenderByRegion(genderRegionJson.data || []);
             } catch (err) {
                 console.error('Erro ao carregar dashboard', err);
                 setError('Não foi possível carregar o dashboard. Tente novamente mais tarde.');
@@ -83,7 +91,7 @@ const Dashboard = () => {
         chart: { type: 'area', toolbar: { show: false }, background: 'transparent', zoom: { enabled: false } },
         dataLabels: { enabled: false },
         stroke: { curve: 'smooth', width: 2 },
-        xaxis: { categories: timeline.map(t => formatDate(t.date)), ...baseAxisColors, tooltip: { enabled: false } },
+        xaxis: { categories: timeline.map(t => formatDateOnly(t.date)), ...baseAxisColors, tooltip: { enabled: false } },
         yaxis: { ...baseAxisColors },
         grid: { borderColor: gridColor, strokeDashArray: 0, yaxis: { lines: { show: true } } },
         colors: ['#8b5cf6'], // violet-500
@@ -139,6 +147,35 @@ const Dashboard = () => {
         name: 'Influenciadores',
         data: stateDistribution.map((s) => s.count),
     }];
+
+    const genderChartOptions = useMemo(() => ({
+        chart: { type: 'donut', toolbar: { show: false }, background: 'transparent' },
+        labels: genderDistribution.map(d => d.sex === 'masculino' ? 'Masculino' : 'Feminino'),
+        colors: ['#3b82f6', '#ec4899'],
+        legend: { position: 'bottom', labels: { colors: '#a1a1aa' } },
+        stroke: { show: false },
+        plotOptions: { pie: { donut: { size: '70%', labels: { show: true, name: { color: '#a1a1aa' }, value: { color: '#ffffff' } } } } },
+        tooltip: { theme: 'dark', y: { formatter: (val) => `${val} (${((val / (genderDistribution.reduce((a, b) => a + b.count, 0) || 1)) * 100).toFixed(1)}%)` } }
+    }), [genderDistribution]);
+
+    const genderChartSeries = genderDistribution.map(d => d.count);
+
+    const genderRegionChartOptions = useMemo(() => ({
+        chart: { type: 'bar', stacked: true, toolbar: { show: false }, background: 'transparent' },
+        plotOptions: { bar: { horizontal: false, borderRadius: 2 } },
+        xaxis: { categories: genderByRegion.map(d => d.state), ...baseAxisColors },
+        yaxis: { ...baseAxisColors, forceNiceScale: true, labels: { ...baseAxisColors.labels, formatter: (val) => val.toFixed(0) } },
+        grid: { borderColor: gridColor, strokeDashArray: 4 },
+        colors: ['#3b82f6', '#ec4899'],
+        dataLabels: { enabled: false },
+        tooltip: { theme: 'dark' },
+        legend: { position: 'top', labels: { colors: '#a1a1aa' } }
+    }), [genderByRegion]);
+
+    const genderRegionSeries = [
+        { name: 'Masculino', data: genderByRegion.map(d => d.masculino || 0) },
+        { name: 'Feminino', data: genderByRegion.map(d => d.feminino || 0) }
+    ];
 
     const followersSeries = [{
         name: 'Total Seguidores',
@@ -300,6 +337,30 @@ const Dashboard = () => {
                         </div>
                     </div>
                 )}
+
+            </div>
+
+            {/* Charts Row 3: Gender Distribution */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="glass-card p-6 rounded-2xl">
+                    <h3 className="text-lg font-bold text-white mb-6">Distribuição por Gênero</h3>
+                    <div className="flex items-center justify-center">
+                        {genderDistribution.length > 0 ? (
+                            <LazyChart options={genderChartOptions} series={genderChartSeries} type="donut" height={320} />
+                        ) : (
+                            <div className="flex items-center justify-center h-[320px] text-zinc-500">Sem dados de gênero</div>
+                        )}
+                    </div>
+                </div>
+
+                <div className="glass-card p-6 rounded-2xl">
+                    <h3 className="text-lg font-bold text-white mb-6">Gênero por Região</h3>
+                    {genderByRegion.length > 0 ? (
+                        <LazyChart options={genderRegionChartOptions} series={genderRegionSeries} type="bar" height={320} />
+                    ) : (
+                        <div className="flex items-center justify-center h-[320px] text-zinc-500">Sem dados regionais</div>
+                    )}
+                </div>
             </div>
 
             {/* Table */}

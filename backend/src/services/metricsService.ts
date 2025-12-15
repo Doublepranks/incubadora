@@ -1,4 +1,4 @@
-import { Platform } from "@prisma/client";
+import { Platform, Series } from "@prisma/client";
 import { prisma } from "../config/prisma";
 import { daysAgo, getLastNWeekStarts } from "./dateService";
 
@@ -8,6 +8,7 @@ type MetricsFilters = {
   platform?: Platform;
   periodDays?: number | null;
   regions?: string[];
+  series?: Series;
 };
 
 type AggregatedInfluencerInternal = {
@@ -58,6 +59,7 @@ export async function getPlatformDistribution(filters: MetricsFilters = {}) {
       influencer: {
         state: filters.regions && filters.regions.length > 0 ? { in: filters.regions } : filters.state || undefined,
         city: filters.city || undefined,
+        series: filters.series || undefined,
       },
     },
     select: {
@@ -89,6 +91,7 @@ export async function getStateDistribution(filters: MetricsFilters) {
     where: {
       state: filters.regions && filters.regions.length > 0 ? { in: filters.regions } : filters.state || undefined,
       city: filters.city || undefined,
+      series: filters.series || undefined,
       socialProfiles: filters.platform ? { some: { platform: filters.platform } } : undefined,
     },
     select: { state: true },
@@ -101,6 +104,54 @@ export async function getStateDistribution(filters: MetricsFilters) {
   });
 
   return Array.from(map.entries()).map(([state, count]) => ({ state, count }));
+}
+
+export async function getGenderDistribution(filters: MetricsFilters) {
+  const influencers = await prisma.influencer.findMany({
+    where: {
+      state: filters.regions && filters.regions.length > 0 ? { in: filters.regions } : filters.state || undefined,
+      city: filters.city || undefined,
+      series: filters.series || undefined,
+      sex: { not: null },
+    },
+    select: { sex: true },
+  });
+
+  const counts = { masculino: 0, feminino: 0 };
+  influencers.forEach((i) => {
+    if (i.sex) counts[i.sex]++;
+  });
+
+  return [
+    { sex: "masculino", count: counts.masculino },
+    { sex: "feminino", count: counts.feminino },
+  ];
+}
+
+export async function getGenderByRegion(filters: MetricsFilters) {
+  const influencers = await prisma.influencer.findMany({
+    where: {
+      state: filters.regions && filters.regions.length > 0 ? { in: filters.regions } : filters.state || undefined,
+      city: filters.city || undefined,
+      series: filters.series || undefined,
+      sex: { not: null },
+    },
+    select: { state: true, sex: true },
+  });
+
+  const map = new Map<string, { masculino: number; feminino: number }>();
+
+  influencers.forEach((i) => {
+    if (!i.sex) return;
+    if (!map.has(i.state)) {
+      map.set(i.state, { masculino: 0, feminino: 0 });
+    }
+    map.get(i.state)![i.sex]++;
+  });
+
+  return Array.from(map.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([state, counts]) => ({ state, ...counts }));
 }
 
 export async function getWeeklySeries(filters: MetricsFilters) {
@@ -135,6 +186,7 @@ export async function getFollowersTimeline(filters: MetricsFilters) {
       influencer: {
         state: filters.regions && filters.regions.length > 0 ? { in: filters.regions } : filters.state || undefined,
         city: filters.city || undefined,
+        series: filters.series || undefined,
       },
     },
     include: {
@@ -147,8 +199,9 @@ export async function getFollowersTimeline(filters: MetricsFilters) {
 
   // Determine range
   let startDate: Date | null = since ? new Date(since) : null;
-  let endDate: Date | null = new Date();
-  endDate.setUTCHours(0, 0, 0, 0);
+  // Use the latest metric date as the end of the series (avoids showing "tomorrow" when server timezone differs),
+  // falling back to "today" when there are no metrics.
+  let endDate: Date | null = null;
 
   if (!startDate) {
     profiles.forEach((p) => {
@@ -158,6 +211,18 @@ export async function getFollowersTimeline(filters: MetricsFilters) {
       }
     });
   }
+
+  profiles.forEach((p) => {
+    if (p.metrics.length > 0) {
+      const last = p.metrics[p.metrics.length - 1].date;
+      if (!endDate || last > endDate) endDate = new Date(last);
+    }
+  });
+
+  if (!endDate) {
+    endDate = new Date();
+  }
+  endDate.setUTCHours(0, 0, 0, 0);
 
   if (!startDate) {
     return [];
@@ -283,6 +348,7 @@ async function aggregateInfluencers(filters: MetricsFilters, overrideDays?: numb
     where: {
       state: filters.regions && filters.regions.length > 0 ? { in: filters.regions } : filters.state || undefined,
       city: filters.city || undefined,
+      series: filters.series || undefined,
     },
     include: {
       socialProfiles: {

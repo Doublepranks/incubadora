@@ -1,14 +1,18 @@
-# Use a lightweight Apify base image without browsers (não precisamos de Playwright aqui)
-FROM apify/actor-node:20
+# Use a imagem com Puppeteer/Chrome para scraping do Kwai
+FROM apify/actor-node-puppeteer-chrome:20
 
-WORKDIR /usr/src/app
-
+# Copiar package.json primeiro (para cache de layers)
 COPY package*.json ./
-RUN npm install --include=dev
 
-COPY tsconfig.json ./
-COPY src ./src
+# Instalar dependências
+RUN npm install --include=dev --audit=false
 
+# Copiar o resto do código
+COPY . ./
+
+# Build do TypeScript
 RUN npm run build
 
-CMD ["node", "dist/main.js"]
+# Comando de execução
+CMD ["npm", "run", "start:prod"]
+

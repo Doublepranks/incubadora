@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import LazyChart from '../components/LazyChart';
+import SeriesBadge, { SERIES_OPTIONS } from '../components/SeriesBadge';
 import { Loader2, Share2, Download, ListOrdered, ArrowUp, ArrowDown, Minus, MessageCircle, Copy, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { formatDate } from '../utils/dateUtils';
@@ -19,6 +20,9 @@ const platformColors = {
 const Reports = () => {
     const { selectedState, selectedMunicipality } = useApp();
     const [search, setSearch] = useState('');
+    const [seriesFilter, setSeriesFilter] = useState('');
+    const [monthFilter, setMonthFilter] = useState('');
+    const [yearFilter, setYearFilter] = useState('');
     const [cards, setCards] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
@@ -34,9 +38,10 @@ const Reports = () => {
             const matchesSearch = card.name.toLowerCase().includes(search.toLowerCase());
             const matchesState = selectedState ? card.state === selectedState : true;
             const matchesCity = selectedMunicipality ? card.city === selectedMunicipality : true;
-            return matchesSearch && matchesState && matchesCity;
+            const matchesSeries = seriesFilter ? card.series === seriesFilter : true;
+            return matchesSearch && matchesState && matchesCity && matchesSeries;
         });
-    }, [cards, search, selectedState, selectedMunicipality]);
+    }, [cards, search, selectedState, selectedMunicipality, seriesFilter]);
 
     const paginatedCards = useMemo(() => {
         const start = (page - 1) * PAGE_SIZE;
@@ -53,6 +58,9 @@ const Reports = () => {
                 const params = new URLSearchParams();
                 if (selectedState) params.append('state', selectedState);
                 if (selectedMunicipality) params.append('city', selectedMunicipality);
+                if (seriesFilter) params.append('series', seriesFilter);
+                if (monthFilter) params.append('month', monthFilter);
+                if (yearFilter) params.append('year', yearFilter);
                 const res = await fetch(`${API_URL}/reports?${params.toString()}`, { credentials: 'include' });
                 if (!res.ok) {
                     throw new Error('Erro ao carregar relatórios');
@@ -67,13 +75,16 @@ const Reports = () => {
             }
         };
         fetchData();
-    }, [selectedState, selectedMunicipality]);
+    }, [selectedState, selectedMunicipality, seriesFilter, monthFilter, yearFilter]);
 
     const handleExport = async () => {
         try {
             const params = new URLSearchParams();
             if (selectedState) params.append('state', selectedState);
             if (selectedMunicipality) params.append('city', selectedMunicipality);
+            if (seriesFilter) params.append('series', seriesFilter);
+            if (monthFilter) params.append('month', monthFilter);
+            if (yearFilter) params.append('year', yearFilter);
             const res = await fetch(`${API_URL}/reports/general/export?format=xlsx&${params.toString()}`, {
                 credentials: 'include'
             });
@@ -99,6 +110,7 @@ const Reports = () => {
             if (selectedState) params.append('state', selectedState);
             if (selectedMunicipality) params.append('city', selectedMunicipality);
             if (search) params.append('search', search);
+            if (seriesFilter) params.append('series', seriesFilter);
             const res = await fetch(`${API_URL}/reports/rank?${params.toString()}`, { credentials: 'include' });
             if (!res.ok) {
                 throw new Error('Erro ao carregar ranking');
@@ -180,6 +192,37 @@ const Reports = () => {
                         className="w-full pl-10 pr-4 py-2.5 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-zinc-600"
                     />
                 </div>
+                <select
+                    value={seriesFilter}
+                    onChange={(e) => { setSeriesFilter(e.target.value); setPage(1); }}
+                    className="px-3 py-2.5 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-zinc-300 focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer"
+                >
+                    {SERIES_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                </select>
+                <select
+                    value={monthFilter}
+                    onChange={(e) => { setMonthFilter(e.target.value); setPage(1); }}
+                    className="px-3 py-2.5 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-zinc-300 focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer"
+                >
+                    <option value="">Todos os meses</option>
+                    {[...Array(12)].map((_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                            {new Date(2000, i).toLocaleString('pt-BR', { month: 'long' })}
+                        </option>
+                    ))}
+                </select>
+                <select
+                    value={yearFilter}
+                    onChange={(e) => { setYearFilter(e.target.value); setPage(1); }}
+                    className="px-3 py-2.5 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-zinc-300 focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer"
+                >
+                    <option value="">Todos os anos</option>
+                    {[2024, 2025, 2026].map((y) => (
+                        <option key={y} value={y}>{y}</option>
+                    ))}
+                </select>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -445,7 +488,10 @@ const ReportCard = ({ card }) => {
             >
                 <div className="flex items-center justify-between mb-4">
                     <div className="overflow-hidden">
-                        <h3 className="text-lg font-bold text-white truncate leading-tight">{card.name}</h3>
+                        <div className="flex items-center gap-2">
+                            <h3 className="text-lg font-bold text-white truncate leading-tight">{card.name}</h3>
+                            <SeriesBadge series={card.series} size="sm" />
+                        </div>
                         <p className="text-xs text-zinc-400">{card.city} - {card.state}</p>
                     </div>
                     <div className="flex-shrink-0 relative w-12 h-12 rounded-full overflow-hidden bg-zinc-800 text-zinc-500 flex items-center justify-center text-sm font-semibold border border-white/5 ring-2 ring-white/5">

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Activity, Edit2, FileText, Loader2, Plus, Trash2, X, Users, CheckCircle2, AlertCircle, Search, Filter, Eye } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import HistoryModal from "../components/HistoryModal";
+import SeriesBadge, { SERIES_OPTIONS } from "../components/SeriesBadge";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
@@ -37,6 +38,8 @@ const emptyForm = {
   state: "",
   city: "",
   avatarUrl: "",
+  series: "",
+  sex: "",
   profiles: {
     instagram: { handle: "", url: "", externalId: "" },
     x: { handle: "", url: "", externalId: "" },
@@ -175,6 +178,8 @@ const Influencers = () => {
         state: detail.state || "",
         city: detail.city || "",
         avatarUrl: detail.avatarUrl || "",
+        series: detail.series || "",
+        sex: detail.sex || "",
         profiles: { ...emptyForm.profiles },
       };
       detail.socialProfiles?.forEach((p) => {
@@ -231,6 +236,8 @@ const Influencers = () => {
         state: form.state,
         city: form.city,
         avatarUrl: form.avatarUrl || null,
+        series: form.series || null,
+        sex: form.sex || null,
         profiles,
       };
 
@@ -413,6 +420,7 @@ const Influencers = () => {
               <thead className="text-xs uppercase bg-zinc-900/80 text-zinc-500 font-medium">
                 <tr>
                   <th className="px-6 py-4">Nome</th>
+                  <th className="px-6 py-4">Série</th>
                   <th className="px-6 py-4">UF</th>
                   <th className="px-6 py-4">Município</th>
                   <th className="px-6 py-4">Plataformas</th>
@@ -439,6 +447,9 @@ const Influencers = () => {
                           <div className="text-xs text-zinc-500">{inf.city || "-"} - {inf.state}</div>
                         </div>
                       </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <SeriesBadge series={inf.series} size="sm" />
                     </td>
                     <td className="px-6 py-4 text-zinc-400">{inf.state}</td>
                     <td className="px-6 py-4 text-zinc-400">{inf.city || "-"}</td>
@@ -484,7 +495,7 @@ const Influencers = () => {
                 ))}
                 {influencers.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="px-6 py-12 text-center text-zinc-500">
+                    <td colSpan={9} className="px-6 py-12 text-center text-zinc-500">
                       <div className="flex flex-col items-center">
                         <Users size={48} className="mb-4 opacity-20" />
                         <p>Nenhum influenciador encontrado com os filtros atuais.</p>
@@ -557,6 +568,30 @@ const Influencers = () => {
                     {formCities.map((city) => (
                       <option key={city} value={city}>{city}</option>
                     ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Série/Badge</label>
+                  <select
+                    value={form.series}
+                    onChange={(e) => setForm({ ...form, series: e.target.value })}
+                    className="w-full px-4 py-3 bg-zinc-900/50 border border-white/5 rounded-xl text-white outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+                  >
+                    {SERIES_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Sexo</label>
+                  <select
+                    value={form.sex}
+                    onChange={(e) => setForm({ ...form, sex: e.target.value })}
+                    className="w-full px-4 py-3 bg-zinc-900/50 border border-white/5 rounded-xl text-white outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+                  >
+                    <option value="">Não informado</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="feminino">Feminino</option>
                   </select>
                 </div>
               </div>

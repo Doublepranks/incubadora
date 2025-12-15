@@ -1,5 +1,5 @@
 import ExcelJS from "exceljs";
-import { Platform } from "@prisma/client";
+import { Platform, Series } from "@prisma/client";
 import { prisma } from "../config/prisma";
 import { daysAgo, startOfWeekMonday, getLastNWeekStarts } from "./dateService";
 
@@ -8,6 +8,9 @@ type ReportFilters = {
   city?: string;
   search?: string;
   regions?: string[];
+  series?: Series;
+  month?: number;
+  year?: number;
 };
 
 type WeeklyData = {
@@ -17,16 +20,31 @@ type WeeklyData = {
 };
 
 export async function getReportData(filters: ReportFilters) {
+  // Calculate date range based on month/year if provided
+  let dateFilter: { gte?: Date; lte?: Date } | undefined;
+  if (filters.month && filters.year) {
+    const startDate = new Date(filters.year, filters.month - 1, 1);
+    const endDate = new Date(filters.year, filters.month, 0, 23, 59, 59, 999);
+    dateFilter = { gte: startDate, lte: endDate };
+  } else if (filters.year) {
+    const startDate = new Date(filters.year, 0, 1);
+    const endDate = new Date(filters.year, 11, 31, 23, 59, 59, 999);
+    dateFilter = { gte: startDate, lte: endDate };
+  } else {
+    dateFilter = { gte: daysAgo(28) };
+  }
+
   const influencers = await prisma.influencer.findMany({
     where: {
       AND: [
         filters.regions && filters.regions.length > 0 ? { state: { in: filters.regions } } : {},
         filters.state ? { state: filters.state } : {},
         filters.city ? { city: filters.city } : {},
+        filters.series ? { series: filters.series } : {},
         filters.search
           ? {
-              name: { contains: filters.search, mode: "insensitive" },
-            }
+            name: { contains: filters.search, mode: "insensitive" },
+          }
           : {},
       ],
     },
@@ -34,7 +52,7 @@ export async function getReportData(filters: ReportFilters) {
       socialProfiles: {
         include: {
           metrics: {
-            where: { date: { gte: daysAgo(28) } },
+            where: { date: dateFilter },
             orderBy: { date: "asc" },
           },
         },
@@ -68,6 +86,7 @@ export async function getReportData(filters: ReportFilters) {
       state: inf.state,
       city: inf.city,
       avatarUrl: inf.avatarUrl,
+      series: inf.series ?? null,
       platforms: inf.socialProfiles.map((p) => p.platform),
       totalFollowers,
       weekly: grouped,
@@ -96,6 +115,7 @@ export async function generateExcel(filters: ReportFilters) {
     { header: "Nome", key: "name", width: 25 },
     { header: "Estado", key: "state", width: 10 },
     { header: "Município", key: "city", width: 20 },
+    { header: "Série", key: "series", width: 15 },
     { header: "Instagram", key: "instagram", width: 15 },
     { header: "X", key: "x", width: 10 },
     { header: "YouTube", key: "youtube", width: 15 },
@@ -117,6 +137,7 @@ export async function generateExcel(filters: ReportFilters) {
       name: inf.name,
       state: inf.state,
       city: inf.city,
+      series: inf.series ?? "",
       instagram: latestByPlatform.get("instagram") ?? 0,
       x: latestByPlatform.get("x") ?? 0,
       youtube: latestByPlatform.get("youtube") ?? 0,
@@ -135,6 +156,7 @@ type RankRow = {
   name: string;
   state: string;
   city: string | null;
+  series: Series | null;
   weeks: { w3: number; w2: number; w1: number; w0: number };
   growthAbs: number;
   growthPct: number;
@@ -154,10 +176,11 @@ export async function getRankData(filters: ReportFilters, periodWeeks = 4): Prom
         filters.regions && filters.regions.length > 0 ? { state: { in: filters.regions } } : {},
         filters.state ? { state: filters.state } : {},
         filters.city ? { city: filters.city } : {},
+        filters.series ? { series: filters.series } : {},
         filters.search
           ? {
-              name: { contains: filters.search, mode: "insensitive" },
-            }
+            name: { contains: filters.search, mode: "insensitive" },
+          }
           : {},
       ],
     },
@@ -202,6 +225,7 @@ export async function getRankData(filters: ReportFilters, periodWeeks = 4): Prom
       name: inf.name,
       state: inf.state,
       city: inf.city,
+      series: inf.series ?? null,
       weeks: { w3, w2, w1, w0 },
       growthAbs,
       growthPct,

@@ -45,7 +45,7 @@ const client = new ApifyClient({
     token: process.env.APIFY_TOKEN,
 });
 
-const date = new Date().toISOString().split('T')[0];
+const date = getTodayInSaoPaulo();
 const results: MetricResult[] = [];
 
 // Agrupar perfis por plataforma
@@ -835,4 +835,14 @@ function errorCodeFromError(error: unknown): string {
     if (msg.includes('blocked') || msg.includes('forbidden') || msg.includes('403')) return 'blocked';
     if (msg.includes('parse') || msg.includes('selector')) return 'parse_error';
     return 'error';
+}
+
+function getTodayInSaoPaulo(): string {
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/Sao_Paulo",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    });
+    return formatter.format(new Date()); // formato en-CA => YYYY-MM-DD
 }

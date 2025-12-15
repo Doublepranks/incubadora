@@ -32,6 +32,20 @@ enum LogLevel {
   debug
 }
 
+enum Series {
+  Elite
+  A2
+  A3
+  Institucional
+  Cortes
+  Noticias
+}
+
+enum Sex {
+  masculino
+  feminino
+}
+
 model User {
   id           Int      @id @default(autoincrement())
   name         String
@@ -53,6 +67,8 @@ model Influencer {
   state           String
   city            String
   notes           String?
+  series          Series?
+  sex             Sex?
   socialProfiles  SocialProfile[]
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @updatedAt @map("updated_at")

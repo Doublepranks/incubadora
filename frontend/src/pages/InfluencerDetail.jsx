@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LazyChart from '../components/LazyChart';
+import SeriesBadge from '../components/SeriesBadge';
 import { ArrowLeft, Instagram, Youtube, Video, Twitter, Loader2, User as UserIcon, Calendar, TrendingUp } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { formatDate } from '../utils/dateUtils';
+import { formatDateOnly } from '../utils/dateUtils';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -143,7 +144,10 @@ const InfluencerDetail = () => {
                     <div className="flex items-center gap-6">
                         {headerAvatar}
                         <div>
-                            <h1 className="text-3xl font-bold text-white tracking-tight">{influencer.name}</h1>
+                            <div className="flex items-center gap-3">
+                                <h1 className="text-3xl font-bold text-white tracking-tight">{influencer.name}</h1>
+                                <SeriesBadge series={influencer.series} size="lg" />
+                            </div>
                             <p className="text-zinc-400 text-lg">{influencer.city} - {influencer.state}</p>
                         </div>
                     </div>
@@ -201,7 +205,7 @@ const InfluencerDetail = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {influencer.socialProfiles.map((profile) => {
-                    const historyDates = profile.metrics.map((m) => formatDate(m.date));
+                    const historyDates = profile.metrics.map((m) => formatDateOnly(m.date));
                     const historyFollowers = profile.metrics.map((m) => m.followersCount);
                     const totalPosts = profile.metrics.reduce((sum, m) => sum + m.postsCount, 0);
                     const postsCounts = profile.metrics.map((m) => m.postsCount);
@@ -281,7 +285,7 @@ const InfluencerDetail = () => {
                             <div className="flex items-center justify-between text-xs text-zinc-500 pt-4 border-t border-white/5">
                                 <div className="flex items-center gap-1">
                                     <Calendar size={12} />
-                                    Última atualização: {formatDate(lastUpdate)}
+                                    Última atualização: {formatDateOnly(lastUpdate)}
                                 </div>
                                 {profile.externalId && <span>ID: {profile.externalId}</span>}
                             </div>

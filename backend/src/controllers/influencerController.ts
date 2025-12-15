@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import { listInfluencers, getInfluencerById, createInfluencer, updateInfluencer, deleteInfluencer } from "../services/influencerService";
 import { prisma } from "../config/prisma";
-import { Platform } from "@prisma/client";
+import { Platform, Series, Sex } from "@prisma/client";
+
+const VALID_SERIES: Series[] = ["Elite", "A2", "A3", "Institucional", "Cortes", "Noticias"];
+const VALID_SEX: Sex[] = ["masculino", "feminino"];
 
 type InfluencerBody = {
   name?: string;
@@ -9,6 +12,8 @@ type InfluencerBody = {
   city?: string;
   avatarUrl?: string | null;
   notes?: string | null;
+  series?: Series | null;
+  sex?: Sex | null;
   profiles?: {
     platform: Platform;
     handle: string;
@@ -18,7 +23,7 @@ type InfluencerBody = {
 };
 
 export async function getInfluencers(req: Request, res: Response) {
-  const { search, state, city, platform, periodDays } = req.query;
+  const { search, state, city, platform, periodDays, series } = req.query;
   const period =
     periodDays === "all"
       ? null
@@ -27,6 +32,9 @@ export async function getInfluencers(req: Request, res: Response) {
         : undefined;
   const regions = (req as any).userRegions as string[] | undefined;
 
+  // Validate series if provided
+  const seriesFilter = series && VALID_SERIES.includes(series as Series) ? (series as Series) : undefined;
+
   const data = await listInfluencers({
     search: search as string | undefined,
     state: state as string | undefined,
@@ -34,6 +42,8 @@ export async function getInfluencers(req: Request, res: Response) {
     platform: platform as Platform | undefined,
     periodDays: period,
     regions,
+    series: seriesFilter,
+    sex: req.query.sex as Sex | undefined,
   });
 
   return res.json({ error: false, data });
@@ -67,12 +77,18 @@ export async function createInfluencerHandler(req: Request, res: Response) {
     return res.status(403).json({ error: true, message: "Acesso restrito à UF" });
   }
 
+  // Validate series if provided
+  const seriesValue = body.series && VALID_SERIES.includes(body.series) ? body.series : null;
+  const sexValue = body.sex && VALID_SEX.includes(body.sex) ? body.sex : null;
+
   const influencer = await createInfluencer({
     name: body.name,
     state,
     city: body.city ?? "",
     avatarUrl: body.avatarUrl ?? null,
     notes: body.notes ?? null,
+    series: seriesValue,
+    sex: sexValue,
     profiles: (body.profiles ?? []).map((p) => ({
       platform: p.platform,
       handle: p.handle,
@@ -97,6 +113,10 @@ export async function updateInfluencerHandler(req: Request, res: Response) {
     return res.status(403).json({ error: true, message: "Acesso restrito à UF" });
   }
 
+  // Validate series if provided
+  const seriesValue = body.series && VALID_SERIES.includes(body.series) ? body.series : null;
+  const sexValue = body.sex && VALID_SEX.includes(body.sex) ? body.sex : null;
+
   const updated = await updateInfluencer(
     Number(id),
     {
@@ -105,6 +125,8 @@ export async function updateInfluencerHandler(req: Request, res: Response) {
       city: body.city ?? "",
       avatarUrl: body.avatarUrl ?? null,
       notes: body.notes ?? null,
+      series: seriesValue,
+      sex: sexValue,
       profiles: (body.profiles ?? []).map((p) => ({
         platform: p.platform,
         handle: p.handle,

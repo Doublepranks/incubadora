@@ -1,4 +1,4 @@
-import { Platform, Prisma } from "@prisma/client";
+import { Platform, Prisma, Series, Sex } from "@prisma/client";
 import { prisma } from "../config/prisma";
 import { daysAgo } from "./dateService";
 
@@ -9,6 +9,8 @@ export type InfluencerFilters = {
   platform?: Platform;
   periodDays?: number | null;
   regions?: string[];
+  series?: Series;
+  sex?: Sex;
 };
 
 export type InfluencerProfileInput = {
@@ -24,6 +26,8 @@ export type InfluencerInput = {
   city?: string | null;
   avatarUrl?: string | null;
   notes?: string | null;
+  series?: Series | null;
+  sex?: Sex | null;
   profiles?: InfluencerProfileInput[];
 };
 
@@ -34,6 +38,8 @@ export type AggregatedInfluencer = {
   state: string;
   city: string;
   notes: string | null;
+  series: Series | null;
+  sex: Sex | null;
   platforms: Platform[];
   totalFollowers: number;
   totalPosts: number;
@@ -49,13 +55,15 @@ export async function listInfluencers(filters: InfluencerFilters): Promise<Aggre
       filters.regions && filters.regions.length > 0 ? { state: { in: filters.regions } } : {},
       filters.state ? { state: filters.state } : {},
       filters.city ? { city: filters.city } : {},
+      filters.series ? { series: filters.series } : {},
+      filters.sex ? { sex: filters.sex } : {},
       filters.search
         ? {
-            OR: [
-              { name: { contains: filters.search, mode: "insensitive" } },
-              { city: { contains: filters.search, mode: "insensitive" } },
-            ],
-          }
+          OR: [
+            { name: { contains: filters.search, mode: "insensitive" } },
+            { city: { contains: filters.search, mode: "insensitive" } },
+          ],
+        }
         : {},
     ],
   };
@@ -100,6 +108,8 @@ export async function listInfluencers(filters: InfluencerFilters): Promise<Aggre
       state: inf.state,
       city: inf.city,
       notes: inf.notes ?? null,
+      series: inf.series ?? null,
+      sex: inf.sex ?? null,
       platforms: inf.socialProfiles.map((p) => p.platform),
       totalFollowers,
       totalPosts,
@@ -170,15 +180,17 @@ export async function createInfluencer(payload: InfluencerInput) {
       state,
       city,
       notes: payload.notes,
+      series: payload.series ?? null,
+      sex: payload.sex ?? null,
       socialProfiles: payload.profiles && payload.profiles.length > 0
         ? {
-            create: payload.profiles.map((p) => ({
-              platform: p.platform,
-              handle: p.handle,
-              url: p.url,
-              externalId: p.externalId,
-            })),
-          }
+          create: payload.profiles.map((p) => ({
+            platform: p.platform,
+            handle: p.handle,
+            url: p.url,
+            externalId: p.externalId,
+          })),
+        }
         : undefined,
     },
     include: {
@@ -240,6 +252,8 @@ export async function updateInfluencer(
       state,
       city,
       notes: payload.notes,
+      series: payload.series ?? null,
+      sex: payload.sex ?? null,
     },
     include: { socialProfiles: true },
   });
