@@ -18,7 +18,8 @@ const platformColors = {
 };
 
 const Reports = () => {
-    const { selectedState, selectedMunicipality } = useApp();
+    const { user, selectedState, selectedMunicipality } = useApp();
+    const [stateFilter, setStateFilter] = useState('');
     const [search, setSearch] = useState('');
     const [seriesFilter, setSeriesFilter] = useState('');
     const [monthFilter, setMonthFilter] = useState('');
@@ -33,15 +34,29 @@ const Reports = () => {
     const [rankTotals, setRankTotals] = useState(null);
     const rankRef = useRef(null);
 
+    // Allowed states based on RBAC
+    const allowedStates = useMemo(() => {
+        const UF_LIST = [
+            "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS",
+            "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
+        ];
+        if (["admin_global", "system_admin"].includes(user?.role)) return UF_LIST;
+        if (user?.regions?.length) return user.regions;
+        return UF_LIST;
+    }, [user]);
+
+    // Use local stateFilter or fallback to global selectedState
+    const effectiveState = stateFilter || selectedState;
+
     const filteredCards = useMemo(() => {
         return cards.filter(card => {
             const matchesSearch = card.name.toLowerCase().includes(search.toLowerCase());
-            const matchesState = selectedState ? card.state === selectedState : true;
+            const matchesState = effectiveState ? card.state === effectiveState : true;
             const matchesCity = selectedMunicipality ? card.city === selectedMunicipality : true;
             const matchesSeries = seriesFilter ? card.series === seriesFilter : true;
             return matchesSearch && matchesState && matchesCity && matchesSeries;
         });
-    }, [cards, search, selectedState, selectedMunicipality, seriesFilter]);
+    }, [cards, search, effectiveState, selectedMunicipality, seriesFilter]);
 
     const paginatedCards = useMemo(() => {
         const start = (page - 1) * PAGE_SIZE;
@@ -56,7 +71,7 @@ const Reports = () => {
             setError('');
             try {
                 const params = new URLSearchParams();
-                if (selectedState) params.append('state', selectedState);
+                if (effectiveState) params.append('state', effectiveState);
                 if (selectedMunicipality) params.append('city', selectedMunicipality);
                 if (seriesFilter) params.append('series', seriesFilter);
                 if (monthFilter) params.append('month', monthFilter);
@@ -75,12 +90,12 @@ const Reports = () => {
             }
         };
         fetchData();
-    }, [selectedState, selectedMunicipality, seriesFilter, monthFilter, yearFilter]);
+    }, [effectiveState, selectedMunicipality, seriesFilter, monthFilter, yearFilter]);
 
     const handleExport = async () => {
         try {
             const params = new URLSearchParams();
-            if (selectedState) params.append('state', selectedState);
+            if (effectiveState) params.append('state', effectiveState);
             if (selectedMunicipality) params.append('city', selectedMunicipality);
             if (seriesFilter) params.append('series', seriesFilter);
             if (monthFilter) params.append('month', monthFilter);
@@ -107,7 +122,7 @@ const Reports = () => {
         setRankLoading(true);
         try {
             const params = new URLSearchParams();
-            if (selectedState) params.append('state', selectedState);
+            if (effectiveState) params.append('state', effectiveState);
             if (selectedMunicipality) params.append('city', selectedMunicipality);
             if (search) params.append('search', search);
             if (seriesFilter) params.append('series', seriesFilter);
@@ -202,6 +217,16 @@ const Reports = () => {
                     ))}
                 </select>
                 <select
+                    value={stateFilter}
+                    onChange={(e) => { setStateFilter(e.target.value); setPage(1); }}
+                    className="px-3 py-2.5 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-zinc-300 focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer"
+                >
+                    <option value="">Todos os estados</option>
+                    {allowedStates.map((uf) => (
+                        <option key={uf} value={uf}>{uf}</option>
+                    ))}
+                </select>
+                <select
                     value={monthFilter}
                     onChange={(e) => { setMonthFilter(e.target.value); setPage(1); }}
                     className="px-3 py-2.5 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-zinc-300 focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer"
@@ -274,6 +299,7 @@ const Reports = () => {
                         <thead>
                             <tr className="bg-zinc-900/50 text-zinc-400">
                                 <th className="p-3 text-left border-y border-zinc-800 rounded-l-lg font-medium">Influenciador</th>
+                                <th className="p-3 text-center border-y border-zinc-800 font-medium">Série</th>
                                 <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana -3</th>
                                 <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana -2</th>
                                 <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana -1</th>
@@ -289,6 +315,9 @@ const Reports = () => {
                                         <div className="font-bold text-white">{row.name}</div>
                                         <div className="text-xs text-zinc-500">{row.state}</div>
                                     </td>
+                                    <td className="p-3 text-center border-b border-zinc-800/50">
+                                        <SeriesBadge series={row.series} size="sm" />
+                                    </td>
                                     <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w3 ?? 0).toLocaleString('pt-BR')}</td>
                                     <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w2 ?? 0).toLocaleString('pt-BR')}</td>
                                     <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w1 ?? 0).toLocaleString('pt-BR')}</td>
@@ -300,6 +329,7 @@ const Reports = () => {
                             {rankTotals && (
                                 <tr className="bg-zinc-900/80 font-bold">
                                     <td className="p-3 rounded-l-lg text-zinc-300">Total</td>
+                                    <td className="p-3"></td>
                                     <td className="p-3 text-right text-zinc-300">{(rankTotals.w3 ?? 0).toLocaleString('pt-BR')}</td>
                                     <td className="p-3 text-right text-zinc-300">{(rankTotals.w2 ?? 0).toLocaleString('pt-BR')}</td>
                                     <td className="p-3 text-right text-zinc-300">{(rankTotals.w1 ?? 0).toLocaleString('pt-BR')}</td>
