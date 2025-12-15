@@ -4,7 +4,7 @@ import LazyChart from '../components/LazyChart';
 import SeriesBadge from '../components/SeriesBadge';
 import { ArrowLeft, Instagram, Youtube, Video, Twitter, Loader2, User as UserIcon, Calendar, TrendingUp } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { formatDateOnly } from '../utils/dateUtils';
+import * as dateUtils from '../utils/dateUtils';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -99,6 +99,18 @@ const InfluencerDetail = () => {
 
     const baseAxisColors = { labels: { style: { colors: '#a1a1aa', fontFamily: 'Inter' } }, axisBorder: { show: false }, axisTicks: { show: false } };
     const gridColor = '#27272a';
+
+    const formatMetricDate = useMemo(() => {
+        const fallback = (value) => {
+            if (!value) return '-';
+            const raw = value instanceof Date ? value.toISOString() : String(value);
+            const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (match) return `${match[3]}-${match[2]}-${match[1].slice(-2)}`;
+            return typeof dateUtils.formatDate === 'function' ? dateUtils.formatDate(value) : '-';
+        };
+        const safe = typeof dateUtils.formatDateOnly === 'function' ? dateUtils.formatDateOnly : fallback;
+        return (value) => safe(value);
+    }, []);
 
     if (loading) {
         return (
@@ -205,7 +217,7 @@ const InfluencerDetail = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {influencer.socialProfiles.map((profile) => {
-                    const historyDates = profile.metrics.map((m) => formatDateOnly(m.date));
+                    const historyDates = profile.metrics.map((m) => formatMetricDate(m.date));
                     const historyFollowers = profile.metrics.map((m) => m.followersCount);
                     const totalPosts = profile.metrics.reduce((sum, m) => sum + m.postsCount, 0);
                     const postsCounts = profile.metrics.map((m) => m.postsCount);
@@ -285,7 +297,7 @@ const InfluencerDetail = () => {
                             <div className="flex items-center justify-between text-xs text-zinc-500 pt-4 border-t border-white/5">
                                 <div className="flex items-center gap-1">
                                     <Calendar size={12} />
-                                    Última atualização: {formatDateOnly(lastUpdate)}
+                                    Última atualização: {formatMetricDate(lastUpdate)}
                                 </div>
                                 {profile.externalId && <span>ID: {profile.externalId}</span>}
                             </div>

@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import LazyChart from '../components/LazyChart';
 import { Users, TrendingUp, Activity, Loader2, Filter, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { formatDateOnly } from '../utils/dateUtils';
+import * as dateUtils from '../utils/dateUtils';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -21,6 +21,20 @@ const Dashboard = () => {
     const [genderByRegion, setGenderByRegion] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+
+    const formatMetricDate = useMemo(() => {
+        // Use the stable "date-only" formatter when available; otherwise fallback without timezone shifting.
+        const fallback = (value) => {
+            if (!value) return '-';
+            const raw = value instanceof Date ? value.toISOString() : String(value);
+            const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (match) return `${match[3]}-${match[2]}-${match[1].slice(-2)}`;
+            return typeof dateUtils.formatDate === 'function' ? dateUtils.formatDate(value) : '-';
+        };
+
+        const safe = typeof dateUtils.formatDateOnly === 'function' ? dateUtils.formatDateOnly : fallback;
+        return (value) => safe(value);
+    }, []);
 
     const params = useMemo(() => {
         const p = new URLSearchParams();
@@ -91,13 +105,13 @@ const Dashboard = () => {
         chart: { type: 'area', toolbar: { show: false }, background: 'transparent', zoom: { enabled: false } },
         dataLabels: { enabled: false },
         stroke: { curve: 'smooth', width: 2 },
-        xaxis: { categories: timeline.map(t => formatDateOnly(t.date)), ...baseAxisColors, tooltip: { enabled: false } },
+        xaxis: { categories: timeline.map(t => formatMetricDate(t.date)), ...baseAxisColors, tooltip: { enabled: false } },
         yaxis: { ...baseAxisColors },
         grid: { borderColor: gridColor, strokeDashArray: 0, yaxis: { lines: { show: true } } },
         colors: ['#8b5cf6'], // violet-500
         fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 90, 100] } },
         theme: { mode: 'dark' }
-    }), [timeline]);
+    }), [timeline, formatMetricDate]);
 
     const barChartOptions = useMemo(() => ({
         chart: { type: 'bar', toolbar: { show: false }, background: 'transparent' },
