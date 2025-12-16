@@ -1,0 +1,11 @@
+{
+  "actorSpecification": 1,
+  "name": "social-metrics-retry",
+  "title": "Social Metrics Retry Orchestrator",
+  "description": "Reprocessa perfis com falha usando atores da Apify Store, registrando sucesso ou erro com attempt incrementado.",
+  "version": "0.1.0",
+  "dockerfile": "./Dockerfile",
+  "meta": {
+    "template": "typescript"
+  }
+}
