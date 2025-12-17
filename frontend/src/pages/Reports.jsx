@@ -25,6 +25,7 @@ const Reports = () => {
     const [monthFilter, setMonthFilter] = useState('');
     const [yearFilter, setYearFilter] = useState('');
     const [cards, setCards] = useState([]);
+    const [totalItems, setTotalItems] = useState(0);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [error, setError] = useState('');
@@ -32,6 +33,7 @@ const Reports = () => {
     const [rankError, setRankError] = useState('');
     const [rankData, setRankData] = useState([]);
     const [rankTotals, setRankTotals] = useState(null);
+    const [rankMode, setRankMode] = useState('weekly'); // 'weekly' or 'monthly'
     const rankRef = useRef(null);
 
     // Allowed states based on RBAC
@@ -48,22 +50,9 @@ const Reports = () => {
     // Use local stateFilter or fallback to global selectedState
     const effectiveState = stateFilter || selectedState;
 
-    const filteredCards = useMemo(() => {
-        return cards.filter(card => {
-            const matchesSearch = card.name.toLowerCase().includes(search.toLowerCase());
-            const matchesState = effectiveState ? card.state === effectiveState : true;
-            const matchesCity = selectedMunicipality ? card.city === selectedMunicipality : true;
-            const matchesSeries = seriesFilter ? card.series === seriesFilter : true;
-            return matchesSearch && matchesState && matchesCity && matchesSeries;
-        });
-    }, [cards, search, effectiveState, selectedMunicipality, seriesFilter]);
-
-    const paginatedCards = useMemo(() => {
-        const start = (page - 1) * PAGE_SIZE;
-        return filteredCards.slice(start, start + PAGE_SIZE);
-    }, [filteredCards, page]);
-
-    const totalPages = Math.max(1, Math.ceil(filteredCards.length / PAGE_SIZE));
+    // Server-side pagination means 'cards' is already the current page of data
+    // We rely on the API to filter and paginate
+    const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
 
     useEffect(() => {
         const fetchData = async () => {
@@ -76,12 +65,18 @@ const Reports = () => {
                 if (seriesFilter) params.append('series', seriesFilter);
                 if (monthFilter) params.append('month', monthFilter);
                 if (yearFilter) params.append('year', yearFilter);
+                if (search) params.append('search', search);
+
+                params.append('page', page);
+                params.append('limit', PAGE_SIZE);
+
                 const res = await fetch(`${API_URL}/reports?${params.toString()}`, { credentials: 'include' });
                 if (!res.ok) {
                     throw new Error('Erro ao carregar relatórios');
                 }
                 const json = await res.json();
                 setCards(json.data || []);
+                setTotalItems(json.pagination?.total || 0);
             } catch (err) {
                 console.error('Erro ao carregar relatórios', err);
                 setError('Não foi possível carregar os relatórios. Tente novamente mais tarde.');
@@ -90,7 +85,7 @@ const Reports = () => {
             }
         };
         fetchData();
-    }, [effectiveState, selectedMunicipality, seriesFilter, monthFilter, yearFilter]);
+    }, [effectiveState, selectedMunicipality, seriesFilter, monthFilter, yearFilter, search, page]);
 
     const handleExport = async () => {
         try {
@@ -117,35 +112,79 @@ const Reports = () => {
         }
     };
 
-    const handleExportRank = async () => {
+    const handleExportWeeklyRank = async () => {
         setRankError('');
         setRankLoading(true);
+        setRankMode('weekly');
         try {
             const params = new URLSearchParams();
             if (effectiveState) params.append('state', effectiveState);
             if (selectedMunicipality) params.append('city', selectedMunicipality);
             if (search) params.append('search', search);
             if (seriesFilter) params.append('series', seriesFilter);
+            params.append('mode', 'weekly');
             const res = await fetch(`${API_URL}/reports/rank?${params.toString()}`, { credentials: 'include' });
             if (!res.ok) {
-                throw new Error('Erro ao carregar ranking');
+                const errJson = await res.json().catch(() => ({}));
+                throw new Error(errJson.message || 'Erro ao carregar ranking');
             }
             const json = await res.json();
             setRankData(json.data || []);
             setRankTotals(json.totals || null);
-            // aguarda render
             await new Promise((resolve) => setTimeout(resolve, 50));
             if (rankRef.current) {
                 const dataUrl = await toPng(rankRef.current, { pixelRatio: 2, cacheBust: true });
                 const link = document.createElement('a');
                 const today = new Date().toISOString().split('T')[0];
                 link.href = dataUrl;
-                link.download = `rank-${today}.png`;
+                link.download = `rank-semanal-${today}.png`;
                 link.click();
             }
         } catch (err) {
             console.error(err);
-            setRankError('Não foi possível gerar o rank. Tente novamente.');
+            setRankError(err.message || 'Não foi possível gerar o ranking semanal.');
+        } finally {
+            setRankLoading(false);
+        }
+    };
+
+    const handleExportMonthlyRank = async () => {
+        if (!monthFilter || !yearFilter) {
+            setRankError('Selecione mês e ano para gerar o ranking mensal.');
+            return;
+        }
+        setRankError('');
+        setRankLoading(true);
+        setRankMode('monthly');
+        try {
+            const params = new URLSearchParams();
+            if (effectiveState) params.append('state', effectiveState);
+            if (selectedMunicipality) params.append('city', selectedMunicipality);
+            if (search) params.append('search', search);
+            if (seriesFilter) params.append('series', seriesFilter);
+            params.append('mode', 'monthly');
+            params.append('month', monthFilter);
+            params.append('year', yearFilter);
+            const res = await fetch(`${API_URL}/reports/rank?${params.toString()}`, { credentials: 'include' });
+            if (!res.ok) {
+                const errJson = await res.json().catch(() => ({}));
+                throw new Error(errJson.message || 'Erro ao carregar ranking');
+            }
+            const json = await res.json();
+            setRankData(json.data || []);
+            setRankTotals(json.totals || null);
+            await new Promise((resolve) => setTimeout(resolve, 50));
+            if (rankRef.current) {
+                const dataUrl = await toPng(rankRef.current, { pixelRatio: 2, cacheBust: true });
+                const link = document.createElement('a');
+                const today = new Date().toISOString().split('T')[0];
+                link.href = dataUrl;
+                link.download = `rank-mensal-${monthFilter}-${yearFilter}.png`;
+                link.click();
+            }
+        } catch (err) {
+            console.error(err);
+            setRankError(err.message || 'Não foi possível gerar o ranking mensal.');
         } finally {
             setRankLoading(false);
         }
@@ -176,12 +215,21 @@ const Reports = () => {
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                     <button
-                        onClick={handleExportRank}
+                        onClick={handleExportWeeklyRank}
                         disabled={rankLoading}
                         className="flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-zinc-800 text-white hover:bg-zinc-700 border border-white/5 disabled:opacity-50 transition-colors"
                     >
-                        {rankLoading ? <Loader2 size={16} className="mr-2 animate-spin" /> : <ListOrdered size={16} className="mr-2" />}
-                        Exportar Ranking
+                        {rankLoading && rankMode === 'weekly' ? <Loader2 size={16} className="mr-2 animate-spin" /> : <ListOrdered size={16} className="mr-2" />}
+                        Ranking Semanal
+                    </button>
+                    <button
+                        onClick={handleExportMonthlyRank}
+                        disabled={rankLoading}
+                        className="flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-zinc-800 text-white hover:bg-zinc-700 border border-white/5 disabled:opacity-50 transition-colors"
+                        title={!monthFilter || !yearFilter ? 'Selecione mês e ano' : ''}
+                    >
+                        {rankLoading && rankMode === 'monthly' ? <Loader2 size={16} className="mr-2 animate-spin" /> : <ListOrdered size={16} className="mr-2" />}
+                        Ranking Mensal
                     </button>
                     <button
                         onClick={handleExport}
@@ -251,12 +299,12 @@ const Reports = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {paginatedCards.map((card) => (
+                {cards.map((card) => (
                     <ReportCard key={card.id} card={card} />
                 ))}
             </div>
 
-            {paginatedCards.length === 0 && (
+            {cards.length === 0 && (
                 <div className="text-center py-20 bg-zinc-900/30 border border-dashed border-zinc-800 rounded-2xl text-zinc-500">
                     Nenhum relatório encontrado para os filtros selecionados.
                 </div>
@@ -287,11 +335,20 @@ const Reports = () => {
             )}
 
             <div className="absolute -left-[9999px] top-0">
-                <div ref={rankRef} className="min-w-[900px] bg-zinc-950 text-white rounded-xl shadow-2xl p-6 border border-zinc-800">
+                <div ref={rankRef} className="min-w-[700px] bg-zinc-950 text-white rounded-xl shadow-2xl p-6 border border-zinc-800">
                     <div className="flex items-center justify-between mb-4">
                         <div>
-                            <h3 className="text-xl font-bold">Ranking de Engajamento</h3>
-                            <p className="text-sm text-zinc-400">Últimas 4 semanas • {selectedState || 'Brasil'}{selectedMunicipality ? ` / ${selectedMunicipality}` : ''}</p>
+                            <h3 className="text-xl font-bold">
+                                {rankMode === 'weekly' ? 'Ranking Semanal' : 'Ranking Mensal'}
+                            </h3>
+                            <p className="text-sm text-zinc-400">
+                                {rankMode === 'weekly'
+                                    ? `Semana atual vs. passada`
+                                    : `${new Date(2000, parseInt(monthFilter) - 1).toLocaleString('pt-BR', { month: 'long' })} / ${yearFilter}`
+                                }
+                                {effectiveState ? ` • ${effectiveState}` : ''}
+                                {selectedMunicipality ? ` / ${selectedMunicipality}` : ''}
+                            </p>
                         </div>
                         <span className="text-xs text-zinc-500 bg-zinc-900 px-3 py-1 rounded-full border border-zinc-800">Gerado em {formatDate(new Date())}</span>
                     </div>
@@ -300,10 +357,19 @@ const Reports = () => {
                             <tr className="bg-zinc-900/50 text-zinc-400">
                                 <th className="p-3 text-left border-y border-zinc-800 rounded-l-lg font-medium">Influenciador</th>
                                 <th className="p-3 text-center border-y border-zinc-800 font-medium">Série</th>
-                                <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana -3</th>
-                                <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana -2</th>
-                                <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana -1</th>
-                                <th className="p-3 text-right border-y border-zinc-800 font-medium">Atual</th>
+                                {rankMode === 'weekly' ? (
+                                    <>
+                                        <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana passada</th>
+                                        <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana atual</th>
+                                    </>
+                                ) : (
+                                    <>
+                                        <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana 1</th>
+                                        <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana 2</th>
+                                        <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana 3</th>
+                                        <th className="p-3 text-right border-y border-zinc-800 font-medium">Semana 4</th>
+                                    </>
+                                )}
                                 <th className="p-3 text-right border-y border-zinc-800 font-medium">Cresc.</th>
                                 <th className="p-3 text-right border-y border-zinc-800 rounded-r-lg font-medium">%</th>
                             </tr>
@@ -318,10 +384,19 @@ const Reports = () => {
                                     <td className="p-3 text-center border-b border-zinc-800/50">
                                         <SeriesBadge series={row.series} size="sm" />
                                     </td>
-                                    <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w3 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w2 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w1 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-3 text-right border-b border-zinc-800/50 font-medium text-white">{(row.weeks.w0 ?? 0).toLocaleString('pt-BR')}</td>
+                                    {rankMode === 'weekly' ? (
+                                        <>
+                                            <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w1 ?? 0).toLocaleString('pt-BR')}</td>
+                                            <td className="p-3 text-right border-b border-zinc-800/50 font-medium text-white">{(row.weeks.w0 ?? 0).toLocaleString('pt-BR')}</td>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w3 ?? 0).toLocaleString('pt-BR')}</td>
+                                            <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w2 ?? 0).toLocaleString('pt-BR')}</td>
+                                            <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w1 ?? 0).toLocaleString('pt-BR')}</td>
+                                            <td className="p-3 text-right border-b border-zinc-800/50 font-medium text-white">{(row.weeks.w0 ?? 0).toLocaleString('pt-BR')}</td>
+                                        </>
+                                    )}
                                     <td className="p-3 text-right border-b border-zinc-800/50 text-emerald-400">{(row.growthAbs ?? 0).toLocaleString('pt-BR')}</td>
                                     <td className="p-3 text-right border-b border-zinc-800/50 text-emerald-400 font-bold">{(row.growthPct ?? 0).toFixed(1)}%</td>
                                 </tr>
@@ -330,10 +405,19 @@ const Reports = () => {
                                 <tr className="bg-zinc-900/80 font-bold">
                                     <td className="p-3 rounded-l-lg text-zinc-300">Total</td>
                                     <td className="p-3"></td>
-                                    <td className="p-3 text-right text-zinc-300">{(rankTotals.w3 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-3 text-right text-zinc-300">{(rankTotals.w2 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-3 text-right text-zinc-300">{(rankTotals.w1 ?? 0).toLocaleString('pt-BR')}</td>
-                                    <td className="p-3 text-right text-white">{(rankTotals.w0 ?? 0).toLocaleString('pt-BR')}</td>
+                                    {rankMode === 'weekly' ? (
+                                        <>
+                                            <td className="p-3 text-right text-zinc-300">{(rankTotals.w1 ?? 0).toLocaleString('pt-BR')}</td>
+                                            <td className="p-3 text-right text-white">{(rankTotals.w0 ?? 0).toLocaleString('pt-BR')}</td>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <td className="p-3 text-right text-zinc-300">{(rankTotals.w3 ?? 0).toLocaleString('pt-BR')}</td>
+                                            <td className="p-3 text-right text-zinc-300">{(rankTotals.w2 ?? 0).toLocaleString('pt-BR')}</td>
+                                            <td className="p-3 text-right text-zinc-300">{(rankTotals.w1 ?? 0).toLocaleString('pt-BR')}</td>
+                                            <td className="p-3 text-right text-white">{(rankTotals.w0 ?? 0).toLocaleString('pt-BR')}</td>
+                                        </>
+                                    )}
                                     <td className="p-3 text-right text-emerald-400">{(rankTotals.growthAbs ?? 0).toLocaleString('pt-BR')}</td>
                                     <td className="p-3 text-right text-emerald-400 rounded-r-lg">{(rankTotals.growthPct ?? 0).toFixed(1)}%</td>
                                 </tr>

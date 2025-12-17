@@ -1,0 +1,1933 @@
+\2025-12-16T06:01:29.282Z ACTOR: Pulling container image of build 1YCqMoylpwcDFILgt from registry.
+2025-12-16T06:01:38.520Z ACTOR: Creating container.
+2025-12-16T06:01:38.627Z ACTOR: Starting container.
+2025-12-16T06:01:38.629Z ACTOR: Running under "LIMITED_PERMISSIONS" permission level.
+2025-12-16T06:01:38.878Z Will run command: xvfb-run -a -s "-ac -screen 0 1920x1080x24+32 -nolisten tcp" npm run start:prod
+2025-12-16T06:01:39.202Z 
+2025-12-16T06:01:39.204Z > social-metrics-scalable@1.0.0 start:prod
+2025-12-16T06:01:39.205Z > npm run build && npm run start
+2025-12-16T06:01:39.206Z 
+2025-12-16T06:01:39.359Z 
+2025-12-16T06:01:39.360Z > social-metrics-scalable@1.0.0 build
+2025-12-16T06:01:39.362Z > tsc
+2025-12-16T06:01:39.364Z 
+2025-12-16T06:01:42.190Z 
+2025-12-16T06:01:42.192Z > social-metrics-scalable@1.0.0 start
+2025-12-16T06:01:42.193Z > node dist/main.js
+2025-12-16T06:01:42.194Z 
+2025-12-16T06:01:43.885Z INFO  System info {"apifyVersion":"3.5.2","apifyClientVersion":"2.20.0","crawleeVersion":"3.15.3","osType":"Linux","nodeVersion":"v20.19.6"}
+2025-12-16T06:01:43.993Z 🚀 Starting parallel execution for 5 platforms
+2025-12-16T06:01:43.995Z 
+2025-12-16T06:01:43.996Z 📱 Processing x: 41 profiles
+2025-12-16T06:01:43.999Z 🛡️ Isolating calls for x to prevent limit exhaustion/batch failures
+2025-12-16T06:01:44.000Z 🚀 Calling actor apidojo/twitter-user-scraper for sampantojapa
+2025-12-16T06:01:44.002Z 
+2025-12-16T06:01:44.004Z 📱 Processing youtube: 38 profiles
+2025-12-16T06:01:44.005Z 🔧 Using custom Puppeteer scraper for YouTube...
+2025-12-16T06:01:44.337Z 
+2025-12-16T06:01:44.338Z 📱 Processing kwai: 36 profiles
+2025-12-16T06:01:44.340Z 🔧 Using custom Puppeteer scraper for Kwai...
+2025-12-16T06:01:44.475Z 
+2025-12-16T06:01:44.477Z 📱 Processing tiktok: 40 profiles
+2025-12-16T06:01:44.478Z 🚀 Calling actor: apidojo/tiktok-scraper
+2025-12-16T06:01:44.480Z    Input: {
+2025-12-16T06:01:44.481Z   "startUrls": [
+2025-12-16T06:01:44.483Z     "https://www.tiktok.com/@sampantojapa",
+2025-12-16T06:01:44.484Z     "https://www.tiktok.com/@renan.hallais",
+2025-12-16T06:01:44.485Z     "https://www.tiktok.com/@asafe.pe",
+2025-12-16T06:01:44.487Z     "https://www.tiktok.com/@xandepessoape",
+2025-12-16T06:01:44.488Z     "https://www.tiktok.com/@ricardomoraispb",
+2025-12-16T06:01:44.490Z     "https://www.tiktok.com/@fabiosilveira.rn",
+2025-12-16T06:01:44.491Z     "https://www.tiktok.com/@joel_constancia",
+2025-12-16T06:01:44.493Z     "https://www.tiktok.com/@obrasildecima",
+2025-12-16T06:01:44.494Z     "https://www.tiktok.com/@nadsonpa14",
+2025-12-16T06:01:44.495Z     "https://www.tiktok.com/@majacinto_",
+2025-12-16T06:01:44.497Z     "https://www.tiktok.com/@queciareismbl",
+2025-12-16T06:01:44.498Z     "https://www.tiktok.com/@miguel.kazan",
+2025-12-16T06:01:44.499Z     "https://www.tiktok.com/@fernandaschmittvet",
+2025-12-16T06:01:44.501Z     "https://www.tiktok.com/@leomagnun_oficial",
+2025-12-16T06:01:44.503Z     "https://www.tiktok.com/@mikaelgringope",
+2025-12-16T06:01:44.505Z     "https://www.tiktok.com/@wellinngtonpe_ofc",
+2025-12-16T06:01:44.508Z     "https://www.tiktok.com/@bismark.pe",
+2025-12-16T06:01:44.509Z     "https://www.tiktok.com/@filosofodigital",
+2025-12-16T06:01:44.512Z     "https://www.tiktok.com/@arquivodaonca",
+2025-12-16T06:01:44.515Z     "https://www.tiktok.com/@lucasvcavalcantipe",
+2025-12-16T06:01:44.517Z     "https://www.tiktok.com/@pedro.vilaca_pe",
+2025-12-16T06:01:44.519Z     "https://www.tiktok.com/@igorfernandesrnn",
+2025-12-16T06:01:44.520Z     "https://www.tiktok.com/@johnrobertpa",
+2025-12-16T06:01:44.522Z     "https://www.tiktok.com/@felixsantos.rn",
+2025-12-16T06:01:44.523Z     "https://www.tiktok.com/@evandro__bandeira",
+2025-12-16T06:01:44.524Z     "https://www.tiktok.com/@ciromtpe",
+2025-12-16T06:01:44.526Z     "https://www.tiktok.com/@nathaliapedrosa14",
+2025-12-16T06:01:44.527Z     "https://www.tiktok.com/@freitasspb",
+2025-12-16T06:01:44.529Z     "https://www.tiktok.com/@marvin_azoubel",
+2025-12-16T06:01:44.530Z     "https://www.tiktok.com/@caio_arruda14",
+2025-12-16T06:01:44.532Z     "https://www.tiktok.com/@sarahbitencourt.pe",
+2025-12-16T06:01:44.533Z     "https://www.tiktok.com/@imported",
+2025-12-16T06:01:44.535Z     "https://www.tiktok.com/@imported",
+2025-12-16T06:01:44.536Z     "https://www.tiktok.com/@migueladrianope",
+2025-12-16T06:01:44.538Z     "https://www.tiktok.com/@rhuanlimax",
+2025-12-16T06:01:44.539Z     "https://www.tiktok.com/@otdutra",
+2025-12-16T06:01:44.541Z     "https://www.tiktok.com/@ph_assis14",
+2025-12-16T06:01:44.542Z     "https://www.tiktok.com/@abinadabefig",
+2025-12-16T06:01:44.544Z     "https://www.tiktok.com/@ericmuniz.pe",
+2025-12-16T06:01:44.545Z     "https://www.tiktok.com/@lucastatal"
+2025-12-16T06:01:44.546Z   ],
+2025-12-16T06:01:44.549Z   "maxItems": 80,
+2025-12-16T06:01:44.550Z   "customMapFunction": "(object) => { return {...object} }"
+2025-12-16T06:01:44.551Z }
+2025-12-16T06:01:44.552Z 
+2025-12-16T06:01:44.554Z 📱 Processing instagram: 57 profiles
+2025-12-16T06:01:44.555Z 🚀 Calling actor: apify/instagram-profile-scraper
+2025-12-16T06:01:44.557Z    Input: {
+2025-12-16T06:01:44.558Z   "usernames": [
+2025-12-16T06:01:44.559Z     "mblivrepa",
+2025-12-16T06:01:44.561Z     "mikaelgringope",
+2025-12-16T06:01:44.562Z     "miguelkazam",
+2025-12-16T06:01:44.563Z     "asafe.pe",
+2025-12-16T06:01:44.565Z     "xandepessoape",
+2025-12-16T06:01:44.566Z     "ricardomoraispb",
+2025-12-16T06:01:44.567Z     "fabiosilveira.rn",
+2025-12-16T06:01:44.569Z     "obrasildecima",
+2025-12-16T06:01:44.570Z     "fernandaschmittvet",
+2025-12-16T06:01:44.572Z     "mblpernambuco",
+2025-12-16T06:01:44.573Z     "nadsonpa",
+2025-12-16T06:01:44.575Z     "majacinto_",
+2025-12-16T06:01:44.576Z     "queciareismbl",
+2025-12-16T06:01:44.578Z     "Renan.Hallais",
+2025-12-16T06:01:44.579Z     "sampantojapa",
+2025-12-16T06:01:44.581Z     "leomagnun",
+2025-12-16T06:01:44.582Z     "mblivrepb",
+2025-12-16T06:01:44.583Z     "mblalagoas",
+2025-12-16T06:01:44.585Z     "mblivrern",
+2025-12-16T06:01:44.586Z     "saulomodestopa",
+2025-12-16T06:01:44.588Z     "rafaeloliveira_pa",
+2025-12-16T06:01:44.589Z     "joelconstancia",
+2025-12-16T06:01:44.590Z     "wellingtonpe_ofc",
+2025-12-16T06:01:44.592Z     "le0_pb",
+2025-12-16T06:01:44.593Z     "bismark.pe",
+2025-12-16T06:01:44.595Z     "filosofo_digital",
+2025-12-16T06:01:44.596Z     "arquivo_da_onca",
+2025-12-16T06:01:44.597Z     "lucasvcavalcanti",
+2025-12-16T06:01:44.599Z     "pedrovilacape",
+2025-12-16T06:01:44.600Z     "Igor.FernandesRN",
+2025-12-16T06:01:44.602Z     "freitasspb",
+2025-12-16T06:01:44.603Z     "felixsantos.rn",
+2025-12-16T06:01:44.604Z     "bandeiradrones",
+2025-12-16T06:01:44.606Z     "ciromtpe",
+2025-12-16T06:01:44.607Z     "nathaliapedrosa14",
+2025-12-16T06:01:44.609Z     "marvinazoubel",
+2025-12-16T06:01:44.610Z     "ccaio_arruda",
+2025-12-16T06:01:44.611Z     "sarahbitencourt.pe",
+2025-12-16T06:01:44.613Z     "imported",
+2025-12-16T06:01:44.614Z     "imported",
+2025-12-16T06:01:44.616Z     "imported",
+2025-12-16T06:01:44.617Z     "imported",
+2025-12-16T06:01:44.618Z     "imported",
+2025-12-16T06:01:44.620Z     "imported",
+2025-12-16T06:01:44.621Z     "imported",
+2025-12-16T06:01:44.622Z     "imported",
+2025-12-16T06:01:44.624Z     "johnrobertpa",
+2025-12-16T06:01:44.625Z     "migueladrianope",
+2025-12-16T06:01:44.627Z     "rhuanlimax",
+2025-12-16T06:01:44.629Z     "otdutra",
+2025-12-16T06:01:44.631Z     "ph_assis14",
+2025-12-16T06:01:44.633Z     "imported",
+2025-12-16T06:01:44.634Z     "abinadabefigueiredo",
+2025-12-16T06:01:44.636Z     "ericmuniz.pe",
+2025-12-16T06:01:44.637Z     "lucastatal",
+2025-12-16T06:01:44.639Z     "imported",
+2025-12-16T06:01:44.640Z     "imported"
+2025-12-16T06:01:44.642Z   ],
+2025-12-16T06:01:44.643Z   "resultsLimit": 1
+2025-12-16T06:01:44.645Z }
+2025-12-16T06:01:44.646Z ❌ Error with tiktok: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:01:44.647Z   clientMethod: ActorClient.start
+2025-12-16T06:01:44.649Z   statusCode: 403
+2025-12-16T06:01:44.650Z   type: insufficient-permissions
+2025-12-16T06:01:44.652Z   attempt: 1
+2025-12-16T06:01:44.653Z   httpMethod: post
+2025-12-16T06:01:44.654Z   path: /v2/acts/apidojo~tiktok-scraper/runs
+2025-12-16T06:01:44.656Z   stack:
+2025-12-16T06:01:44.657Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:01:44.658Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:01:44.659Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:01:44.661Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:01:44.662Z     at async processPlatform (file:///home/myuser/dist/main.js:162:21)
+2025-12-16T06:01:44.663Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:01:44.665Z     at async Promise.all (index 3)
+2025-12-16T06:01:44.667Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:01:44.668Z   data: undefined {
+2025-12-16T06:01:44.670Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:01:44.671Z   statusCode: 403,
+2025-12-16T06:01:44.673Z   type: 'insufficient-permissions',
+2025-12-16T06:01:44.674Z   attempt: 1,
+2025-12-16T06:01:44.675Z   httpMethod: 'post',
+2025-12-16T06:01:44.677Z   path: '/v2/acts/apidojo~tiktok-scraper/runs',
+2025-12-16T06:01:44.678Z   originalStack: '\n' +
+2025-12-16T06:01:44.679Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:01:44.681Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:01:44.682Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:01:44.684Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:01:44.685Z     '    at async processPlatform (file:///home/myuser/dist/main.js:162:21)\n' +
+2025-12-16T06:01:44.686Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:01:44.688Z     '    at async Promise.all (index 3)\n' +
+2025-12-16T06:01:44.690Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:01:44.691Z   data: undefined
+2025-12-16T06:01:44.692Z }
+2025-12-16T06:01:44.694Z ❌ Error with x/sampantojapa: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:01:44.695Z   clientMethod: ActorClient.start
+2025-12-16T06:01:44.696Z   statusCode: 403
+2025-12-16T06:01:44.698Z   type: insufficient-permissions
+2025-12-16T06:01:44.699Z   attempt: 1
+2025-12-16T06:01:44.700Z   httpMethod: post
+2025-12-16T06:01:44.702Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:01:44.703Z   stack:
+2025-12-16T06:01:44.704Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:01:44.706Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:01:44.707Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:01:44.709Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:01:44.710Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:01:44.711Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:01:44.713Z     at async Promise.all (index 0)
+2025-12-16T06:01:44.714Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:01:44.715Z   data: undefined {
+2025-12-16T06:01:44.716Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:01:44.718Z   statusCode: 403,
+2025-12-16T06:01:44.719Z   type: 'insufficient-permissions',
+2025-12-16T06:01:44.720Z   attempt: 1,
+2025-12-16T06:01:44.722Z   httpMethod: 'post',
+2025-12-16T06:01:44.723Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:01:44.725Z   originalStack: '\n' +
+2025-12-16T06:01:44.726Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:01:44.728Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:01:44.729Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:01:44.731Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:01:44.732Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:01:44.734Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:01:44.736Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:01:44.740Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:01:44.741Z   data: undefined
+2025-12-16T06:01:44.743Z }
+2025-12-16T06:01:44.744Z 🚀 Calling actor apidojo/twitter-user-scraper for RenanHallais
+2025-12-16T06:01:44.807Z INFO  PuppeteerCrawler: Starting the crawler.
+2025-12-16T06:01:44.879Z INFO  PuppeteerCrawler: Starting the crawler.
+2025-12-16T06:01:45.176Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:44.847Z ACTOR: Pulling container image of build 6dnXPTimvaivYzgIX from registry.
+2025-12-16T06:01:45.178Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:44.849Z ACTOR: Creating container.
+2025-12-16T06:01:45.180Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:44.904Z ACTOR: Starting container.
+2025-12-16T06:01:45.181Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:44.905Z ACTOR: Running under "LIMITED_PERMISSIONS" permission level.
+2025-12-16T06:01:45.616Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:45.577Z INFO  System info {"apifyVersion":"3.5.1","apifyClientVersion":"2.19.0","crawleeVersion":"3.15.3","osType":"Linux","nodeVersion":"v22.21.1"}
+2025-12-16T06:01:45.812Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:45.809Z INFO  Results Limit [object Object], ACTOR_MAX_PAID_DATASET_ITEMS 1423
+2025-12-16T06:01:45.975Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:45.972Z INFO  Starting Apify client's scheduler {"clientName":"CLIENT"}
+2025-12-16T06:01:45.996Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:45.994Z INFO  pushDataMaxAware 1423
+2025-12-16T06:01:46.212Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:46.199Z INFO  [Status message]: Starting the scraper with 47 direct URL(s)
+2025-12-16T06:01:46.233Z INFO  PuppeteerCrawler: Scraping Kwai profile: imported
+2025-12-16T06:01:46.652Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:46.638Z INFO  CheerioCrawler: Starting the crawler.
+2025-12-16T06:01:47.437Z INFO  PuppeteerCrawler: ✅ Kwai imported: null followers, null posts
+2025-12-16T06:01:47.896Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.883Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. The proxy server rejected the request with status code 590 (UPSTREAM500)
+2025-12-16T06:01:47.899Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.884Z     at ClientRequest.<anonymous> (file:///usr/src/app/dist/984.index.js:16244:109) {"id":"XBl0iBM9rmYmjEH","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=ericmuniz.pe","retryCount":1}
+2025-12-16T06:01:47.900Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.885Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. The proxy server rejected the request with status code 590 (UPSTREAM500)
+2025-12-16T06:01:47.902Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.886Z     at ClientRequest.<anonymous> (file:///usr/src/app/dist/984.index.js:16244:109) {"id":"Mo0Vc0gVJ41dx8p","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=mblivrepb","retryCount":1}
+2025-12-16T06:01:47.903Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.886Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. The proxy server rejected the request with status code 590 (UPSTREAM500)
+2025-12-16T06:01:47.905Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.887Z     at ClientRequest.<anonymous> (file:///usr/src/app/dist/984.index.js:16244:109) {"id":"gF30HkxuQi5Fy8G","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=filosofo_digital","retryCount":1}
+2025-12-16T06:01:47.966Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.954Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. The proxy server rejected the request with status code 590 (UPSTREAM500)
+2025-12-16T06:01:47.969Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.955Z     at ClientRequest.<anonymous> (file:///usr/src/app/dist/984.index.js:16244:109) {"id":"Fhf1tIAm40J5oLH","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=lucastatal","retryCount":1}
+2025-12-16T06:01:47.970Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.958Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. The proxy server rejected the request with status code 590 (UPSTREAM500)
+2025-12-16T06:01:47.972Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.959Z     at ClientRequest.<anonymous> (file:///usr/src/app/dist/984.index.js:16244:109) {"id":"1ZxpyqoLEExFJDN","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=sarahbitencourt.pe","retryCount":1}
+2025-12-16T06:01:47.973Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.960Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. The proxy server rejected the request with status code 590 (UPSTREAM500)
+2025-12-16T06:01:47.975Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.961Z     at ClientRequest.<anonymous> (file:///usr/src/app/dist/984.index.js:16244:109) {"id":"pJQjECEFuGHyi9N","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=xandepessoape","retryCount":1}
+2025-12-16T06:01:47.978Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.974Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. The proxy server rejected the request with status code 590 (UPSTREAM500)
+2025-12-16T06:01:47.985Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:47.975Z     at ClientRequest.<anonymous> (file:///usr/src/app/dist/984.index.js:16244:109) {"id":"9X8DCKgYpaqfnpQ","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=wellingtonpe_ofc","retryCount":1}
+2025-12-16T06:01:48.539Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:48.536Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. Request blocked, retrying it again with different session
+2025-12-16T06:01:48.541Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:48.537Z     at CheerioCrawler._requestFunctionErrorHandler (file:///usr/src/app/dist/index.js:1:27515) {"id":"Sca2Tx7bot0G3HL","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=sampantojapa","retryCount":1}
+2025-12-16T06:01:48.630Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:48.628Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. Request blocked, retrying it again with different session
+2025-12-16T06:01:48.639Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:48.629Z     at CheerioCrawler._requestFunctionErrorHandler (file:///usr/src/app/dist/index.js:1:27515) {"id":"9I5igQBy52R4UXq","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=felixsantos.rn","retryCount":1}
+2025-12-16T06:01:48.682Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:48.677Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. Request blocked, retrying it again with different session
+2025-12-16T06:01:48.683Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:48.678Z     at CheerioCrawler._requestFunctionErrorHandler (file:///usr/src/app/dist/index.js:1:27515) {"id":"m4lbPlPiLLPBKgl","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=pedrovilacape","retryCount":1}
+2025-12-16T06:01:48.719Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:48.715Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. Request blocked, retrying it again with different session
+2025-12-16T06:01:48.736Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:48.725Z     at CheerioCrawler._requestFunctionErrorHandler (file:///usr/src/app/dist/index.js:1:27515) {"id":"5VI5d550ExrmeYY","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=mblalagoas","retryCount":1}
+2025-12-16T06:01:48.960Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:48.938Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. Request blocked, retrying it again with different session
+2025-12-16T06:01:48.966Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:48.939Z     at CheerioCrawler._requestFunctionErrorHandler (file:///usr/src/app/dist/index.js:1:27515) {"id":"njwgFmbFXoXo8T7","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=lucasvcavalcanti","retryCount":1}
+2025-12-16T06:01:49.862Z ❌ Error with x/RenanHallais: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:01:49.864Z   clientMethod: ActorClient.start
+2025-12-16T06:01:49.865Z   statusCode: 403
+2025-12-16T06:01:49.867Z   type: insufficient-permissions
+2025-12-16T06:01:49.868Z   attempt: 1
+2025-12-16T06:01:49.870Z   httpMethod: post
+2025-12-16T06:01:49.871Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:01:49.873Z   stack:
+2025-12-16T06:01:49.874Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:01:49.875Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:01:49.878Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:01:49.879Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:01:49.881Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:01:49.882Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:01:49.884Z     at async Promise.all (index 0)
+2025-12-16T06:01:49.885Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:01:49.887Z   data: undefined {
+2025-12-16T06:01:49.888Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:01:49.890Z   statusCode: 403,
+2025-12-16T06:01:49.892Z   type: 'insufficient-permissions',
+2025-12-16T06:01:49.893Z   attempt: 1,
+2025-12-16T06:01:49.894Z   httpMethod: 'post',
+2025-12-16T06:01:49.896Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:01:49.897Z   originalStack: '\n' +
+2025-12-16T06:01:49.899Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:01:49.901Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:01:49.902Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:01:49.904Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:01:49.906Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:01:49.907Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:01:49.909Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:01:49.910Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:01:49.912Z   data: undefined
+2025-12-16T06:01:49.913Z }
+2025-12-16T06:01:50.178Z 🚀 Calling actor apidojo/twitter-user-scraper for asafepe14
+2025-12-16T06:01:50.460Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:50.447Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. Request blocked, retrying it again with different session
+2025-12-16T06:01:50.463Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:50.448Z     at CheerioCrawler._requestFunctionErrorHandler (file:///usr/src/app/dist/index.js:1:27515) {"id":"fqEYaz09Ga6rSQL","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=joelconstancia","retryCount":1}
+2025-12-16T06:01:52.230Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:52.227Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. The proxy server rejected the request with status code 590 (UPSTREAM500)
+2025-12-16T06:01:52.232Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:52.229Z     at ClientRequest.<anonymous> (file:///usr/src/app/dist/984.index.js:16244:109) {"id":"5VI5d550ExrmeYY","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=mblalagoas","retryCount":2}
+2025-12-16T06:01:52.661Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:52.638Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. Request blocked, retrying it again with different session
+2025-12-16T06:01:52.662Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:52.639Z     at CheerioCrawler._requestFunctionErrorHandler (file:///usr/src/app/dist/index.js:1:27515) {"id":"1ZxpyqoLEExFJDN","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=sarahbitencourt.pe","retryCount":2}
+2025-12-16T06:01:55.362Z ❌ Error with x/asafepe14: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:01:55.364Z   clientMethod: ActorClient.start
+2025-12-16T06:01:55.366Z   statusCode: 403
+2025-12-16T06:01:55.367Z   type: insufficient-permissions
+2025-12-16T06:01:55.369Z   attempt: 1
+2025-12-16T06:01:55.370Z   httpMethod: post
+2025-12-16T06:01:55.371Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:01:55.373Z   stack:
+2025-12-16T06:01:55.375Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:01:55.376Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:01:55.378Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:01:55.379Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:01:55.381Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:01:55.382Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:01:55.384Z     at async Promise.all (index 0)
+2025-12-16T06:01:55.385Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:01:55.387Z   data: undefined {
+2025-12-16T06:01:55.389Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:01:55.391Z   statusCode: 403,
+2025-12-16T06:01:55.392Z   type: 'insufficient-permissions',
+2025-12-16T06:01:55.393Z   attempt: 1,
+2025-12-16T06:01:55.395Z   httpMethod: 'post',
+2025-12-16T06:01:55.396Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:01:55.397Z   originalStack: '\n' +
+2025-12-16T06:01:55.399Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:01:55.400Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:01:55.402Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:01:55.403Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:01:55.405Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:01:55.406Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:01:55.408Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:01:55.409Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:01:55.410Z   data: undefined
+2025-12-16T06:01:55.412Z }
+2025-12-16T06:01:55.460Z 🚀 Calling actor apidojo/twitter-user-scraper for XandePessoaPE
+2025-12-16T06:01:57.166Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:57.158Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. Request blocked, retrying it again with different session
+2025-12-16T06:01:57.168Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:01:57.159Z     at CheerioCrawler._requestFunctionErrorHandler (file:///usr/src/app/dist/index.js:1:27515) {"id":"7zRFIUn3d2V4w2k","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=obrasildecima","retryCount":1}
+2025-12-16T06:01:57.660Z INFO  PuppeteerCrawler: Scraping Kwai profile: marvin_azoubel
+2025-12-16T06:01:57.763Z INFO  PuppeteerCrawler: Scraping Kwai profile: BandeiraDrones
+2025-12-16T06:02:00.663Z INFO  PuppeteerCrawler: ✅ Kwai marvin_azoubel: null followers, 1 posts
+2025-12-16T06:02:00.666Z ❌ Error with x/XandePessoaPE: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:02:00.668Z   clientMethod: ActorClient.start
+2025-12-16T06:02:00.669Z   statusCode: 403
+2025-12-16T06:02:00.671Z   type: insufficient-permissions
+2025-12-16T06:02:00.673Z   attempt: 1
+2025-12-16T06:02:00.675Z   httpMethod: post
+2025-12-16T06:02:00.676Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:02:00.678Z   stack:
+2025-12-16T06:02:00.680Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:02:00.681Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:02:00.683Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:02:00.685Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:02:00.686Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:02:00.688Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:02:00.690Z     at async Promise.all (index 0)
+2025-12-16T06:02:00.691Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:02:00.693Z   data: undefined {
+2025-12-16T06:02:00.695Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:02:00.696Z   statusCode: 403,
+2025-12-16T06:02:00.698Z   type: 'insufficient-permissions',
+2025-12-16T06:02:00.699Z   attempt: 1,
+2025-12-16T06:02:00.701Z   httpMethod: 'post',
+2025-12-16T06:02:00.703Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:02:00.704Z   originalStack: '\n' +
+2025-12-16T06:02:00.706Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:02:00.708Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:02:00.710Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:02:00.711Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:02:00.713Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:02:00.714Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:02:00.716Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:02:00.718Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:02:00.719Z   data: undefined
+2025-12-16T06:02:00.721Z }
+2025-12-16T06:02:00.761Z 🚀 Calling actor apidojo/twitter-user-scraper for ricardomoraispb
+2025-12-16T06:02:00.970Z INFO  PuppeteerCrawler: Scraping YouTube profile: freitaspb
+2025-12-16T06:02:01.760Z INFO  PuppeteerCrawler: ✅ Kwai BandeiraDrones: 3 followers, 1 posts
+2025-12-16T06:02:05.665Z INFO  PuppeteerCrawler: Scraping YouTube profile: sarahbitencourtpe
+2025-12-16T06:02:05.862Z ❌ Error with x/ricardomoraispb: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:02:05.864Z   clientMethod: ActorClient.start
+2025-12-16T06:02:05.865Z   statusCode: 403
+2025-12-16T06:02:05.867Z   type: insufficient-permissions
+2025-12-16T06:02:05.868Z   attempt: 1
+2025-12-16T06:02:05.870Z   httpMethod: post
+2025-12-16T06:02:05.871Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:02:05.873Z   stack:
+2025-12-16T06:02:05.874Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:02:05.876Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:02:05.877Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:02:05.879Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:02:05.880Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:02:05.882Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:02:05.883Z     at async Promise.all (index 0)
+2025-12-16T06:02:05.885Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:02:05.886Z   data: undefined {
+2025-12-16T06:02:05.887Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:02:05.889Z   statusCode: 403,
+2025-12-16T06:02:05.890Z   type: 'insufficient-permissions',
+2025-12-16T06:02:05.892Z   attempt: 1,
+2025-12-16T06:02:05.893Z   httpMethod: 'post',
+2025-12-16T06:02:05.895Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:02:05.897Z   originalStack: '\n' +
+2025-12-16T06:02:05.898Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:02:05.900Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:02:05.901Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:02:05.903Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:02:05.904Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:02:05.906Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:02:05.907Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:02:05.909Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:02:05.910Z   data: undefined
+2025-12-16T06:02:05.912Z }
+2025-12-16T06:02:05.961Z 🚀 Calling actor apidojo/twitter-user-scraper for fabiosilveirarn
+2025-12-16T06:02:11.366Z ❌ Error with x/fabiosilveirarn: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:02:11.369Z   clientMethod: ActorClient.start
+2025-12-16T06:02:11.371Z   statusCode: 403
+2025-12-16T06:02:11.372Z   type: insufficient-permissions
+2025-12-16T06:02:11.374Z   attempt: 1
+2025-12-16T06:02:11.375Z   httpMethod: post
+2025-12-16T06:02:11.376Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:02:11.378Z   stack:
+2025-12-16T06:02:11.379Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:02:11.380Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:02:11.382Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:02:11.383Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:02:11.385Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:02:11.386Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:02:11.388Z     at async Promise.all (index 0)
+2025-12-16T06:02:11.389Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:02:11.390Z   data: undefined {
+2025-12-16T06:02:11.392Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:02:11.393Z   statusCode: 403,
+2025-12-16T06:02:11.395Z   type: 'insufficient-permissions',
+2025-12-16T06:02:11.396Z   attempt: 1,
+2025-12-16T06:02:11.397Z   httpMethod: 'post',
+2025-12-16T06:02:11.399Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:02:11.401Z   originalStack: '\n' +
+2025-12-16T06:02:11.402Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:02:11.403Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:02:11.405Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:02:11.406Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:02:11.408Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:02:11.409Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:02:11.411Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:02:11.412Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:02:11.414Z   data: undefined
+2025-12-16T06:02:11.415Z }
+2025-12-16T06:02:11.523Z 🚀 Calling actor apidojo/twitter-user-scraper for joelconstancia
+2025-12-16T06:02:13.171Z INFO  PuppeteerCrawler: ✅ YouTube freitaspb: 136 subs, 85 videos
+2025-12-16T06:02:13.566Z INFO  PuppeteerCrawler: ✅ YouTube sarahbitencourtpe: 4 subs, 6 videos
+2025-12-16T06:02:16.663Z ❌ Error with x/joelconstancia: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:02:16.665Z   clientMethod: ActorClient.start
+2025-12-16T06:02:16.666Z   statusCode: 403
+2025-12-16T06:02:16.668Z   type: insufficient-permissions
+2025-12-16T06:02:16.669Z   attempt: 1
+2025-12-16T06:02:16.671Z   httpMethod: post
+2025-12-16T06:02:16.672Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:02:16.673Z   stack:
+2025-12-16T06:02:16.675Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:02:16.676Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:02:16.678Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:02:16.681Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:02:16.683Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:02:16.685Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:02:16.686Z     at async Promise.all (index 0)
+2025-12-16T06:02:16.688Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:02:16.689Z   data: undefined {
+2025-12-16T06:02:16.716Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:02:16.721Z   statusCode: 403,
+2025-12-16T06:02:16.722Z   type: 'insufficient-permissions',
+2025-12-16T06:02:16.724Z   attempt: 1,
+2025-12-16T06:02:16.725Z   httpMethod: 'post',
+2025-12-16T06:02:16.727Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:02:16.729Z   originalStack: '\n' +
+2025-12-16T06:02:16.730Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:02:16.732Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:02:16.733Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:02:16.735Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:02:16.738Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:02:16.742Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:02:16.743Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:02:16.745Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:02:16.747Z   data: undefined
+2025-12-16T06:02:16.749Z }
+2025-12-16T06:02:16.764Z 🚀 Calling actor apidojo/twitter-user-scraper for obrasildecima
+2025-12-16T06:02:16.805Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:02:16.801Z WARN  CheerioCrawler: Reclaiming failed request back to the list or queue. request timed out after 30 seconds. {"id":"S99j0c7Jdm4sU2v","url":"https://i.instagram.com/api/v1/users/web_profile_info/?username=mikaelgringope","retryCount":1}
+2025-12-16T06:02:19.665Z INFO  PuppeteerCrawler: Scraping Kwai profile: migueladrianope
+2025-12-16T06:02:21.266Z INFO  PuppeteerCrawler: ✅ Kwai migueladrianope: null followers, 1 posts
+2025-12-16T06:02:21.861Z ❌ Error with x/obrasildecima: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:02:21.864Z   clientMethod: ActorClient.start
+2025-12-16T06:02:21.865Z   statusCode: 403
+2025-12-16T06:02:21.867Z   type: insufficient-permissions
+2025-12-16T06:02:21.869Z   attempt: 1
+2025-12-16T06:02:21.870Z   httpMethod: post
+2025-12-16T06:02:21.872Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:02:21.874Z   stack:
+2025-12-16T06:02:21.875Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:02:21.876Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:02:21.878Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:02:21.880Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:02:21.882Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:02:21.883Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:02:21.885Z     at async Promise.all (index 0)
+2025-12-16T06:02:21.887Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:02:21.888Z   data: undefined {
+2025-12-16T06:02:21.890Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:02:21.892Z   statusCode: 403,
+2025-12-16T06:02:21.894Z   type: 'insufficient-permissions',
+2025-12-16T06:02:21.897Z   attempt: 1,
+2025-12-16T06:02:21.900Z   httpMethod: 'post',
+2025-12-16T06:02:21.902Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:02:21.903Z   originalStack: '\n' +
+2025-12-16T06:02:21.904Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:02:21.906Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:02:21.908Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:02:21.909Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:02:21.911Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:02:21.913Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:02:21.914Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:02:21.915Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:02:21.917Z   data: undefined
+2025-12-16T06:02:21.918Z }
+2025-12-16T06:02:21.962Z 🚀 Calling actor apidojo/twitter-user-scraper for mblivrepe
+2025-12-16T06:02:22.661Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:02:22.573Z INFO  CheerioCrawler: All requests from the queue have been processed, the crawler will shut down.
+2025-12-16T06:02:22.715Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:02:22.692Z INFO  CheerioCrawler: Final request statistics: {"requestsFinished":47,"requestsFailed":0,"retryHistogram":[32,13,2],"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":4376,"requestsFinishedPerMinute":77,"requestsFailedPerMinute":0,"requestTotalDurationMillis":205651,"requestsTotal":47,"crawlerRuntimeMillis":36432}
+2025-12-16T06:02:22.717Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:02:22.693Z INFO  CheerioCrawler: Finished! Total 47 requests: 47 succeeded, 0 failed. {"terminal":true}
+2025-12-16T06:02:22.718Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:02:22.693Z INFO  [Status message]: Scraper finished
+2025-12-16T06:02:22.861Z instagram-profile-scraper runId:KYxlIjLrNfwNS0piH -> 2025-12-16T06:02:22.779Z INFO  Stopping Apify client's scheduler {"clientName":"CLIENT"}
+2025-12-16T06:02:23.863Z ✅ Got 47 results from apify/instagram-profile-scraper
+2025-12-16T06:02:27.062Z ❌ Error with x/mblivrepe: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:02:27.063Z   clientMethod: ActorClient.start
+2025-12-16T06:02:27.064Z   statusCode: 403
+2025-12-16T06:02:27.066Z   type: insufficient-permissions
+2025-12-16T06:02:27.067Z   attempt: 1
+2025-12-16T06:02:27.069Z   httpMethod: post
+2025-12-16T06:02:27.070Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:02:27.072Z   stack:
+2025-12-16T06:02:27.073Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:02:27.074Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:02:27.076Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:02:27.077Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:02:27.078Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:02:27.080Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:02:27.081Z     at async Promise.all (index 0)
+2025-12-16T06:02:27.082Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:02:27.084Z   data: undefined {
+2025-12-16T06:02:27.085Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:02:27.086Z   statusCode: 403,
+2025-12-16T06:02:27.088Z   type: 'insufficient-permissions',
+2025-12-16T06:02:27.089Z   attempt: 1,
+2025-12-16T06:02:27.090Z   httpMethod: 'post',
+2025-12-16T06:02:27.092Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:02:27.093Z   originalStack: '\n' +
+2025-12-16T06:02:27.094Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:02:27.096Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:02:27.097Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:02:27.099Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:02:27.100Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:02:27.101Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:02:27.103Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:02:27.104Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:02:27.105Z   data: undefined
+2025-12-16T06:02:27.107Z }
+2025-12-16T06:02:27.161Z 🚀 Calling actor apidojo/twitter-user-scraper for nadsonpa
+2025-12-16T06:02:27.167Z INFO  PuppeteerCrawler: Scraping YouTube profile: rhuanlimax
+2025-12-16T06:02:29.869Z INFO  PuppeteerCrawler: ✅ YouTube rhuanlimax: 74 subs, 2 videos
+2025-12-16T06:02:32.261Z ❌ Error with x/nadsonpa: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:02:32.263Z   clientMethod: ActorClient.start
+2025-12-16T06:02:32.264Z   statusCode: 403
+2025-12-16T06:02:32.266Z   type: insufficient-permissions
+2025-12-16T06:02:32.267Z   attempt: 1
+2025-12-16T06:02:32.269Z   httpMethod: post
+2025-12-16T06:02:32.270Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:02:32.271Z   stack:
+2025-12-16T06:02:32.273Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:02:32.274Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:02:32.276Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:02:32.277Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:02:32.279Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:02:32.280Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:02:32.282Z     at async Promise.all (index 0)
+2025-12-16T06:02:32.283Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:02:32.284Z   data: undefined {
+2025-12-16T06:02:32.286Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:02:32.287Z   statusCode: 403,
+2025-12-16T06:02:32.289Z   type: 'insufficient-permissions',
+2025-12-16T06:02:32.291Z   attempt: 1,
+2025-12-16T06:02:32.293Z   httpMethod: 'post',
+2025-12-16T06:02:32.294Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:02:32.297Z   originalStack: '\n' +
+2025-12-16T06:02:32.298Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:02:32.300Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:02:32.301Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:02:32.303Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:02:32.304Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:02:32.305Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:02:32.307Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:02:32.308Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:02:32.309Z   data: undefined
+2025-12-16T06:02:32.311Z }
+2025-12-16T06:02:32.461Z 🚀 Calling actor apidojo/twitter-user-scraper for majacinto_
+2025-12-16T06:02:34.566Z INFO  PuppeteerCrawler: Scraping Kwai profile: stratego081
+2025-12-16T06:02:36.361Z INFO  PuppeteerCrawler: ✅ Kwai stratego081: null followers, 1 posts
+2025-12-16T06:02:37.561Z ❌ Error with x/majacinto_: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:02:37.562Z   clientMethod: ActorClient.start
+2025-12-16T06:02:37.564Z   statusCode: 403
+2025-12-16T06:02:37.565Z   type: insufficient-permissions
+2025-12-16T06:02:37.567Z   attempt: 1
+2025-12-16T06:02:37.568Z   httpMethod: post
+2025-12-16T06:02:37.570Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:02:37.571Z   stack:
+2025-12-16T06:02:37.572Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:02:37.574Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:02:37.575Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:02:37.577Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:02:37.578Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:02:37.579Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:02:37.581Z     at async Promise.all (index 0)
+2025-12-16T06:02:37.582Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:02:37.584Z   data: undefined {
+2025-12-16T06:02:37.585Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:02:37.587Z   statusCode: 403,
+2025-12-16T06:02:37.588Z   type: 'insufficient-permissions',
+2025-12-16T06:02:37.589Z   attempt: 1,
+2025-12-16T06:02:37.591Z   httpMethod: 'post',
+2025-12-16T06:02:37.592Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:02:37.594Z   originalStack: '\n' +
+2025-12-16T06:02:37.595Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:02:37.597Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:02:37.598Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:02:37.599Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:02:37.601Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:02:37.602Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:02:37.604Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:02:37.605Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:02:37.609Z   data: undefined
+2025-12-16T06:02:37.610Z }
+2025-12-16T06:02:37.612Z 🚀 Calling actor apidojo/twitter-user-scraper for queciareismbl
+2025-12-16T06:02:41.963Z INFO  PuppeteerCrawler: Scraping YouTube profile: ph_assis14
+2025-12-16T06:02:42.764Z ❌ Error with x/queciareismbl: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:02:42.765Z   clientMethod: ActorClient.start
+2025-12-16T06:02:42.767Z   statusCode: 403
+2025-12-16T06:02:42.768Z   type: insufficient-permissions
+2025-12-16T06:02:42.770Z   attempt: 1
+2025-12-16T06:02:42.771Z   httpMethod: post
+2025-12-16T06:02:42.772Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:02:42.774Z   stack:
+2025-12-16T06:02:42.775Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:02:42.777Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:02:42.778Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:02:42.779Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:02:42.781Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:02:42.782Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:02:42.784Z     at async Promise.all (index 0)
+2025-12-16T06:02:42.785Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:02:42.787Z   data: undefined {
+2025-12-16T06:02:42.788Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:02:42.789Z   statusCode: 403,
+2025-12-16T06:02:42.791Z   type: 'insufficient-permissions',
+2025-12-16T06:02:42.792Z   attempt: 1,
+2025-12-16T06:02:42.793Z   httpMethod: 'post',
+2025-12-16T06:02:42.795Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:02:42.796Z   originalStack: '\n' +
+2025-12-16T06:02:42.798Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:02:42.799Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:02:42.801Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:02:42.802Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:02:42.803Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:02:42.805Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:02:42.806Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:02:42.807Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:02:42.808Z   data: undefined
+2025-12-16T06:02:42.810Z }
+2025-12-16T06:02:42.811Z 🚀 Calling actor apidojo/twitter-user-scraper for MiguelKazan
+2025-12-16T06:02:44.807Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":24171,"requestsFinishedPerMinute":3,"requestsFailedPerMinute":0,"requestTotalDurationMillis":72512,"requestsTotal":3,"crawlerRuntimeMillis":60630,"retryHistogram":[3]}
+2025-12-16T06:02:44.866Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":false,"limitRatio":0.2,"actualRatio":0},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.063},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":1},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:02:44.961Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":13526,"requestsFinishedPerMinute":5,"requestsFailedPerMinute":0,"requestTotalDurationMillis":67630,"requestsTotal":5,"crawlerRuntimeMillis":60622,"retryHistogram":[5]}
+2025-12-16T06:02:45.163Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: ph_assis14
+2025-12-16T06:02:45.165Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":false,"limitRatio":0.2,"actualRatio":0},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.063},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":1},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:02:45.960Z INFO  PuppeteerCrawler: DUMP ph_assis14: <!DOCTYPE html><html style="font-size: 10px;font-family: Roboto, Arial, sans-serif;" lang="en" darker-dark-theme="" darker-dark-theme-deprecate="" dark="" system-icons="" typography="" typography-spacing=""><head><script data-id="_gd" nonce="">window.WIZ_global_data = {"AfY8Hf":true,"HiPsbb":0,"MUE6Ne":"youtube_web","MuJWjd":false,"UUFaWc":"%.@.null,1000,2]","cfb2h":"youtube.web-front-end-critical_20251214.10_p0","fPDxwd":[],"hsFLT":"%.@.null,1000,2]","iCzhFc":false,"nQyAE":{},"oxN3nb":{"1":false,"0":false,"610401301":false,"899588437":false,"772657768":true,"513659523":false,"568333945":true,"1331761403":false,"651175828":false,"722764542":false,"748402145":false,"748402146":false,"748402147":true,"824648567":true,"824656860":false,"333098724":false},"u4g7r":"%.@.null,1,2]","vJQk6":false,"xnI9P":true,"xwAfE":true,"yFnxrf":2486};</script><meta http-equiv="origin-trial" content="ApvK67ociHgr2egd6c2ZjrfPuRs8BHcvSggogIOPQNH7GJ3cVlyJ... [line-too-long]
+2025-12-16T06:02:47.460Z INFO  PuppeteerCrawler: Scraping Kwai profile: abinadabefigueiredo
+2025-12-16T06:02:47.962Z ❌ Error with x/MiguelKazan: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:02:47.964Z   clientMethod: ActorClient.start
+2025-12-16T06:02:47.966Z   statusCode: 403
+2025-12-16T06:02:47.967Z   type: insufficient-permissions
+2025-12-16T06:02:47.969Z   attempt: 1
+2025-12-16T06:02:47.971Z   httpMethod: post
+2025-12-16T06:02:47.972Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:02:47.974Z   stack:
+2025-12-16T06:02:47.976Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:02:47.977Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:02:47.979Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:02:47.981Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:02:47.982Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:02:47.984Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:02:47.986Z     at async Promise.all (index 0)
+2025-12-16T06:02:47.987Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:02:47.989Z   data: undefined {
+2025-12-16T06:02:47.990Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:02:47.992Z   statusCode: 403,
+2025-12-16T06:02:47.994Z   type: 'insufficient-permissions',
+2025-12-16T06:02:47.995Z   attempt: 1,
+2025-12-16T06:02:47.997Z   httpMethod: 'post',
+2025-12-16T06:02:47.999Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:02:48.000Z   originalStack: '\n' +
+2025-12-16T06:02:48.003Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:02:48.004Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:02:48.006Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:02:48.008Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:02:48.009Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:02:48.011Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:02:48.013Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:02:48.014Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:02:48.016Z   data: undefined
+2025-12-16T06:02:48.017Z }
+2025-12-16T06:02:48.019Z 🚀 Calling actor apidojo/twitter-user-scraper for feschmittvet
+2025-12-16T06:02:50.565Z INFO  PuppeteerCrawler: ✅ Kwai abinadabefigueiredo: null followers, 1 posts
+2025-12-16T06:02:53.079Z ❌ Error with x/feschmittvet: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:02:53.081Z   clientMethod: ActorClient.start
+2025-12-16T06:02:53.083Z   statusCode: 403
+2025-12-16T06:02:53.085Z   type: insufficient-permissions
+2025-12-16T06:02:53.094Z   attempt: 1
+2025-12-16T06:02:53.096Z   httpMethod: post
+2025-12-16T06:02:53.098Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:02:53.099Z   stack:
+2025-12-16T06:02:53.101Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:02:53.103Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:02:53.104Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:02:53.106Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:02:53.108Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:02:53.110Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:02:53.111Z     at async Promise.all (index 0)
+2025-12-16T06:02:53.113Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:02:53.115Z   data: undefined {
+2025-12-16T06:02:53.116Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:02:53.118Z   statusCode: 403,
+2025-12-16T06:02:53.120Z   type: 'insufficient-permissions',
+2025-12-16T06:02:53.122Z   attempt: 1,
+2025-12-16T06:02:53.123Z   httpMethod: 'post',
+2025-12-16T06:02:53.125Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:02:53.126Z   originalStack: '\n' +
+2025-12-16T06:02:53.128Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:02:53.130Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:02:53.132Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:02:53.133Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:02:53.135Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:02:53.137Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:02:53.138Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:02:53.140Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:02:53.142Z   data: undefined
+2025-12-16T06:02:53.145Z }
+2025-12-16T06:02:53.185Z 🚀 Calling actor apidojo/twitter-user-scraper for leomagnunof
+2025-12-16T06:02:57.961Z INFO  PuppeteerCrawler: Scraping YouTube profile: ericmunizpetrolina
+2025-12-16T06:02:58.276Z ❌ Error with x/leomagnunof: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:02:58.278Z   clientMethod: ActorClient.start
+2025-12-16T06:02:58.279Z   statusCode: 403
+2025-12-16T06:02:58.281Z   type: insufficient-permissions
+2025-12-16T06:02:58.282Z   attempt: 1
+2025-12-16T06:02:58.283Z   httpMethod: post
+2025-12-16T06:02:58.285Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:02:58.286Z   stack:
+2025-12-16T06:02:58.288Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:02:58.289Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:02:58.291Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:02:58.292Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:02:58.294Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:02:58.295Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:02:58.297Z     at async Promise.all (index 0)
+2025-12-16T06:02:58.298Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:02:58.300Z   data: undefined {
+2025-12-16T06:02:58.301Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:02:58.302Z   statusCode: 403,
+2025-12-16T06:02:58.304Z   type: 'insufficient-permissions',
+2025-12-16T06:02:58.305Z   attempt: 1,
+2025-12-16T06:02:58.306Z   httpMethod: 'post',
+2025-12-16T06:02:58.308Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:02:58.309Z   originalStack: '\n' +
+2025-12-16T06:02:58.311Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:02:58.312Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:02:58.313Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:02:58.315Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:02:58.316Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:02:58.317Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:02:58.319Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:02:58.320Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:02:58.321Z   data: undefined
+2025-12-16T06:02:58.323Z }
+2025-12-16T06:02:58.461Z 🚀 Calling actor apidojo/twitter-user-scraper for mikaelgringoPE
+2025-12-16T06:03:01.162Z INFO  PuppeteerCrawler: Scraping Kwai profile: lucastatal
+2025-12-16T06:03:01.462Z INFO  PuppeteerCrawler: ✅ YouTube ericmunizpetrolina: 7 subs, 3 videos
+2025-12-16T06:03:03.562Z ❌ Error with x/mikaelgringoPE: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:03:03.563Z   clientMethod: ActorClient.start
+2025-12-16T06:03:03.565Z   statusCode: 403
+2025-12-16T06:03:03.567Z   type: insufficient-permissions
+2025-12-16T06:03:03.568Z   attempt: 1
+2025-12-16T06:03:03.570Z   httpMethod: post
+2025-12-16T06:03:03.572Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:03:03.573Z   stack:
+2025-12-16T06:03:03.575Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:03:03.577Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:03:03.578Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:03:03.580Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:03:03.581Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:03:03.583Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:03:03.585Z     at async Promise.all (index 0)
+2025-12-16T06:03:03.586Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:03:03.588Z   data: undefined {
+2025-12-16T06:03:03.590Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:03:03.592Z   statusCode: 403,
+2025-12-16T06:03:03.593Z   type: 'insufficient-permissions',
+2025-12-16T06:03:03.595Z   attempt: 1,
+2025-12-16T06:03:03.597Z   httpMethod: 'post',
+2025-12-16T06:03:03.598Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:03:03.600Z   originalStack: '\n' +
+2025-12-16T06:03:03.602Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:03:03.603Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:03:03.605Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:03:03.606Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:03:03.608Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:03:03.610Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:03:03.611Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:03:03.613Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:03:03.614Z   data: undefined
+2025-12-16T06:03:03.616Z }
+2025-12-16T06:03:03.618Z 🚀 Calling actor apidojo/twitter-user-scraper for BismarkPe
+2025-12-16T06:03:03.969Z INFO  PuppeteerCrawler: ✅ Kwai lucastatal: null followers, 1 posts
+2025-12-16T06:03:08.761Z ❌ Error with x/BismarkPe: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:03:08.763Z   clientMethod: ActorClient.start
+2025-12-16T06:03:08.764Z   statusCode: 403
+2025-12-16T06:03:08.766Z   type: insufficient-permissions
+2025-12-16T06:03:08.767Z   attempt: 1
+2025-12-16T06:03:08.769Z   httpMethod: post
+2025-12-16T06:03:08.771Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:03:08.772Z   stack:
+2025-12-16T06:03:08.774Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:03:08.776Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:03:08.778Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:03:08.779Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:03:08.781Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:03:08.783Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:03:08.784Z     at async Promise.all (index 0)
+2025-12-16T06:03:08.786Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:03:08.788Z   data: undefined {
+2025-12-16T06:03:08.790Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:03:08.791Z   statusCode: 403,
+2025-12-16T06:03:08.793Z   type: 'insufficient-permissions',
+2025-12-16T06:03:08.795Z   attempt: 1,
+2025-12-16T06:03:08.796Z   httpMethod: 'post',
+2025-12-16T06:03:08.798Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:03:08.800Z   originalStack: '\n' +
+2025-12-16T06:03:08.802Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:03:08.803Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:03:08.805Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:03:08.807Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:03:08.808Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:03:08.810Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:03:08.812Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:03:08.814Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:03:08.815Z   data: undefined
+2025-12-16T06:03:08.817Z }
+2025-12-16T06:03:08.860Z 🚀 Calling actor apidojo/twitter-user-scraper for F1losofodigital
+2025-12-16T06:03:13.891Z ❌ Error with x/F1losofodigital: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:03:13.898Z   clientMethod: ActorClient.start
+2025-12-16T06:03:13.900Z   statusCode: 403
+2025-12-16T06:03:13.903Z   type: insufficient-permissions
+2025-12-16T06:03:13.904Z   attempt: 1
+2025-12-16T06:03:13.906Z   httpMethod: post
+2025-12-16T06:03:13.908Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:03:13.911Z   stack:
+2025-12-16T06:03:13.913Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:03:13.915Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:03:13.916Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:03:13.918Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:03:13.920Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:03:13.921Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:03:13.923Z     at async Promise.all (index 0)
+2025-12-16T06:03:13.925Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:03:13.926Z   data: undefined {
+2025-12-16T06:03:13.928Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:03:13.929Z   statusCode: 403,
+2025-12-16T06:03:13.931Z   type: 'insufficient-permissions',
+2025-12-16T06:03:13.932Z   attempt: 1,
+2025-12-16T06:03:13.934Z   httpMethod: 'post',
+2025-12-16T06:03:13.936Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:03:13.937Z   originalStack: '\n' +
+2025-12-16T06:03:13.939Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:03:13.940Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:03:13.942Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:03:13.944Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:03:13.946Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:03:13.947Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:03:13.949Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:03:13.951Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:03:13.953Z   data: undefined
+2025-12-16T06:03:13.954Z }
+2025-12-16T06:03:13.986Z 🚀 Calling actor apidojo/twitter-user-scraper for arquivo_da_onca
+2025-12-16T06:03:15.072Z INFO  PuppeteerCrawler: Scraping YouTube profile: sampantojapa
+2025-12-16T06:03:16.763Z INFO  PuppeteerCrawler: ✅ YouTube sampantojapa: 70 subs, 8 videos
+2025-12-16T06:03:19.166Z ❌ Error with x/arquivo_da_onca: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:03:19.167Z   clientMethod: ActorClient.start
+2025-12-16T06:03:19.169Z   statusCode: 403
+2025-12-16T06:03:19.171Z   type: insufficient-permissions
+2025-12-16T06:03:19.172Z   attempt: 1
+2025-12-16T06:03:19.174Z   httpMethod: post
+2025-12-16T06:03:19.176Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:03:19.178Z   stack:
+2025-12-16T06:03:19.179Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:03:19.181Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:03:19.183Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:03:19.184Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:03:19.186Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:03:19.188Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:03:19.190Z     at async Promise.all (index 0)
+2025-12-16T06:03:19.191Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:03:19.193Z   data: undefined {
+2025-12-16T06:03:19.195Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:03:19.197Z   statusCode: 403,
+2025-12-16T06:03:19.198Z   type: 'insufficient-permissions',
+2025-12-16T06:03:19.200Z   attempt: 1,
+2025-12-16T06:03:19.202Z   httpMethod: 'post',
+2025-12-16T06:03:19.204Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:03:19.205Z   originalStack: '\n' +
+2025-12-16T06:03:19.207Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:03:19.209Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:03:19.210Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:03:19.212Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:03:19.214Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:03:19.215Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:03:19.217Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:03:19.219Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:03:19.220Z   data: undefined
+2025-12-16T06:03:19.222Z }
+2025-12-16T06:03:19.360Z 🚀 Calling actor apidojo/twitter-user-scraper for lucasvcavalcan
+2025-12-16T06:03:24.461Z ❌ Error with x/lucasvcavalcan: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:03:24.463Z   clientMethod: ActorClient.start
+2025-12-16T06:03:24.464Z   statusCode: 403
+2025-12-16T06:03:24.465Z   type: insufficient-permissions
+2025-12-16T06:03:24.467Z   attempt: 1
+2025-12-16T06:03:24.469Z   httpMethod: post
+2025-12-16T06:03:24.470Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:03:24.472Z   stack:
+2025-12-16T06:03:24.473Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:03:24.475Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:03:24.476Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:03:24.478Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:03:24.479Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:03:24.480Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:03:24.482Z     at async Promise.all (index 0)
+2025-12-16T06:03:24.483Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:03:24.485Z   data: undefined {
+2025-12-16T06:03:24.486Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:03:24.488Z   statusCode: 403,
+2025-12-16T06:03:24.490Z   type: 'insufficient-permissions',
+2025-12-16T06:03:24.491Z   attempt: 1,
+2025-12-16T06:03:24.513Z   httpMethod: 'post',
+2025-12-16T06:03:24.518Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:03:24.519Z   originalStack: '\n' +
+2025-12-16T06:03:24.520Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:03:24.522Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:03:24.523Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:03:24.525Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:03:24.527Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:03:24.528Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:03:24.529Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:03:24.531Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:03:24.533Z   data: undefined
+2025-12-16T06:03:24.534Z }
+2025-12-16T06:03:24.560Z 🚀 Calling actor apidojo/twitter-user-scraper for Pedrogvilaca_
+2025-12-16T06:03:29.578Z ❌ Error with x/Pedrogvilaca_: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:03:29.580Z   clientMethod: ActorClient.start
+2025-12-16T06:03:29.581Z   statusCode: 403
+2025-12-16T06:03:29.583Z   type: insufficient-permissions
+2025-12-16T06:03:29.585Z   attempt: 1
+2025-12-16T06:03:29.586Z   httpMethod: post
+2025-12-16T06:03:29.588Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:03:29.590Z   stack:
+2025-12-16T06:03:29.591Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:03:29.592Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:03:29.594Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:03:29.595Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:03:29.597Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:03:29.598Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:03:29.599Z     at async Promise.all (index 0)
+2025-12-16T06:03:29.601Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:03:29.602Z   data: undefined {
+2025-12-16T06:03:29.604Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:03:29.605Z   statusCode: 403,
+2025-12-16T06:03:29.607Z   type: 'insufficient-permissions',
+2025-12-16T06:03:29.609Z   attempt: 1,
+2025-12-16T06:03:29.610Z   httpMethod: 'post',
+2025-12-16T06:03:29.611Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:03:29.613Z   originalStack: '\n' +
+2025-12-16T06:03:29.614Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:03:29.616Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:03:29.617Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:03:29.618Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:03:29.620Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:03:29.624Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:03:29.627Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:03:29.630Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:03:29.631Z   data: undefined
+2025-12-16T06:03:29.634Z }
+2025-12-16T06:03:29.660Z 🚀 Calling actor apidojo/twitter-user-scraper for Igor62234760
+2025-12-16T06:03:30.563Z INFO  PuppeteerCrawler: Scraping Kwai profile: RenanHallais
+2025-12-16T06:03:30.665Z INFO  PuppeteerCrawler: Scraping YouTube profile: asafepe
+2025-12-16T06:03:32.672Z INFO  PuppeteerCrawler: ✅ Kwai RenanHallais: null followers, 1 posts
+2025-12-16T06:03:34.686Z ❌ Error with x/Igor62234760: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:03:34.688Z   clientMethod: ActorClient.start
+2025-12-16T06:03:34.690Z   statusCode: 403
+2025-12-16T06:03:34.691Z   type: insufficient-permissions
+2025-12-16T06:03:34.693Z   attempt: 1
+2025-12-16T06:03:34.696Z   httpMethod: post
+2025-12-16T06:03:34.698Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:03:34.699Z   stack:
+2025-12-16T06:03:34.701Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:03:34.703Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:03:34.704Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:03:34.706Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:03:34.708Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:03:34.712Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:03:34.714Z     at async Promise.all (index 0)
+2025-12-16T06:03:34.716Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:03:34.718Z   data: undefined {
+2025-12-16T06:03:34.737Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:03:34.742Z   statusCode: 403,
+2025-12-16T06:03:34.744Z   type: 'insufficient-permissions',
+2025-12-16T06:03:34.746Z   attempt: 1,
+2025-12-16T06:03:34.748Z   httpMethod: 'post',
+2025-12-16T06:03:34.750Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:03:34.751Z   originalStack: '\n' +
+2025-12-16T06:03:34.753Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:03:34.755Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:03:34.757Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:03:34.758Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:03:34.760Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:03:34.762Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:03:34.764Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:03:34.766Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:03:34.767Z   data: undefined
+2025-12-16T06:03:34.769Z }
+2025-12-16T06:03:34.777Z 🚀 Calling actor apidojo/twitter-user-scraper for NPedrosa14
+2025-12-16T06:03:35.961Z INFO  PuppeteerCrawler: ✅ YouTube asafepe: 531 subs, 209 videos
+2025-12-16T06:03:39.961Z ❌ Error with x/NPedrosa14: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:03:39.962Z   clientMethod: ActorClient.start
+2025-12-16T06:03:39.964Z   statusCode: 403
+2025-12-16T06:03:39.966Z   type: insufficient-permissions
+2025-12-16T06:03:39.967Z   attempt: 1
+2025-12-16T06:03:39.969Z   httpMethod: post
+2025-12-16T06:03:39.971Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:03:39.973Z   stack:
+2025-12-16T06:03:39.974Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:03:39.976Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:03:39.978Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:03:39.980Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:03:39.981Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:03:39.983Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:03:39.985Z     at async Promise.all (index 0)
+2025-12-16T06:03:39.986Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:03:39.988Z   data: undefined {
+2025-12-16T06:03:39.990Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:03:39.991Z   statusCode: 403,
+2025-12-16T06:03:39.994Z   type: 'insufficient-permissions',
+2025-12-16T06:03:39.995Z   attempt: 1,
+2025-12-16T06:03:39.997Z   httpMethod: 'post',
+2025-12-16T06:03:39.999Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:03:40.000Z   originalStack: '\n' +
+2025-12-16T06:03:40.002Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:03:40.005Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:03:40.007Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:03:40.008Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:03:40.011Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:03:40.012Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:03:40.014Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:03:40.032Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:03:40.040Z   data: undefined
+2025-12-16T06:03:40.042Z }
+2025-12-16T06:03:40.061Z 🚀 Calling actor apidojo/twitter-user-scraper for JohnRobertPA
+2025-12-16T06:03:44.861Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":19231,"requestsFinishedPerMinute":3,"requestsFailedPerMinute":0,"requestTotalDurationMillis":134615,"requestsTotal":7,"crawlerRuntimeMillis":120683,"retryHistogram":[7]}
+2025-12-16T06:03:44.962Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":15477,"requestsFinishedPerMinute":4,"requestsFailedPerMinute":0,"requestTotalDurationMillis":123814,"requestsTotal":8,"crawlerRuntimeMillis":120623,"retryHistogram":[8]}
+2025-12-16T06:03:44.968Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":false,"limitRatio":0.2,"actualRatio":0},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.129},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":1},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:03:45.081Z ❌ Error with x/JohnRobertPA: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:03:45.083Z   clientMethod: ActorClient.start
+2025-12-16T06:03:45.084Z   statusCode: 403
+2025-12-16T06:03:45.086Z   type: insufficient-permissions
+2025-12-16T06:03:45.088Z   attempt: 1
+2025-12-16T06:03:45.089Z   httpMethod: post
+2025-12-16T06:03:45.091Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:03:45.093Z   stack:
+2025-12-16T06:03:45.095Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:03:45.096Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:03:45.098Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:03:45.100Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:03:45.101Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:03:45.103Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:03:45.105Z     at async Promise.all (index 0)
+2025-12-16T06:03:45.106Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:03:45.108Z   data: undefined {
+2025-12-16T06:03:45.110Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:03:45.112Z   statusCode: 403,
+2025-12-16T06:03:45.113Z   type: 'insufficient-permissions',
+2025-12-16T06:03:45.115Z   attempt: 1,
+2025-12-16T06:03:45.117Z   httpMethod: 'post',
+2025-12-16T06:03:45.118Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:03:45.120Z   originalStack: '\n' +
+2025-12-16T06:03:45.122Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:03:45.123Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:03:45.125Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:03:45.127Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:03:45.129Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:03:45.130Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:03:45.132Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:03:45.134Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:03:45.135Z   data: undefined
+2025-12-16T06:03:45.137Z }
+2025-12-16T06:03:45.267Z 🚀 Calling actor apidojo/twitter-user-scraper for felixsantosrn
+2025-12-16T06:03:45.361Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":false,"limitRatio":0.2,"actualRatio":0},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.129},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":1},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:03:47.763Z INFO  PuppeteerCrawler: Scraping Kwai profile: xandepessoape
+2025-12-16T06:03:50.360Z ❌ Error with x/felixsantosrn: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:03:50.362Z   clientMethod: ActorClient.start
+2025-12-16T06:03:50.364Z   statusCode: 403
+2025-12-16T06:03:50.366Z   type: insufficient-permissions
+2025-12-16T06:03:50.367Z   attempt: 1
+2025-12-16T06:03:50.369Z   httpMethod: post
+2025-12-16T06:03:50.371Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:03:50.372Z   stack:
+2025-12-16T06:03:50.374Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:03:50.376Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:03:50.377Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:03:50.379Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:03:50.381Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:03:50.383Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:03:50.384Z     at async Promise.all (index 0)
+2025-12-16T06:03:50.386Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:03:50.387Z   data: undefined {
+2025-12-16T06:03:50.389Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:03:50.391Z   statusCode: 403,
+2025-12-16T06:03:50.393Z   type: 'insufficient-permissions',
+2025-12-16T06:03:50.395Z   attempt: 1,
+2025-12-16T06:03:50.396Z   httpMethod: 'post',
+2025-12-16T06:03:50.398Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:03:50.400Z   originalStack: '\n' +
+2025-12-16T06:03:50.402Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:03:50.404Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:03:50.406Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:03:50.408Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:03:50.411Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:03:50.413Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:03:50.414Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:03:50.416Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:03:50.418Z   data: undefined
+2025-12-16T06:03:50.419Z }
+2025-12-16T06:03:50.421Z 🚀 Calling actor apidojo/twitter-user-scraper for ciromtpe
+2025-12-16T06:03:52.260Z INFO  PuppeteerCrawler: ✅ Kwai xandepessoape: null followers, 1 posts
+2025-12-16T06:03:53.463Z INFO  PuppeteerCrawler: Scraping YouTube profile: ricardomoraispb
+2025-12-16T06:03:55.560Z ❌ Error with x/ciromtpe: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:03:55.562Z   clientMethod: ActorClient.start
+2025-12-16T06:03:55.564Z   statusCode: 403
+2025-12-16T06:03:55.565Z   type: insufficient-permissions
+2025-12-16T06:03:55.567Z   attempt: 1
+2025-12-16T06:03:55.569Z   httpMethod: post
+2025-12-16T06:03:55.571Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:03:55.572Z   stack:
+2025-12-16T06:03:55.574Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:03:55.576Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:03:55.577Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:03:55.579Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:03:55.581Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:03:55.583Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:03:55.584Z     at async Promise.all (index 0)
+2025-12-16T06:03:55.586Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:03:55.588Z   data: undefined {
+2025-12-16T06:03:55.589Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:03:55.591Z   statusCode: 403,
+2025-12-16T06:03:55.593Z   type: 'insufficient-permissions',
+2025-12-16T06:03:55.595Z   attempt: 1,
+2025-12-16T06:03:55.596Z   httpMethod: 'post',
+2025-12-16T06:03:55.598Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:03:55.600Z   originalStack: '\n' +
+2025-12-16T06:03:55.602Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:03:55.603Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:03:55.605Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:03:55.607Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:03:55.608Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:03:55.610Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:03:55.612Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:03:55.614Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:03:55.615Z   data: undefined
+2025-12-16T06:03:55.617Z }
+2025-12-16T06:03:55.660Z 🚀 Calling actor apidojo/twitter-user-scraper for FreitasChamie
+2025-12-16T06:04:00.760Z ❌ Error with x/FreitasChamie: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:04:00.762Z   clientMethod: ActorClient.start
+2025-12-16T06:04:00.764Z   statusCode: 403
+2025-12-16T06:04:00.765Z   type: insufficient-permissions
+2025-12-16T06:04:00.767Z   attempt: 1
+2025-12-16T06:04:00.768Z   httpMethod: post
+2025-12-16T06:04:00.770Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:04:00.771Z   stack:
+2025-12-16T06:04:00.773Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:04:00.774Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:04:00.776Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:04:00.777Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:04:00.779Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:04:00.780Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:04:00.782Z     at async Promise.all (index 0)
+2025-12-16T06:04:00.783Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:04:00.785Z   data: undefined {
+2025-12-16T06:04:00.786Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:04:00.788Z   statusCode: 403,
+2025-12-16T06:04:00.789Z   type: 'insufficient-permissions',
+2025-12-16T06:04:00.791Z   attempt: 1,
+2025-12-16T06:04:00.794Z   httpMethod: 'post',
+2025-12-16T06:04:00.796Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:04:00.798Z   originalStack: '\n' +
+2025-12-16T06:04:00.802Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:04:00.804Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:04:00.806Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:04:00.807Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:04:00.809Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:04:00.810Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:04:00.811Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:04:00.813Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:04:00.814Z   data: undefined
+2025-12-16T06:04:00.816Z }
+2025-12-16T06:04:00.817Z INFO  PuppeteerCrawler: ✅ YouTube ricardomoraispb: 110 subs, 71 videos
+2025-12-16T06:04:00.864Z 🚀 Calling actor apidojo/twitter-user-scraper for marvinex_
+2025-12-16T06:04:04.862Z INFO  PuppeteerCrawler: Scraping Kwai profile: FabioSilveiraRN
+2025-12-16T06:04:06.062Z ❌ Error with x/marvinex_: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:04:06.064Z   clientMethod: ActorClient.start
+2025-12-16T06:04:06.066Z   statusCode: 403
+2025-12-16T06:04:06.067Z   type: insufficient-permissions
+2025-12-16T06:04:06.069Z   attempt: 1
+2025-12-16T06:04:06.071Z   httpMethod: post
+2025-12-16T06:04:06.073Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:04:06.074Z   stack:
+2025-12-16T06:04:06.077Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:04:06.079Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:04:06.080Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:04:06.082Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:04:06.085Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:04:06.086Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:04:06.088Z     at async Promise.all (index 0)
+2025-12-16T06:04:06.090Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:04:06.092Z   data: undefined {
+2025-12-16T06:04:06.094Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:04:06.095Z   statusCode: 403,
+2025-12-16T06:04:06.098Z   type: 'insufficient-permissions',
+2025-12-16T06:04:06.113Z   attempt: 1,
+2025-12-16T06:04:06.115Z   httpMethod: 'post',
+2025-12-16T06:04:06.117Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:04:06.118Z   originalStack: '\n' +
+2025-12-16T06:04:06.120Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:04:06.122Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:04:06.123Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:04:06.125Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:04:06.129Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:04:06.131Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:04:06.133Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:04:06.134Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:04:06.136Z   data: undefined
+2025-12-16T06:04:06.138Z }
+2025-12-16T06:04:06.140Z 🚀 Calling actor apidojo/twitter-user-scraper for Sarahsheron_pe
+2025-12-16T06:04:07.563Z INFO  PuppeteerCrawler: ✅ Kwai FabioSilveiraRN: null followers, 1 posts
+2025-12-16T06:04:11.174Z ❌ Error with x/Sarahsheron_pe: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:04:11.176Z   clientMethod: ActorClient.start
+2025-12-16T06:04:11.178Z   statusCode: 403
+2025-12-16T06:04:11.179Z   type: insufficient-permissions
+2025-12-16T06:04:11.181Z   attempt: 1
+2025-12-16T06:04:11.183Z   httpMethod: post
+2025-12-16T06:04:11.185Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:04:11.186Z   stack:
+2025-12-16T06:04:11.188Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:04:11.190Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:04:11.191Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:04:11.193Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:04:11.195Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:04:11.196Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:04:11.198Z     at async Promise.all (index 0)
+2025-12-16T06:04:11.200Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:04:11.202Z   data: undefined {
+2025-12-16T06:04:11.203Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:04:11.205Z   statusCode: 403,
+2025-12-16T06:04:11.207Z   type: 'insufficient-permissions',
+2025-12-16T06:04:11.208Z   attempt: 1,
+2025-12-16T06:04:11.210Z   httpMethod: 'post',
+2025-12-16T06:04:11.212Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:04:11.214Z   originalStack: '\n' +
+2025-12-16T06:04:11.215Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:04:11.217Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:04:11.219Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:04:11.220Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:04:11.222Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:04:11.224Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:04:11.225Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:04:11.227Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:04:11.229Z   data: undefined
+2025-12-16T06:04:11.231Z }
+2025-12-16T06:04:11.374Z 🚀 Calling actor apidojo/twitter-user-scraper for imported
+2025-12-16T06:04:13.262Z INFO  PuppeteerCrawler: Scraping YouTube profile: obrasildecima
+2025-12-16T06:04:14.966Z INFO  PuppeteerCrawler: ✅ YouTube obrasildecima: 2380 subs, 544 videos
+2025-12-16T06:04:16.561Z ❌ Error with x/imported: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:04:16.563Z   clientMethod: ActorClient.start
+2025-12-16T06:04:16.565Z   statusCode: 403
+2025-12-16T06:04:16.567Z   type: insufficient-permissions
+2025-12-16T06:04:16.569Z   attempt: 1
+2025-12-16T06:04:16.570Z   httpMethod: post
+2025-12-16T06:04:16.572Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:04:16.574Z   stack:
+2025-12-16T06:04:16.576Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:04:16.577Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:04:16.579Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:04:16.581Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:04:16.583Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:04:16.585Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:04:16.586Z     at async Promise.all (index 0)
+2025-12-16T06:04:16.588Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:04:16.590Z   data: undefined {
+2025-12-16T06:04:16.591Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:04:16.593Z   statusCode: 403,
+2025-12-16T06:04:16.595Z   type: 'insufficient-permissions',
+2025-12-16T06:04:16.597Z   attempt: 1,
+2025-12-16T06:04:16.598Z   httpMethod: 'post',
+2025-12-16T06:04:16.600Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:04:16.602Z   originalStack: '\n' +
+2025-12-16T06:04:16.603Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:04:16.605Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:04:16.607Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:04:16.608Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:04:16.610Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:04:16.612Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:04:16.613Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:04:16.615Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:04:16.617Z   data: undefined
+2025-12-16T06:04:16.618Z }
+2025-12-16T06:04:16.661Z 🚀 Calling actor apidojo/twitter-user-scraper for imported
+2025-12-16T06:04:20.169Z INFO  PuppeteerCrawler: Scraping Kwai profile: nadsonpa
+2025-12-16T06:04:21.760Z ❌ Error with x/imported: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:04:21.762Z   clientMethod: ActorClient.start
+2025-12-16T06:04:21.764Z   statusCode: 403
+2025-12-16T06:04:21.766Z   type: insufficient-permissions
+2025-12-16T06:04:21.768Z   attempt: 1
+2025-12-16T06:04:21.770Z   httpMethod: post
+2025-12-16T06:04:21.771Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:04:21.773Z   stack:
+2025-12-16T06:04:21.775Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:04:21.777Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:04:21.778Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:04:21.782Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:04:21.783Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:04:21.785Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:04:21.787Z     at async Promise.all (index 0)
+2025-12-16T06:04:21.789Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:04:21.791Z   data: undefined {
+2025-12-16T06:04:21.792Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:04:21.794Z   statusCode: 403,
+2025-12-16T06:04:21.796Z   type: 'insufficient-permissions',
+2025-12-16T06:04:21.797Z   attempt: 1,
+2025-12-16T06:04:21.799Z   httpMethod: 'post',
+2025-12-16T06:04:21.801Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:04:21.803Z   originalStack: '\n' +
+2025-12-16T06:04:21.804Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:04:21.806Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:04:21.808Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:04:21.809Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:04:21.811Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:04:21.813Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:04:21.815Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:04:21.816Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:04:21.818Z   data: undefined
+2025-12-16T06:04:21.820Z }
+2025-12-16T06:04:21.821Z 🚀 Calling actor apidojo/twitter-user-scraper for imported
+2025-12-16T06:04:24.561Z INFO  PuppeteerCrawler: ✅ Kwai nadsonpa: null followers, 1 posts
+2025-12-16T06:04:26.962Z ❌ Error with x/imported: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:04:26.964Z   clientMethod: ActorClient.start
+2025-12-16T06:04:26.966Z   statusCode: 403
+2025-12-16T06:04:26.968Z   type: insufficient-permissions
+2025-12-16T06:04:26.970Z   attempt: 1
+2025-12-16T06:04:26.972Z   httpMethod: post
+2025-12-16T06:04:26.974Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:04:26.976Z   stack:
+2025-12-16T06:04:26.977Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:04:26.979Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:04:26.981Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:04:26.983Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:04:26.986Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:04:26.987Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:04:26.989Z     at async Promise.all (index 0)
+2025-12-16T06:04:26.991Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:04:26.992Z   data: undefined {
+2025-12-16T06:04:26.994Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:04:26.996Z   statusCode: 403,
+2025-12-16T06:04:26.998Z   type: 'insufficient-permissions',
+2025-12-16T06:04:26.999Z   attempt: 1,
+2025-12-16T06:04:27.001Z   httpMethod: 'post',
+2025-12-16T06:04:27.003Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:04:27.005Z   originalStack: '\n' +
+2025-12-16T06:04:27.007Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:04:27.008Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:04:27.010Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:04:27.012Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:04:27.014Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:04:27.016Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:04:27.017Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:04:27.018Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:04:27.020Z   data: undefined
+2025-12-16T06:04:27.022Z }
+2025-12-16T06:04:27.023Z 🚀 Calling actor apidojo/twitter-user-scraper for mblivrepa
+2025-12-16T06:04:27.166Z INFO  PuppeteerCrawler: Scraping YouTube profile: majacintoo
+2025-12-16T06:04:31.166Z INFO  PuppeteerCrawler: ✅ YouTube majacintoo: 79 subs, 67 videos
+2025-12-16T06:04:32.075Z ❌ Error with x/mblivrepa: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:04:32.077Z   clientMethod: ActorClient.start
+2025-12-16T06:04:32.079Z   statusCode: 403
+2025-12-16T06:04:32.080Z   type: insufficient-permissions
+2025-12-16T06:04:32.082Z   attempt: 1
+2025-12-16T06:04:32.084Z   httpMethod: post
+2025-12-16T06:04:32.085Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:04:32.087Z   stack:
+2025-12-16T06:04:32.089Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:04:32.090Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:04:32.092Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:04:32.094Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:04:32.095Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:04:32.097Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:04:32.099Z     at async Promise.all (index 0)
+2025-12-16T06:04:32.100Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:04:32.102Z   data: undefined {
+2025-12-16T06:04:32.103Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:04:32.105Z   statusCode: 403,
+2025-12-16T06:04:32.107Z   type: 'insufficient-permissions',
+2025-12-16T06:04:32.109Z   attempt: 1,
+2025-12-16T06:04:32.110Z   httpMethod: 'post',
+2025-12-16T06:04:32.112Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:04:32.114Z   originalStack: '\n' +
+2025-12-16T06:04:32.116Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:04:32.118Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:04:32.119Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:04:32.121Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:04:32.123Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:04:32.125Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:04:32.126Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:04:32.128Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:04:32.130Z   data: undefined
+2025-12-16T06:04:32.131Z }
+2025-12-16T06:04:32.196Z 🚀 Calling actor apidojo/twitter-user-scraper for imported
+2025-12-16T06:04:36.960Z INFO  PuppeteerCrawler: Scraping Kwai profile: queciareismbl
+2025-12-16T06:04:37.361Z ❌ Error with x/imported: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:04:37.363Z   clientMethod: ActorClient.start
+2025-12-16T06:04:37.364Z   statusCode: 403
+2025-12-16T06:04:37.366Z   type: insufficient-permissions
+2025-12-16T06:04:37.368Z   attempt: 1
+2025-12-16T06:04:37.370Z   httpMethod: post
+2025-12-16T06:04:37.371Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:04:37.373Z   stack:
+2025-12-16T06:04:37.375Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:04:37.377Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:04:37.381Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:04:37.384Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:04:37.386Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:04:37.388Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:04:37.391Z     at async Promise.all (index 0)
+2025-12-16T06:04:37.392Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:04:37.394Z   data: undefined {
+2025-12-16T06:04:37.395Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:04:37.397Z   statusCode: 403,
+2025-12-16T06:04:37.399Z   type: 'insufficient-permissions',
+2025-12-16T06:04:37.401Z   attempt: 1,
+2025-12-16T06:04:37.402Z   httpMethod: 'post',
+2025-12-16T06:04:37.404Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:04:37.406Z   originalStack: '\n' +
+2025-12-16T06:04:37.407Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:04:37.409Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:04:37.411Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:04:37.413Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:04:37.414Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:04:37.416Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:04:37.417Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:04:37.419Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:04:37.421Z   data: undefined
+2025-12-16T06:04:37.422Z }
+2025-12-16T06:04:37.460Z 🚀 Calling actor apidojo/twitter-user-scraper for 0MiguelAdriano0
+2025-12-16T06:04:38.663Z INFO  PuppeteerCrawler: ✅ Kwai queciareismbl: null followers, 1 posts
+2025-12-16T06:04:42.477Z ❌ Error with x/0MiguelAdriano0: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:04:42.479Z   clientMethod: ActorClient.start
+2025-12-16T06:04:42.480Z   statusCode: 403
+2025-12-16T06:04:42.482Z   type: insufficient-permissions
+2025-12-16T06:04:42.484Z   attempt: 1
+2025-12-16T06:04:42.486Z   httpMethod: post
+2025-12-16T06:04:42.488Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:04:42.489Z   stack:
+2025-12-16T06:04:42.491Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:04:42.493Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:04:42.494Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:04:42.496Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:04:42.497Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:04:42.499Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:04:42.501Z     at async Promise.all (index 0)
+2025-12-16T06:04:42.503Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:04:42.504Z   data: undefined {
+2025-12-16T06:04:42.506Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:04:42.507Z   statusCode: 403,
+2025-12-16T06:04:42.509Z   type: 'insufficient-permissions',
+2025-12-16T06:04:42.511Z   attempt: 1,
+2025-12-16T06:04:42.512Z   httpMethod: 'post',
+2025-12-16T06:04:42.514Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:04:42.516Z   originalStack: '\n' +
+2025-12-16T06:04:42.517Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:04:42.519Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:04:42.521Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:04:42.522Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:04:42.524Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:04:42.526Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:04:42.527Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:04:42.529Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:04:42.531Z   data: undefined
+2025-12-16T06:04:42.533Z }
+2025-12-16T06:04:42.617Z 🚀 Calling actor apidojo/twitter-user-scraper for rhuanlimax
+2025-12-16T06:04:44.468Z INFO  PuppeteerCrawler: Scraping YouTube profile: miguelkazans
+2025-12-16T06:04:44.866Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":18841,"requestsFinishedPerMinute":3,"requestsFailedPerMinute":0,"requestTotalDurationMillis":188407,"requestsTotal":10,"crawlerRuntimeMillis":180684,"retryHistogram":[10]}
+2025-12-16T06:04:44.961Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":15694,"requestsFinishedPerMinute":4,"requestsFailedPerMinute":0,"requestTotalDurationMillis":188324,"requestsTotal":12,"crawlerRuntimeMillis":180622,"retryHistogram":[12]}
+2025-12-16T06:04:45.091Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":false,"limitRatio":0.2,"actualRatio":0},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.099},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":1},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:04:45.363Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":false,"limitRatio":0.2,"actualRatio":0},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.099},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":1},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:04:47.761Z ❌ Error with x/rhuanlimax: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:04:47.763Z   clientMethod: ActorClient.start
+2025-12-16T06:04:47.765Z   statusCode: 403
+2025-12-16T06:04:47.766Z   type: insufficient-permissions
+2025-12-16T06:04:47.768Z   attempt: 1
+2025-12-16T06:04:47.770Z   httpMethod: post
+2025-12-16T06:04:47.771Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:04:47.773Z   stack:
+2025-12-16T06:04:47.775Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:04:47.777Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:04:47.778Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:04:47.780Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:04:47.782Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:04:47.783Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:04:47.785Z     at async Promise.all (index 0)
+2025-12-16T06:04:47.787Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:04:47.788Z   data: undefined {
+2025-12-16T06:04:47.789Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:04:47.791Z   statusCode: 403,
+2025-12-16T06:04:47.792Z   type: 'insufficient-permissions',
+2025-12-16T06:04:47.794Z   attempt: 1,
+2025-12-16T06:04:47.795Z   httpMethod: 'post',
+2025-12-16T06:04:47.796Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:04:47.798Z   originalStack: '\n' +
+2025-12-16T06:04:47.800Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:04:47.801Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:04:47.802Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:04:47.804Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:04:47.805Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:04:47.806Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:04:47.808Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:04:47.809Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:04:47.811Z   data: undefined
+2025-12-16T06:04:47.812Z }
+2025-12-16T06:04:47.813Z 🚀 Calling actor apidojo/twitter-user-scraper for otdutra
+2025-12-16T06:04:48.068Z INFO  PuppeteerCrawler: ✅ YouTube miguelkazans: 1270 subs, 21 videos
+2025-12-16T06:04:50.465Z INFO  PuppeteerCrawler: Scraping Kwai profile: fernandaschmittvet
+2025-12-16T06:04:52.661Z INFO  PuppeteerCrawler: ✅ Kwai fernandaschmittvet: null followers, 1 posts
+2025-12-16T06:04:52.962Z ❌ Error with x/otdutra: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:04:52.964Z   clientMethod: ActorClient.start
+2025-12-16T06:04:52.965Z   statusCode: 403
+2025-12-16T06:04:52.967Z   type: insufficient-permissions
+2025-12-16T06:04:52.969Z   attempt: 1
+2025-12-16T06:04:52.971Z   httpMethod: post
+2025-12-16T06:04:52.973Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:04:52.974Z   stack:
+2025-12-16T06:04:52.976Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:04:52.978Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:04:52.980Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:04:52.982Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:04:52.983Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:04:52.985Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:04:52.987Z     at async Promise.all (index 0)
+2025-12-16T06:04:52.989Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:04:52.991Z   data: undefined {
+2025-12-16T06:04:52.992Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:04:52.994Z   statusCode: 403,
+2025-12-16T06:04:52.996Z   type: 'insufficient-permissions',
+2025-12-16T06:04:52.997Z   attempt: 1,
+2025-12-16T06:04:52.999Z   httpMethod: 'post',
+2025-12-16T06:04:53.000Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:04:53.003Z   originalStack: '\n' +
+2025-12-16T06:04:53.004Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:04:53.006Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:04:53.008Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:04:53.010Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:04:53.011Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:04:53.013Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:04:53.014Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:04:53.016Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:04:53.017Z   data: undefined
+2025-12-16T06:04:53.019Z }
+2025-12-16T06:04:53.060Z 🚀 Calling actor apidojo/twitter-user-scraper for ph_assis14
+2025-12-16T06:04:58.080Z ❌ Error with x/ph_assis14: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:04:58.081Z   clientMethod: ActorClient.start
+2025-12-16T06:04:58.083Z   statusCode: 403
+2025-12-16T06:04:58.084Z   type: insufficient-permissions
+2025-12-16T06:04:58.086Z   attempt: 1
+2025-12-16T06:04:58.087Z   httpMethod: post
+2025-12-16T06:04:58.089Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:04:58.090Z   stack:
+2025-12-16T06:04:58.092Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:04:58.093Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:04:58.094Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:04:58.096Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:04:58.097Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:04:58.099Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:04:58.100Z     at async Promise.all (index 0)
+2025-12-16T06:04:58.101Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:04:58.103Z   data: undefined {
+2025-12-16T06:04:58.104Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:04:58.105Z   statusCode: 403,
+2025-12-16T06:04:58.107Z   type: 'insufficient-permissions',
+2025-12-16T06:04:58.108Z   attempt: 1,
+2025-12-16T06:04:58.109Z   httpMethod: 'post',
+2025-12-16T06:04:58.111Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:04:58.112Z   originalStack: '\n' +
+2025-12-16T06:04:58.113Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:04:58.115Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:04:58.116Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:04:58.117Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:04:58.119Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:04:58.120Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:04:58.121Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:04:58.123Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:04:58.124Z   data: undefined
+2025-12-16T06:04:58.125Z }
+2025-12-16T06:04:58.190Z 🚀 Calling actor apidojo/twitter-user-scraper for Abinadabefig
+2025-12-16T06:05:00.264Z INFO  PuppeteerCrawler: Scraping YouTube profile: mikaelgringoPE
+2025-12-16T06:05:03.362Z ❌ Error with x/Abinadabefig: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:05:03.364Z   clientMethod: ActorClient.start
+2025-12-16T06:05:03.365Z   statusCode: 403
+2025-12-16T06:05:03.367Z   type: insufficient-permissions
+2025-12-16T06:05:03.369Z   attempt: 1
+2025-12-16T06:05:03.371Z   httpMethod: post
+2025-12-16T06:05:03.372Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:05:03.374Z   stack:
+2025-12-16T06:05:03.376Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:05:03.377Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:05:03.379Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:05:03.381Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:05:03.382Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:05:03.384Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:05:03.386Z     at async Promise.all (index 0)
+2025-12-16T06:05:03.387Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:05:03.389Z   data: undefined {
+2025-12-16T06:05:03.391Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:05:03.393Z   statusCode: 403,
+2025-12-16T06:05:03.394Z   type: 'insufficient-permissions',
+2025-12-16T06:05:03.396Z   attempt: 1,
+2025-12-16T06:05:03.398Z   httpMethod: 'post',
+2025-12-16T06:05:03.399Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:05:03.401Z   originalStack: '\n' +
+2025-12-16T06:05:03.403Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:05:03.404Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:05:03.406Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:05:03.408Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:05:03.409Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:05:03.411Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:05:03.413Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:05:03.415Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:05:03.416Z   data: undefined
+2025-12-16T06:05:03.418Z }
+2025-12-16T06:05:03.460Z 🚀 Calling actor apidojo/twitter-user-scraper for ericmunizPE
+2025-12-16T06:05:03.961Z INFO  PuppeteerCrawler: Scraping Kwai profile: joelconstancia
+2025-12-16T06:05:05.167Z INFO  PuppeteerCrawler: ✅ YouTube mikaelgringoPE: 2380 subs, 217 videos
+2025-12-16T06:05:08.561Z ❌ Error with x/ericmunizPE: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:05:08.562Z   clientMethod: ActorClient.start
+2025-12-16T06:05:08.564Z   statusCode: 403
+2025-12-16T06:05:08.565Z   type: insufficient-permissions
+2025-12-16T06:05:08.567Z   attempt: 1
+2025-12-16T06:05:08.569Z   httpMethod: post
+2025-12-16T06:05:08.570Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:05:08.572Z   stack:
+2025-12-16T06:05:08.573Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:05:08.574Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:05:08.576Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:05:08.577Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:05:08.579Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:05:08.580Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:05:08.582Z     at async Promise.all (index 0)
+2025-12-16T06:05:08.583Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:05:08.587Z   data: undefined {
+2025-12-16T06:05:08.589Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:05:08.591Z   statusCode: 403,
+2025-12-16T06:05:08.592Z   type: 'insufficient-permissions',
+2025-12-16T06:05:08.594Z   attempt: 1,
+2025-12-16T06:05:08.597Z   httpMethod: 'post',
+2025-12-16T06:05:08.598Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:05:08.600Z   originalStack: '\n' +
+2025-12-16T06:05:08.601Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:05:08.603Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:05:08.604Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:05:08.605Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:05:08.607Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:05:08.609Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:05:08.610Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:05:08.612Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:05:08.613Z   data: undefined
+2025-12-16T06:05:08.615Z }
+2025-12-16T06:05:08.616Z 🚀 Calling actor apidojo/twitter-user-scraper for LucasAl29111516
+2025-12-16T06:05:10.365Z INFO  PuppeteerCrawler: ✅ Kwai joelconstancia: null followers, 1 posts
+2025-12-16T06:05:13.760Z ❌ Error with x/LucasAl29111516: ApifyApiError: Insufficient permissions for the Actor. Make sure you're passing a correct API token and that it has the required permissions.
+2025-12-16T06:05:13.762Z   clientMethod: ActorClient.start
+2025-12-16T06:05:13.764Z   statusCode: 403
+2025-12-16T06:05:13.767Z   type: insufficient-permissions
+2025-12-16T06:05:13.769Z   attempt: 1
+2025-12-16T06:05:13.770Z   httpMethod: post
+2025-12-16T06:05:13.772Z   path: /v2/acts/apidojo~twitter-user-scraper/runs
+2025-12-16T06:05:13.774Z   stack:
+2025-12-16T06:05:13.775Z     at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)
+2025-12-16T06:05:13.777Z     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-12-16T06:05:13.779Z     at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)
+2025-12-16T06:05:13.781Z     at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)
+2025-12-16T06:05:13.782Z     at async processPlatform (file:///home/myuser/dist/main.js:99:29)
+2025-12-16T06:05:13.784Z     at async file:///home/myuser/dist/main.js:225:9
+2025-12-16T06:05:13.785Z     at async Promise.all (index 0)
+2025-12-16T06:05:13.787Z     at async file:///home/myuser/dist/main.js:222:1
+2025-12-16T06:05:13.789Z   data: undefined {
+2025-12-16T06:05:13.790Z   clientMethod: 'ActorClient.start',
+2025-12-16T06:05:13.792Z   statusCode: 403,
+2025-12-16T06:05:13.794Z   type: 'insufficient-permissions',
+2025-12-16T06:05:13.795Z   attempt: 1,
+2025-12-16T06:05:13.797Z   httpMethod: 'post',
+2025-12-16T06:05:13.799Z   path: '/v2/acts/apidojo~twitter-user-scraper/runs',
+2025-12-16T06:05:13.800Z   originalStack: '\n' +
+2025-12-16T06:05:13.802Z     '    at makeRequest (/home/myuser/node_modules/apify-client/dist/http_client.js:212:30)\n' +
+2025-12-16T06:05:13.804Z     '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+2025-12-16T06:05:13.805Z     '    at async ActorClient.start (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:94:26)\n' +
+2025-12-16T06:05:13.807Z     '    at async ActorClient.call (/home/myuser/node_modules/apify-client/dist/resource_clients/actor.js:119:24)\n' +
+2025-12-16T06:05:13.809Z     '    at async processPlatform (file:///home/myuser/dist/main.js:99:29)\n' +
+2025-12-16T06:05:13.811Z     '    at async file:///home/myuser/dist/main.js:225:9\n' +
+2025-12-16T06:05:13.812Z     '    at async Promise.all (index 0)\n' +
+2025-12-16T06:05:13.814Z     '    at async file:///home/myuser/dist/main.js:222:1',
+2025-12-16T06:05:13.816Z   data: undefined
+2025-12-16T06:05:13.817Z }
+2025-12-16T06:05:18.264Z INFO  PuppeteerCrawler: Scraping YouTube profile: Wellingtonpe_ofc
+2025-12-16T06:05:19.763Z INFO  PuppeteerCrawler: ✅ YouTube Wellingtonpe_ofc: 43 subs, 77 videos
+2025-12-16T06:05:24.463Z INFO  PuppeteerCrawler: Scraping Kwai profile: bismarkpe
+2025-12-16T06:05:26.462Z INFO  PuppeteerCrawler: ✅ Kwai bismarkpe: null followers, 1 posts
+2025-12-16T06:05:27.765Z WARN  PuppeteerCrawler: Reclaiming failed request back to the list or queue. TypeError: Invalid URL
+2025-12-16T06:05:27.766Z     at new URL (node:internal/url:806:29)
+2025-12-16T06:05:27.768Z     at getCookieContext (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1423:14)
+2025-12-16T06:05:27.770Z     at _CookieJar.getCookies (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1708:17)
+2025-12-16T06:05:27.772Z     at _CookieJar.callSync (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1491:10)
+2025-12-16T06:05:27.773Z     at _CookieJar.getCookiesSync (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1821:17)
+2025-12-16T06:05:27.775Z     at Session.getCookies (/home/myuser/node_modules/@crawlee/core/session_pool/session.js:288:40)
+2025-12-16T06:05:27.777Z     at PuppeteerCrawler._applyCookies (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:347:40)
+2025-12-16T06:05:27.779Z     at PuppeteerCrawler._handleNavigation (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:332:20)
+2025-12-16T06:05:27.780Z     at async PuppeteerCrawler._runRequestHandler (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:260:13)
+2025-12-16T06:05:27.782Z     at async PuppeteerCrawler._runRequestHandler (/home/myuser/node_modules/@crawlee/puppeteer/internals/puppeteer-crawler.js:114:9) {"id":"ObahZh2StHAQva2","url":"youtube.com/@arquivodaonca","retryCount":1}
+2025-12-16T06:05:34.471Z INFO  PuppeteerCrawler: Scraping YouTube profile: filosofo_digital
+2025-12-16T06:05:38.562Z INFO  PuppeteerCrawler: ✅ YouTube filosofo_digital: 362 subs, 126 videos
+2025-12-16T06:05:40.068Z INFO  PuppeteerCrawler: Scraping Kwai profile: lucasvcavalcanti
+2025-12-16T06:05:43.366Z INFO  PuppeteerCrawler: ✅ Kwai lucasvcavalcanti: null followers, 1 posts
+2025-12-16T06:05:44.861Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":18052,"requestsFinishedPerMinute":3,"requestsFailedPerMinute":0,"requestTotalDurationMillis":252731,"requestsTotal":14,"crawlerRuntimeMillis":240683,"retryHistogram":[14]}
+2025-12-16T06:05:44.966Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":15690,"requestsFinishedPerMinute":4,"requestsFailedPerMinute":0,"requestTotalDurationMillis":251040,"requestsTotal":16,"crawlerRuntimeMillis":240627,"retryHistogram":[16]}
+2025-12-16T06:05:45.264Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":false,"limitRatio":0.2,"actualRatio":0},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.1},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":1},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:05:45.368Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":false,"limitRatio":0.2,"actualRatio":0},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.12},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":1},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:05:46.160Z INFO  PuppeteerCrawler: Scraping Kwai profile: Igor.FernandesRN
+2025-12-16T06:05:46.687Z INFO  PuppeteerCrawler: ✅ Kwai Igor.FernandesRN: null followers, null posts
+2025-12-16T06:05:50.470Z INFO  PuppeteerCrawler: Scraping YouTube profile: pedro.vilaca_pe
+2025-12-16T06:05:51.962Z INFO  PuppeteerCrawler: ✅ YouTube pedro.vilaca_pe: 3 subs, 3 videos
+2025-12-16T06:05:57.463Z INFO  PuppeteerCrawler: Scraping Kwai profile: marianathaliapedrosa8168
+2025-12-16T06:05:59.366Z INFO  PuppeteerCrawler: ✅ Kwai marianathaliapedrosa8168: null followers, 1 posts
+2025-12-16T06:06:03.161Z INFO  PuppeteerCrawler: Scraping YouTube profile: johnrobertpa
+2025-12-16T06:06:05.965Z INFO  PuppeteerCrawler: ✅ YouTube johnrobertpa: 47 subs, 25 videos
+2025-12-16T06:06:10.964Z INFO  PuppeteerCrawler: Scraping Kwai profile: felixsantosrn
+2025-12-16T06:06:13.564Z INFO  PuppeteerCrawler: ✅ Kwai felixsantosrn: null followers, 1 posts
+2025-12-16T06:06:17.968Z INFO  PuppeteerCrawler: Scraping YouTube profile: ciromtpe
+2025-12-16T06:06:19.561Z INFO  PuppeteerCrawler: ✅ YouTube ciromtpe: 68 subs, 14 videos
+2025-12-16T06:06:24.961Z INFO  PuppeteerCrawler: Scraping YouTube profile: BandeiraDrones
+2025-12-16T06:06:27.363Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: BandeiraDrones
+2025-12-16T06:06:27.860Z INFO  PuppeteerCrawler: DUMP BandeiraDrones: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250924181028_BMTUwMDAxNzEwMTg3MTQy_s.jpg"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/collection.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/upic/2025/12/09/06/BMjAyNTEyMDkwNjQzNDdfMTUwMDAxNzEwMTg3MTQyXzE1MDExMDAzNTI0MzgwMF8xXzM=_oscn2_Bb5f4d74d3e538977938729453aa06d48.webp"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/upic/2025/12/11/05/BMjAyNTEyMTEwNTMyNDdfMTUwMDAxNzEwMTg3MTQyXzE1MDExMDA0NTk4OTUxM18xXzM=_oscn2_B21c... [line-too-long]
+2025-12-16T06:06:30.175Z INFO  PuppeteerCrawler: Scraping Kwai profile: imported
+2025-12-16T06:06:32.663Z INFO  PuppeteerCrawler: Scraping YouTube profile: migueladrianope
+2025-12-16T06:06:33.964Z INFO  PuppeteerCrawler: ✅ Kwai imported: null followers, 11 posts
+2025-12-16T06:06:35.320Z WARN  PuppeteerCrawler:AutoscaledPool:Snapshotter: Memory is critically overloaded. Using 1948 MB of 2048 MB (95%). Consider increasing available memory.
+2025-12-16T06:06:35.326Z WARN  PuppeteerCrawler:AutoscaledPool:Snapshotter: Memory is critically overloaded. Using 1948 MB of 2048 MB (95%). Consider increasing available memory.
+2025-12-16T06:06:36.563Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: migueladrianope
+2025-12-16T06:06:36.666Z INFO  PuppeteerCrawler: DUMP migueladrianope: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250411225317_BMTUwMDAxNjg1MzIzODY1_s.jpg"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/collection.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/upic/2025/10/24/21/BMjAyNTEwMjQyMTM0MTJfMTUwMDAxNjg1MzIzODY1XzE1MDEwOTc4MDE3MzU4Nl8yXzM=_ouu_B417b561d17e041aa2b68faa81b18c8e4.webp?tag=1-1765865190-ALBUM-0-qfwk4u0mzt-bbbb3fb6c58c281a"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/12/12/09/BMjAyNTEyMTIwOTQzMjRfMTUwMD... [line-too-long]
+2025-12-16T06:06:37.074Z WARN  PuppeteerCrawler: Reclaiming failed request back to the list or queue. TypeError: Invalid URL
+2025-12-16T06:06:37.076Z     at new URL (node:internal/url:806:29)
+2025-12-16T06:06:37.078Z     at getCookieContext (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1423:14)
+2025-12-16T06:06:37.080Z     at _CookieJar.getCookies (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1708:17)
+2025-12-16T06:06:37.082Z     at _CookieJar.callSync (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1491:10)
+2025-12-16T06:06:37.083Z     at _CookieJar.getCookiesSync (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1821:17)
+2025-12-16T06:06:37.085Z     at Session.getCookies (/home/myuser/node_modules/@crawlee/core/session_pool/session.js:288:40)
+2025-12-16T06:06:37.087Z     at PuppeteerCrawler._applyCookies (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:347:40)
+2025-12-16T06:06:37.088Z     at PuppeteerCrawler._handleNavigation (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:332:20)
+2025-12-16T06:06:37.090Z     at async PuppeteerCrawler._runRequestHandler (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:260:13)
+2025-12-16T06:06:37.092Z     at async PuppeteerCrawler._runRequestHandler (/home/myuser/node_modules/@crawlee/puppeteer/internals/puppeteer-crawler.js:114:9) {"id":"n5EKbXXTsDlVUIZ","url":"Kwai.com/otdutra","retryCount":1}
+2025-12-16T06:06:37.964Z INFO  PuppeteerCrawler: Scraping YouTube profile: ph_assis14
+2025-12-16T06:06:38.965Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: ph_assis14
+2025-12-16T06:06:38.967Z INFO  PuppeteerCrawler: DUMP ph_assis14: <html><head><meta name="color-scheme" content="light dark"></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">link length is not valid</pre></body></html>
+2025-12-16T06:06:44.861Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":15483,"requestsFinishedPerMinute":4,"requestsFailedPerMinute":0,"requestTotalDurationMillis":309664,"requestsTotal":20,"crawlerRuntimeMillis":300684,"retryHistogram":[20]}
+2025-12-16T06:06:44.966Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":15028,"requestsFinishedPerMinute":4,"requestsFailedPerMinute":0,"requestTotalDurationMillis":300561,"requestsTotal":20,"crawlerRuntimeMillis":300628,"retryHistogram":[20]}
+2025-12-16T06:06:45.267Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":true,"limitRatio":0.2,"actualRatio":0.608},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.099},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":1},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:06:45.389Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":true,"limitRatio":0.2,"actualRatio":0.608},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.099},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":1},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:06:53.382Z INFO  PuppeteerCrawler: Scraping YouTube profile: sampantojapa
+2025-12-16T06:06:53.865Z INFO  PuppeteerCrawler: Scraping Kwai profile: rhuanlimax
+2025-12-16T06:06:55.968Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: sampantojapa
+2025-12-16T06:06:56.261Z INFO  PuppeteerCrawler: DUMP sampantojapa: <!DOCTYPE html><html lang="en" pc="yes" dir="ltr" data-n-head="%7B%22lang%22:%7B%22ssr%22:%22en%22%7D,%22pc%22:%7B%22ssr%22:%22yes%22%7D,%22dir%22:%7B%22ssr%22:%22ltr%22%7D%7D"><head>
+2025-12-16T06:06:56.263Z     <title>Sam Pantoja (@sampantojapa) on Kwai</title><meta data-n-head="ssr" charset="utf-8"><meta data-n-head="ssr" data-hid="viewport" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta data-n-head="ssr" name="google" content="notranslate"><meta data-n-head="ssr" name="format-detection" content="telephone=no"><meta data-n-head="ssr" name="theme-color" content="#000"><meta data-n-head="ssr" data-hid="charset" charset="utf-8"><meta data-n-head="ssr" data-hid="mobile-web-app-capable" name="mobile-web-app-capable" content="yes"><meta data-n-head="ssr" property="al:ios:app_name" content="Kwai"><meta data-n-head="ssr" property="al:android:app_name" content="Kwai"><meta data-n-head="ssr" property="al:android:package" content="com.kwai.video"
+2025-12-16T06:06:56.764Z INFO  PuppeteerCrawler: ✅ Kwai rhuanlimax: null followers, 11 posts
+2025-12-16T06:06:58.069Z INFO  PuppeteerCrawler: Scraping YouTube profile: AbinadabeFigueiredo
+2025-12-16T06:06:58.573Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: AbinadabeFigueiredo
+2025-12-16T06:06:58.575Z INFO  PuppeteerCrawler: DUMP AbinadabeFigueiredo: <html><head><meta name="color-scheme" content="light dark"></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">link length is not valid</pre></body></html>
+2025-12-16T06:07:02.665Z INFO  PuppeteerCrawler: Scraping YouTube profile: lucastatal
+2025-12-16T06:07:06.866Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: lucastatal
+2025-12-16T06:07:07.064Z INFO  PuppeteerCrawler: DUMP lucastatal: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20251114173421_BMTUwMDAxNzE3NDQxNDk1_t.jpg"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/12/16/01/BMjAyNTEyMTYwMTU3MTVfMTUwMDAxNzE3NDQxNDk1XzE1MDExMDA3MTk5MTE5NV8yXzM=_oscn2_B4b30f8061570e8c335be472e54373088.webp"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/like.png"><link rel="preload" as="image" href="https://p15-kimg.kwai.net/kimg/EKzM1y8qmgEKAnMzEg1waG90by1vdmVyc2VhGoQBdXBpYy8yMDI1LzEyLzE0LzIzL0JNakF5TlRFeU1UUXlNek0zTXpsZk1UVXdNREF... [line-too-long]
+2025-12-16T06:07:08.862Z INFO  PuppeteerCrawler: Scraping Kwai profile: asafe.pe
+2025-12-16T06:07:11.565Z INFO  PuppeteerCrawler: Scraping YouTube profile: xandepessoape
+2025-12-16T06:07:12.263Z INFO  PuppeteerCrawler: ✅ Kwai asafe.pe: null followers, 11 posts
+2025-12-16T06:07:15.261Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: xandepessoape
+2025-12-16T06:07:15.373Z INFO  PuppeteerCrawler: DUMP xandepessoape: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250406183315_BMTUwMDAxNjY4ODcwNTg3_s.jpg"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/collection.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/upic/2025/12/06/08/BMjAyNTEyMDYwODM0MjBfMTUwMDAxNjY4ODcwNTg3XzE1MDExMDAxOTU1Mzc5NF8xXzM=_ouu_B58cc2d385a28dc0716b8141aca2a7c14.webp?tag=1-1765865228-ALBUM-0-lpmwnhuqlj-9b2cbac0eecd558a"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/upic/2025/10/31/05/BMjAyNTEwMzEwNTMwMDRfMTUwMDAxN... [line-too-long]
+2025-12-16T06:07:21.261Z INFO  PuppeteerCrawler: Scraping YouTube profile: FabioSilveiraRN
+2025-12-16T06:07:25.362Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: FabioSilveiraRN
+2025-12-16T06:07:25.469Z INFO  PuppeteerCrawler: DUMP FabioSilveiraRN: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250814224103_BMTUwMDAxNjk3MTYyNzQ2_s.jpg"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/collection.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/upic/2025/09/24/02/BMjAyNTA5MjQwMjEwNTlfMTUwMDAxNjk3MTYyNzQ2XzE1MDEwOTYwNjM4NTA3MF8yXzM=_ouu_B40a768f1cec5cf28c642152d6ffdd27f.webp?tag=1-1765865239-ALBUM-0-tc6hob5ozz-7c0f5ed0f88bea38"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/upic/2025/08/08/05/BMjAyNTA4MDgwNTM4MzdfMTUwMDA... [line-too-long]
+2025-12-16T06:07:26.562Z INFO  PuppeteerCrawler: Scraping Kwai profile: ricardomoraispb
+2025-12-16T06:07:29.569Z INFO  PuppeteerCrawler: Scraping YouTube profile: joelconstancia
+2025-12-16T06:07:29.667Z INFO  PuppeteerCrawler: ✅ Kwai ricardomoraispb: null followers, 11 posts
+2025-12-16T06:07:32.766Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: joelconstancia
+2025-12-16T06:07:32.868Z INFO  PuppeteerCrawler: DUMP joelconstancia: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250515071323_BMTUwMDAxNjkwOTk4MDYw_s.jpg"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/12/15/01/BMjAyNTEyMTUwMTEzNDZfMTUwMDAxNjkwOTk4MDYwXzE1MDExMDA2NjM1NjkwOV8yXzM=_oscn2_Bdd73624f238ffbbbb84573281e7612ad.webp"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/like.png"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/12/12/03/BMjAyNTEyMTIwMzUwMzJfMTUwMDAxNjkwOTk4MDYwXzE1MDExMDA1MDk4MzU0OV8yXzM=_oscn2_B587131d... [line-too-long]
+2025-12-16T06:07:40.566Z INFO  PuppeteerCrawler: Scraping Kwai profile: decimabrasil
+2025-12-16T06:07:43.074Z INFO  PuppeteerCrawler: ✅ Kwai decimabrasil: null followers, 11 posts
+2025-12-16T06:07:44.861Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":13895,"requestsFinishedPerMinute":4,"requestsFailedPerMinute":0,"requestTotalDurationMillis":361280,"requestsTotal":26,"crawlerRuntimeMillis":360684,"retryHistogram":[26]}
+2025-12-16T06:07:44.966Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":15375,"requestsFinishedPerMinute":4,"requestsFailedPerMinute":0,"requestTotalDurationMillis":369005,"requestsTotal":24,"crawlerRuntimeMillis":360627,"retryHistogram":[24]}
+2025-12-16T06:07:45.266Z INFO  PuppeteerCrawler: Scraping YouTube profile: nadsonpa
+2025-12-16T06:07:45.269Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":false,"limitRatio":0.2,"actualRatio":0},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.06},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":0.916},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:07:45.466Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":false,"limitRatio":0.2,"actualRatio":0},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.06},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":0.916},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:07:49.160Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: nadsonpa
+2025-12-16T06:07:49.360Z INFO  PuppeteerCrawler: DUMP nadsonpa: <!DOCTYPE html><html lang="en" pc="yes" dir="ltr" data-n-head="%7B%22lang%22:%7B%22ssr%22:%22en%22%7D,%22pc%22:%7B%22ssr%22:%22yes%22%7D,%22dir%22:%7B%22ssr%22:%22ltr%22%7D%7D"><head>
+2025-12-16T06:07:49.362Z     <title>Nadson D. Ferreira (@nadsonpa) on Kwai</title><meta data-n-head="ssr" charset="utf-8"><meta data-n-head="ssr" data-hid="viewport" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta data-n-head="ssr" name="google" content="notranslate"><meta data-n-head="ssr" name="format-detection" content="telephone=no"><meta data-n-head="ssr" name="theme-color" content="#000"><meta data-n-head="ssr" data-hid="charset" charset="utf-8"><meta data-n-head="ssr" data-hid="mobile-web-app-capable" name="mobile-web-app-capable" content="yes"><meta data-n-head="ssr" property="al:ios:app_name" content="Kwai"><meta data-n-head="ssr" property="al:android:app_name" content="Kwai"><meta data-n-head="ssr" property="al:android:package" content="com.kwai.vid
+2025-12-16T06:07:52.764Z INFO  PuppeteerCrawler: Scraping YouTube profile: fernandaschmitt
+2025-12-16T06:07:54.567Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: fernandaschmitt
+2025-12-16T06:07:54.865Z INFO  PuppeteerCrawler: DUMP fernandaschmitt: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250813003434_BMTUwMDAxNzA0MjczMTUx_s.jpg"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/collection.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/upic/2025/12/11/00/BMjAyNTEyMTEwMDUyNTZfMTUwMDAxNzA0MjczMTUxXzE1MDExMDA0NDg2NTgxNF8xXzM=_oscn2_B676a21829a3a7692412e39b5614e9b4d.webp"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/upic/2025/08/26/20/BMjAyNTA4MjYyMDI5NTJfMTUwMDAxNzA0MjczMTUxXzE1MDEwOTQ0NDIwMDUyN18xXzM=_ouu_B2a11... [line-too-long]
+2025-12-16T06:07:56.364Z INFO  PuppeteerCrawler: Scraping Kwai profile: majacinto_
+2025-12-16T06:07:58.967Z INFO  PuppeteerCrawler: ✅ Kwai majacinto_: null followers, 11 posts
+2025-12-16T06:07:59.162Z INFO  PuppeteerCrawler: Scraping YouTube profile: MikaelGringoPE
+2025-12-16T06:08:02.977Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: MikaelGringoPE
+2025-12-16T06:08:03.167Z INFO  PuppeteerCrawler: DUMP MikaelGringoPE: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250812224830_BMTUwMDAxNjQyMDkxNjY5_s.jpg"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/collection.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/upic/2025/08/16/09/BMjAyNTA4MTYwOTUwNDhfMTUwMDAxNjQyMDkxNjY5XzE1MDEwOTM4MzU0NTUzNV8xXzM=_ouu_Ba1aecd473f9600ab331e8daf139053bf.webp?tag=1-1765865276-ALBUM-0-8rok7y3zdq-639da9c3009e57ce"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/12/14/07/BMjAyNTEyMTQwNzI3NDZfMTUwMDA... [line-too-long]
+2025-12-16T06:08:06.962Z INFO  PuppeteerCrawler: Scraping YouTube profile: bismark.pe
+2025-12-16T06:08:10.365Z INFO  PuppeteerCrawler: Scraping Kwai profile: Wellingtonpe_ofc
+2025-12-16T06:08:10.962Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: bismark.pe
+2025-12-16T06:08:11.160Z INFO  PuppeteerCrawler: DUMP bismark.pe: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250807225539_BMTUwMDAxNzAxNjk3ODE3_s.jpg"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/collection.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/upic/2025/09/18/03/BMjAyNTA5MTgwMzM4NTdfMTUwMDAxNzAxNjk3ODE3XzE1MDEwOTU3MzY0ODIxN18yXzM=_oscn2_B9aaaff823ad1459c60b5742a10d71b52.webp"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/12/13/20/BMjAyNTEyMTMyMDA3MTNfMTUwMDAxNzAxNjk3ODE3XzE1MDExMDA1OTc4ODAyNl8yXzM=_oscn2_Be831e9... [line-too-long]
+2025-12-16T06:08:13.865Z INFO  PuppeteerCrawler: ✅ Kwai Wellingtonpe_ofc: null followers, 11 posts
+2025-12-16T06:08:14.560Z INFO  PuppeteerCrawler: Scraping YouTube profile: filosofo_digital
+2025-12-16T06:08:18.664Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: filosofo_digital
+2025-12-16T06:08:18.677Z INFO  PuppeteerCrawler: DUMP filosofo_digital: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250701001226_BMTUwMDAxNjk4MjQxODk0_t.jpg"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/09/18/09/BMjAyNTA5MTgwOTQyNDBfMTUwMDAxNjk4MjQxODk0XzE1MDEwOTU3NTI5MjcwNl8yXzM=_oscn2_Bcd1244e68ee781d6302010b5b2a6de1e.webp"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/like.png"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/09/17/07/BMjAyNTA5MTcwNzM0MTNfMTUwMDAxNjk4MjQxODk0XzE1MDEwOTU2ODk2MTQ3Ml8yXzM=_oscn2_B80df7... [line-too-long]
+2025-12-16T06:08:21.763Z INFO  PuppeteerCrawler: Scraping YouTube profile: lucasvcavalcanti
+2025-12-16T06:08:25.163Z INFO  PuppeteerCrawler: Scraping Kwai profile: arquivodaonca
+2025-12-16T06:08:26.067Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: lucasvcavalcanti
+2025-12-16T06:08:26.561Z INFO  PuppeteerCrawler: DUMP lucasvcavalcanti: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250811091253_BMTUwMDAxNzA0MDcwNTYx_s.jpg"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/12/07/21/BMjAyNTEyMDcyMTA3NThfMTUwMDAxNzA0MDcwNTYxXzE1MDExMDAyNzQ4MDU0OF8xXzM=_oscn2_B4164c3db3df1cd77a7b4430b01686144.webp"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/like.png"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/12/07/00/BMjAyNTEyMDcwMDQxMDFfMTUwMDAxNzA0MDcwNTYxXzE1MDExMDAyMzA4MDYxM18xXzM=_oscn2_Bc9ebf... [line-too-long]
+2025-12-16T06:08:27.573Z INFO  PuppeteerCrawler: ✅ Kwai arquivodaonca: null followers, 11 posts
+2025-12-16T06:08:37.064Z INFO  PuppeteerCrawler: Scraping YouTube profile: pedro.vilaca_pe
+2025-12-16T06:08:39.862Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: pedro.vilaca_pe
+2025-12-16T06:08:39.974Z INFO  PuppeteerCrawler: DUMP pedro.vilaca_pe: <!DOCTYPE html><html lang="en" pc="yes" dir="ltr" data-n-head="%7B%22lang%22:%7B%22ssr%22:%22en%22%7D,%22pc%22:%7B%22ssr%22:%22yes%22%7D,%22dir%22:%7B%22ssr%22:%22ltr%22%7D%7D"><head>
+2025-12-16T06:08:39.976Z     <title>Pedro Vilaça Gomes (@pedro.vilaca_pe) on Kwai</title><meta data-n-head="ssr" charset="utf-8"><meta data-n-head="ssr" data-hid="viewport" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><meta data-n-head="ssr" name="google" content="notranslate"><meta data-n-head="ssr" name="format-detection" content="telephone=no"><meta data-n-head="ssr" name="theme-color" content="#000"><meta data-n-head="ssr" data-hid="charset" charset="utf-8"><meta data-n-head="ssr" data-hid="mobile-web-app-capable" name="mobile-web-app-capable" content="yes"><meta data-n-head="ssr" property="al:ios:app_name" content="Kwai"><meta data-n-head="ssr" property="al:android:app_name" content="Kwai"><meta data-n-head="ssr" property="al:android:package" content="com.k
+2025-12-16T06:08:40.873Z INFO  PuppeteerCrawler: Scraping Kwai profile: ugrwn044
+2025-12-16T06:08:43.963Z INFO  PuppeteerCrawler: Scraping YouTube profile: johnrobertpa
+2025-12-16T06:08:44.660Z INFO  PuppeteerCrawler: ✅ Kwai ugrwn044: 90 followers, 11 posts
+2025-12-16T06:08:44.862Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":12898,"requestsFinishedPerMinute":5,"requestsFailedPerMinute":0,"requestTotalDurationMillis":425618,"requestsTotal":33,"crawlerRuntimeMillis":420684,"retryHistogram":[33]}
+2025-12-16T06:08:44.966Z INFO  PuppeteerCrawler:Statistics: PuppeteerCrawler request statistics: {"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":15286,"requestsFinishedPerMinute":4,"requestsFailedPerMinute":0,"requestTotalDurationMillis":412735,"requestsTotal":27,"crawlerRuntimeMillis":420627,"retryHistogram":[27]}
+2025-12-16T06:08:45.362Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":false,"limitRatio":0.2,"actualRatio":0},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.079},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":0.932},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:08:45.565Z INFO  PuppeteerCrawler:AutoscaledPool: state {"currentConcurrency":1,"desiredConcurrency":1,"systemStatus":{"isSystemIdle":false,"memInfo":{"isOverloaded":false,"limitRatio":0.2,"actualRatio":0},"eventLoopInfo":{"isOverloaded":false,"limitRatio":0.6,"actualRatio":0.079},"cpuInfo":{"isOverloaded":true,"limitRatio":0.4,"actualRatio":0.931},"clientInfo":{"isOverloaded":false,"limitRatio":0.3,"actualRatio":0}}}
+2025-12-16T06:08:47.975Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: johnrobertpa
+2025-12-16T06:08:48.082Z INFO  PuppeteerCrawler: DUMP johnrobertpa: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250617022051_BMTUwMDAwOTI0NDM0MzI3_s.jpg"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/collection.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/upic/2025/07/02/00/BMjAyNTA3MDIwMDAxMDNfMTUwMDAwOTI0NDM0MzI3XzE1MDEwOTExNDU3OTQ2NF8yXzM=_ouu_B201ce35107ff23c8a0daaddc3016f108.webp?tag=1-1765865321-ALBUM-0-mbavdmwfvt-5106c703ab70d92b"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/10/17/02/BMjAyNTEwMTcwMjA4NTJfMTUwMDAwO... [line-too-long]
+2025-12-16T06:08:52.866Z INFO  PuppeteerCrawler: Scraping YouTube profile: ciromtpe
+2025-12-16T06:08:56.062Z INFO  PuppeteerCrawler: Scraping Kwai profile: felixsantos.rn
+2025-12-16T06:08:57.362Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: ciromtpe
+2025-12-16T06:08:57.563Z INFO  PuppeteerCrawler: DUMP ciromtpe: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250701121912_BMTUwMDAxNjk4MzI3Nzcx_s.jpg"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/12/13/07/BMjAyNTEyMTMwNzQwMjlfMTUwMDAxNjk4MzI3NzcxXzE1MDExMDA1NzMyNjQzMV8yXzM=_oscn2_B77de5d058e8dc101b48c0c993ca56d58.webp"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/like.png"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/12/11/05/BMjAyNTEyMTEwNTM5MzlfMTUwMDAxNjk4MzI3NzcxXzE1MDExMDA0NjAxODA5N18yXzM=_oscn2_B149a0ac60afb5... [line-too-long]
+2025-12-16T06:08:58.260Z INFO  PuppeteerCrawler: ✅ Kwai felixsantos.rn: null followers, 11 posts
+2025-12-16T06:09:00.877Z INFO  PuppeteerCrawler: Scraping YouTube profile: FreitassPB
+2025-12-16T06:09:04.370Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: FreitassPB
+2025-12-16T06:09:04.471Z INFO  PuppeteerCrawler: DUMP FreitassPB: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250814020540_BMTUwMDAxMDEzNDY2MTEw_s.jpg"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/12/12/04/BMjAyNTEyMTIwNDM4MTlfMTUwMDAxMDEzNDY2MTEwXzE1MDExMDA1MTE3MjI0NF8yXzM=_oscn2_Ba082d500a5e797bfee14d524e46cf74a.webp"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/like.png"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/12/09/07/BMjAyNTEyMDkwNzI5NDlfMTUwMDAxMDEzNDY2MTEwXzE1MDExMDAzNTQ1MjY3MV8yXzM=_oscn2_B4d19c7d869c... [line-too-long]
+2025-12-16T06:09:07.565Z INFO  PuppeteerCrawler: Scraping YouTube profile: sarahsheronbit
+2025-12-16T06:09:10.862Z INFO  PuppeteerCrawler: Scraping Kwai profile: Marvinazoubel
+2025-12-16T06:09:10.963Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: sarahsheronbit
+2025-12-16T06:09:11.061Z INFO  PuppeteerCrawler: DUMP sarahsheronbit: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20231122210908_BMTUwMDAxNTQ1Nzk3Nzk0_t.jpg"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/empty.png"><link rel="stylesheet" href="https://cdn-static.kwai.net/kos/s101/nlav11312/ug-web-fe-online/_next/static/css/04570722bf350f0a.css" data-precedence="next"><link rel="stylesheet" href="https://cdn-static.kwai.net/kos/s101/nlav11312/ug-web-fe-online/_next/static/css/9fbc373634924757.css" data-precedence="next"><link rel="stylesheet" href="https://cdn-static.kwai.net/kos... [line-too-long]
+2025-12-16T06:09:14.465Z INFO  PuppeteerCrawler: ✅ Kwai Marvinazoubel: null followers, 11 posts
+2025-12-16T06:09:14.468Z INFO  PuppeteerCrawler: Scraping YouTube profile: Miguel Kazan
+2025-12-16T06:09:15.667Z WARN  PuppeteerCrawler: Reclaiming failed request back to the list or queue. TypeError: Invalid URL
+2025-12-16T06:09:15.669Z     at new URL (node:internal/url:806:29)
+2025-12-16T06:09:15.671Z     at getCookieContext (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1423:14)
+2025-12-16T06:09:15.674Z     at _CookieJar.getCookies (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1708:17)
+2025-12-16T06:09:15.678Z     at _CookieJar.callSync (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1491:10)
+2025-12-16T06:09:15.680Z     at _CookieJar.getCookiesSync (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1821:17)
+2025-12-16T06:09:15.682Z     at Session.getCookies (/home/myuser/node_modules/@crawlee/core/session_pool/session.js:288:40)
+2025-12-16T06:09:15.684Z     at PuppeteerCrawler._applyCookies (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:347:40)
+2025-12-16T06:09:15.686Z     at PuppeteerCrawler._handleNavigation (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:332:20)
+2025-12-16T06:09:15.687Z     at async PuppeteerCrawler._runRequestHandler (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:260:13)
+2025-12-16T06:09:15.689Z     at async PuppeteerCrawler._runRequestHandler (/home/myuser/node_modules/@crawlee/puppeteer/internals/puppeteer-crawler.js:114:9) {"id":"ObahZh2StHAQva2","url":"youtube.com/@arquivodaonca","retryCount":2}
+2025-12-16T06:09:16.079Z WARN  PuppeteerCrawler: Reclaiming failed request back to the list or queue. TypeError: Invalid URL
+2025-12-16T06:09:16.081Z     at new URL (node:internal/url:806:29)
+2025-12-16T06:09:16.083Z     at getCookieContext (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1423:14)
+2025-12-16T06:09:16.084Z     at _CookieJar.getCookies (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1708:17)
+2025-12-16T06:09:16.086Z     at _CookieJar.callSync (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1491:10)
+2025-12-16T06:09:16.088Z     at _CookieJar.getCookiesSync (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1821:17)
+2025-12-16T06:09:16.090Z     at Session.getCookies (/home/myuser/node_modules/@crawlee/core/session_pool/session.js:288:40)
+2025-12-16T06:09:16.091Z     at PuppeteerCrawler._applyCookies (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:347:40)
+2025-12-16T06:09:16.093Z     at PuppeteerCrawler._handleNavigation (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:332:20)
+2025-12-16T06:09:16.095Z     at async PuppeteerCrawler._runRequestHandler (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:260:13)
+2025-12-16T06:09:16.096Z     at async PuppeteerCrawler._runRequestHandler (/home/myuser/node_modules/@crawlee/puppeteer/internals/puppeteer-crawler.js:114:9) {"id":"n5EKbXXTsDlVUIZ","url":"Kwai.com/otdutra","retryCount":2}
+2025-12-16T06:09:16.495Z ERROR PuppeteerCrawler: Request failed and reached maximum retries. TypeError: Invalid URL
+2025-12-16T06:09:16.497Z     at new URL (node:internal/url:806:29)
+2025-12-16T06:09:16.499Z     at getCookieContext (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1423:14)
+2025-12-16T06:09:16.501Z     at _CookieJar.getCookies (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1708:17)
+2025-12-16T06:09:16.503Z     at _CookieJar.callSync (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1491:10)
+2025-12-16T06:09:16.504Z     at _CookieJar.getCookiesSync (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1821:17)
+2025-12-16T06:09:16.506Z     at Session.getCookies (/home/myuser/node_modules/@crawlee/core/session_pool/session.js:288:40)
+2025-12-16T06:09:16.508Z     at PuppeteerCrawler._applyCookies (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:347:40)
+2025-12-16T06:09:16.509Z     at PuppeteerCrawler._handleNavigation (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:332:20)
+2025-12-16T06:09:16.511Z     at async PuppeteerCrawler._runRequestHandler (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:260:13)
+2025-12-16T06:09:16.512Z     at async PuppeteerCrawler._runRequestHandler (/home/myuser/node_modules/@crawlee/puppeteer/internals/puppeteer-crawler.js:114:9) {"id":"ObahZh2StHAQva2","url":"youtube.com/@arquivodaonca","method":"GET","uniqueKey":"youtube.com/@arquivodaonca"}
+2025-12-16T06:09:16.514Z ERROR PuppeteerCrawler: 💀 Kwai arquivodaonca failed after retries
+2025-12-16T06:09:18.287Z ERROR PuppeteerCrawler: Request failed and reached maximum retries. TypeError: Invalid URL
+2025-12-16T06:09:18.289Z     at new URL (node:internal/url:806:29)
+2025-12-16T06:09:18.290Z     at getCookieContext (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1423:14)
+2025-12-16T06:09:18.292Z     at _CookieJar.getCookies (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1708:17)
+2025-12-16T06:09:18.294Z     at _CookieJar.callSync (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1491:10)
+2025-12-16T06:09:18.295Z     at _CookieJar.getCookiesSync (/home/myuser/node_modules/tough-cookie/dist/index.cjs:1821:17)
+2025-12-16T06:09:18.297Z     at Session.getCookies (/home/myuser/node_modules/@crawlee/core/session_pool/session.js:288:40)
+2025-12-16T06:09:18.299Z     at PuppeteerCrawler._applyCookies (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:347:40)
+2025-12-16T06:09:18.300Z     at PuppeteerCrawler._handleNavigation (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:332:20)
+2025-12-16T06:09:18.302Z     at async PuppeteerCrawler._runRequestHandler (/home/myuser/node_modules/@crawlee/browser/internals/browser-crawler.js:260:13)
+2025-12-16T06:09:18.303Z     at async PuppeteerCrawler._runRequestHandler (/home/myuser/node_modules/@crawlee/puppeteer/internals/puppeteer-crawler.js:114:9) {"id":"n5EKbXXTsDlVUIZ","url":"Kwai.com/otdutra","method":"GET","uniqueKey":"Kwai.com/otdutra"}
+2025-12-16T06:09:18.305Z ERROR PuppeteerCrawler: 💀 Kwai otdutra failed after retries
+2025-12-16T06:09:18.660Z WARN  PuppeteerCrawler: ⚠️ Could not find subscribers for YouTube: Miguel Kazan
+2025-12-16T06:09:18.678Z INFO  PuppeteerCrawler: DUMP Miguel Kazan: <!DOCTYPE html><html lang="en" dir="ltr" pc="yes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/project-a-web-h5-online/img/share.png"><link rel="preload" as="image" href="http://ak-br-pic.kwai.net/bs2/overseaHead/20250825224140_BMTUwMDAwMjI1Nzg3MTM3_s.jpg"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/12/11/04/BMjAyNTEyMTEwNDI4NTFfMTUwMDAwMjI1Nzg3MTM3XzE1MDExMDA0NTcyNDAxM18xXzM=_oscn2_Ba15707732860b6b290e97ccdb79c477e.webp"><link rel="preload" as="image" href="https://cdn-static.ap4r.com/kos/s101/nlav11312/kos/s101/nlav11312/pwa/mobile/user/like.png"><link rel="preload" as="image" href="https://ak-br-pic.kwai.net/upic/2025/11/21/08/BMjAyNTExMjEwODQ5NTVfMTUwMDAwMjI1Nzg3MTM3XzE1MDEwOTkzNjA5ODg4Ml8xXzM=_oscn2_Bbb0094266... [line-too-long]
+2025-12-16T06:09:18.829Z INFO  PuppeteerCrawler: All requests from the queue have been processed, the crawler will shut down.
+2025-12-16T06:09:19.362Z INFO  PuppeteerCrawler: All requests from the queue have been processed, the crawler will shut down.
+2025-12-16T06:09:19.660Z INFO  PuppeteerCrawler: Final request statistics: {"requestsFinished":38,"requestsFailed":0,"retryHistogram":[38],"requestAvgFailedDurationMillis":null,"requestAvgFinishedDurationMillis":12178,"requestsFinishedPerMinute":5,"requestsFailedPerMinute":0,"requestTotalDurationMillis":462750,"requestsTotal":38,"crawlerRuntimeMillis":455483}
+2025-12-16T06:09:19.662Z INFO  PuppeteerCrawler: Finished! Total 38 requests: 38 succeeded, 0 failed. {"terminal":true}
+2025-12-16T06:09:19.919Z INFO  PuppeteerCrawler: Final request statistics: {"requestsFinished":30,"requestsFailed":2,"retryHistogram":[30,null,2],"requestAvgFailedDurationMillis":914,"requestAvgFinishedDurationMillis":15308,"requestsFinishedPerMinute":4,"requestsFailedPerMinute":0,"requestTotalDurationMillis":461061,"requestsTotal":32,"crawlerRuntimeMillis":455581}
+2025-12-16T06:09:19.921Z INFO  PuppeteerCrawler: Error analysis: {"totalErrors":2,"uniqueErrors":1,"mostCommonErrors":["2x: Invalid URL (node:internal/url:806:29)"]}
+2025-12-16T06:09:19.923Z INFO  PuppeteerCrawler: Finished! Total 32 requests: 30 succeeded, 2 failed. {"terminal":true}
+2025-12-16T06:09:21.100Z 
+2025-12-16T06:09:21.102Z 📊 Summary:
+2025-12-16T06:09:21.104Z    Total results: 198
+2025-12-16T06:09:21.106Z    ✅ Success: 65
+2025-12-16T06:09:21.107Z    ❌ Failed: 133

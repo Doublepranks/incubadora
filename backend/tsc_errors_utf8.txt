@@ -1,0 +1,2 @@
+﻿src/services/reportService.ts(243,32): error TS2339: Property 'followers' does not exist on type 'never'.
+src/services/reportService.ts(244,32): error TS2339: Property 'followers' does not exist on type 'never'.

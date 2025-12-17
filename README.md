@@ -63,4 +63,4 @@ Frontend em `http://localhost:4173` (ajuste `VITE_API_URL` conforme backend). O 
 - Implementar autenticação real (email/senha, cookies HttpOnly/Secure).
 - Expor rotas `/auth`, `/influencers`, `/metrics`, `/geo`, `/reports` consumindo Prisma.
 - Integrar Apify service e rotinas de coleta (jobs diários) populando `metrics_daily` e `sync_logs`.
-- Atualizar frontend para consumir backend real (filtros período/plataforma, relatórios 1:1, exportação Excel, compartilhamento PNG). 
+- Atualizar frontend para consumir backend real (filtros período/plataforma, relatórios 1:1, exportação Excel, compartilhamento PNG).

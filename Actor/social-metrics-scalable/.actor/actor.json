@@ -1,0 +1,9 @@
+{
+	"actorSpecification": 1,
+	"name": "social-metrics-scalable",
+	"title": "Social Metrics Scalable",
+	"description": "Scalable social media metrics collection with parallel execution",
+	"version": "1.0",
+	"input": "./INPUT_SCHEMA.json",
+	"dockerfile": "./Dockerfile"
+}

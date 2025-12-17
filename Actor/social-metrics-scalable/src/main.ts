@@ -71,41 +71,38 @@ async function pushResult(result: MetricResult) {
     await Actor.pushData(result);
 }
 
-const platforms = Array.from(profilesByPlatform.keys());
-
-for (const platform of platforms) {
+// Helper function to process a single platform
+async function processPlatform(platform: string, platformProfiles: ProfileInput[]) {
     if (isTimeRunningOut()) {
-        console.warn('⚠️ Soft timeout reached! Stopping processing to ensure clean exit.');
-        break;
+        console.warn(`🛑 Soft timeout encountered. Skipping ${platform}.`);
+        return;
     }
-
-    const platformProfiles = profilesByPlatform.get(platform) || [];
-    if (platformProfiles.length === 0) continue;
 
     console.log(`\n📱 Processing ${platform}: ${platformProfiles.length} profiles`);
 
     if (platform === 'kwai') {
-        // Kwai: usar scraping próprio com Puppeteer
         console.log('🔧 Using custom Puppeteer scraper for Kwai...');
         const kwaiResults = await scrapeKwaiProfiles(platformProfiles, date);
-        results.push(...kwaiResults);
-        continue;
+        for (const res of kwaiResults) {
+            await pushResult(res);
+        }
+        return;
     }
 
     if (platform === 'youtube') {
-        // YouTube: usar scraping próprio com Puppeteer
         console.log('🔧 Using custom Puppeteer scraper for YouTube...');
         const youtubeResults = await scrapeYoutubeProfiles(platformProfiles, date);
-        results.push(...youtubeResults);
-        continue;
+        for (const res of youtubeResults) {
+            await pushResult(res);
+        }
+        return;
     }
 
     const actorId = ACTOR_IDS[platform];
     if (!actorId) {
         console.log(`⚠️ No actor configured for ${platform}`);
-        // Registrar erro para cada perfil desta plataforma
         for (const profile of platformProfiles) {
-            results.push({
+            await pushResult({
                 platform,
                 username: profile.username,
                 date,
@@ -119,7 +116,7 @@ for (const platform of platforms) {
                 sourceActorId: null,
             });
         }
-        continue;
+        return;
     }
 
     if (platform === 'x') {
@@ -139,7 +136,7 @@ for (const platform of platforms) {
 
                 if (isTimeRunningOut()) {
                     console.warn(`🛑 Soft timeout encountered while processing X profiles. Skipping ${profile.username}`);
-                    break;
+                    break; // This break will only exit the inner loop for X profiles
                 }
 
                 const run = await client.actor(actorId).call(singleInput, {
@@ -195,7 +192,12 @@ for (const platform of platforms) {
                 });
             }
         }
-        continue;
+        return;
+    }
+
+    if (isTimeRunningOut()) {
+        console.warn(`🛑 Soft timeout encountered. Skipping ${platform}.`);
+        return;
     }
 
     try {
@@ -270,6 +272,18 @@ for (const platform of platforms) {
         }
     }
 }
+
+// EXECUTE PLATFORMS IN PARALLEL
+const platforms = Array.from(profilesByPlatform.keys());
+console.log(`🚀 Starting parallel execution for ${platforms.length} platforms`);
+
+await Promise.all(platforms.map(async (platform) => {
+    const platformProfiles = profilesByPlatform.get(platform) || [];
+    if (platformProfiles.length > 0) {
+        await processPlatform(platform, platformProfiles);
+    }
+}));
+
 
 // Remove the final massive push loop as data is pushed incrementally
 // for (const result of results) {
@@ -475,7 +489,7 @@ async function scrapeKwaiProfiles(profiles: ProfileInput[], date: string): Promi
     const kwaiResults: MetricResult[] = [];
 
     const crawler = new PuppeteerCrawler({
-        maxConcurrency: 1,
+        maxConcurrency: 5,
         navigationTimeoutSecs: 30,
         requestHandlerTimeoutSecs: 60,
         maxRequestRetries: 2,
@@ -645,7 +659,7 @@ async function scrapeYoutubeProfiles(profiles: ProfileInput[], date: string): Pr
     const youtubeResults: MetricResult[] = [];
 
     const crawler = new PuppeteerCrawler({
-        maxConcurrency: 1,
+        maxConcurrency: 5,
         navigationTimeoutSecs: 120,
         requestHandlerTimeoutSecs: 180,
         maxRequestRetries: 2,

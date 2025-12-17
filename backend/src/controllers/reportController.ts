@@ -5,40 +5,81 @@ import { generateExcel, getRankData, getReportData } from "../services/reportSer
 const VALID_SERIES: Series[] = ["Elite", "A2", "A3", "Institucional", "Cortes", "Noticias"];
 
 export async function getReportCards(req: Request, res: Response) {
-  const { state, city, search, series, month, year } = req.query;
+  const { state, city, search, series, month, year, limit, page } = req.query;
   const regions = (req as any).userRegions as string[] | undefined;
 
   // Validate filters
-  const seriesFilter = series && VALID_SERIES.includes(series as Series) ? (series as Series) : undefined;
-  const monthNum = month ? Number(month) : undefined;
-  const yearNum = year ? Number(year) : undefined;
+  const seriesProvided = typeof series !== "undefined";
+  if (seriesProvided && !VALID_SERIES.includes(series as Series)) {
+    return res.status(400).json({ error: true, message: "Parâmetro 'series' inválido" });
+  }
+  const seriesFilter = seriesProvided ? (series as Series) : undefined;
 
-  // Validate month (1-12)
-  const validMonth = monthNum && monthNum >= 1 && monthNum <= 12 ? monthNum : undefined;
-  // Validate year (reasonable range)
-  const validYear = yearNum && yearNum >= 2000 && yearNum <= 2100 ? yearNum : undefined;
+  const monthNum = typeof month !== "undefined" ? Number(month) : undefined;
+  if (monthNum !== undefined && (!Number.isFinite(monthNum) || monthNum < 1 || monthNum > 12)) {
+    return res.status(400).json({ error: true, message: "Parâmetro 'month' deve estar entre 1 e 12" });
+  }
 
-  const data = await getReportData({
-    state: state as string | undefined,
-    city: city as string | undefined,
-    search: search as string | undefined,
-    regions,
-    series: seriesFilter,
-    month: validMonth,
-    year: validYear,
+  const yearNum = typeof year !== "undefined" ? Number(year) : undefined;
+  if (yearNum !== undefined && (!Number.isFinite(yearNum) || yearNum < 2000 || yearNum > 2100)) {
+    return res.status(400).json({ error: true, message: "Parâmetro 'year' deve estar entre 2000 e 2100" });
+  }
+
+  // If month provided without year, default to current year to avoid falling back to 28-day window
+  const computedYear = monthNum ? yearNum ?? new Date().getFullYear() : yearNum;
+
+  const limitNum = typeof limit !== "undefined" ? Number(limit) : undefined;
+  const pageNum = typeof page !== "undefined" ? Number(page) : undefined;
+  const parsedLimit = limitNum !== undefined && Number.isFinite(limitNum) && limitNum > 0 ? Math.min(Math.floor(limitNum), 100) : 10;
+  const parsedPage = pageNum !== undefined && Number.isFinite(pageNum) && pageNum > 0 ? Math.floor(pageNum) : 1;
+  const offset = (parsedPage - 1) * parsedLimit;
+
+  const { items, total } = await getReportData(
+    {
+      state: state as string | undefined,
+      city: city as string | undefined,
+      search: search as string | undefined,
+      regions,
+      series: seriesFilter,
+      month: monthNum,
+      year: computedYear,
+    },
+    { pagination: { limit: parsedLimit, offset } },
+  );
+
+  return res.json({
+    error: false,
+    data: items,
+    pagination: {
+      total,
+      page: parsedPage,
+      limit: parsedLimit,
+      hasMore: offset + items.length < total,
+    },
   });
-  return res.json({ error: false, data });
 }
 
 export async function exportExcel(req: Request, res: Response) {
   const { state, city, search, series, month, year } = req.query;
   const regions = (req as any).userRegions as string[] | undefined;
 
-  const seriesFilter = series && VALID_SERIES.includes(series as Series) ? (series as Series) : undefined;
-  const monthNum = month ? Number(month) : undefined;
-  const yearNum = year ? Number(year) : undefined;
-  const validMonth = monthNum && monthNum >= 1 && monthNum <= 12 ? monthNum : undefined;
-  const validYear = yearNum && yearNum >= 2000 && yearNum <= 2100 ? yearNum : undefined;
+  const seriesProvided = typeof series !== "undefined";
+  if (seriesProvided && !VALID_SERIES.includes(series as Series)) {
+    return res.status(400).json({ error: true, message: "Parâmetro 'series' inválido" });
+  }
+  const seriesFilter = seriesProvided ? (series as Series) : undefined;
+
+  const monthNum = typeof month !== "undefined" ? Number(month) : undefined;
+  if (monthNum !== undefined && (!Number.isFinite(monthNum) || monthNum < 1 || monthNum > 12)) {
+    return res.status(400).json({ error: true, message: "Parâmetro 'month' deve estar entre 1 e 12" });
+  }
+
+  const yearNum = typeof year !== "undefined" ? Number(year) : undefined;
+  if (yearNum !== undefined && (!Number.isFinite(yearNum) || yearNum < 2000 || yearNum > 2100)) {
+    return res.status(400).json({ error: true, message: "Parâmetro 'year' deve estar entre 2000 e 2100" });
+  }
+
+  const computedYear = monthNum ? yearNum ?? new Date().getFullYear() : yearNum;
 
   const buffer = await generateExcel({
     state: state as string | undefined,
@@ -46,8 +87,8 @@ export async function exportExcel(req: Request, res: Response) {
     search: search as string | undefined,
     regions,
     series: seriesFilter,
-    month: validMonth,
-    year: validYear,
+    month: monthNum,
+    year: computedYear,
   });
 
   res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -56,11 +97,21 @@ export async function exportExcel(req: Request, res: Response) {
 }
 
 export async function getRank(req: Request, res: Response) {
-  const { state, city, search, periodWeeks, series } = req.query;
+  const { state, city, search, periodWeeks, series, mode, month, year } = req.query;
   const regions = (req as any).userRegions as string[] | undefined;
-  const period = periodWeeks ? Number(periodWeeks) : 4;
+  const monthNum = month ? Number(month) : undefined;
+  const yearNum = year ? Number(year) : undefined;
 
-  const seriesFilter = series && VALID_SERIES.includes(series as Series) ? (series as Series) : undefined;
+  const seriesProvided = typeof series !== "undefined";
+  if (seriesProvided && !VALID_SERIES.includes(series as Series)) {
+    return res.status(400).json({ error: true, message: "Parâmetro 'series' inválido" });
+  }
+  const seriesFilter = seriesProvided ? (series as Series) : undefined;
+
+  const requestedMode = mode === "monthly" || (monthNum && yearNum) ? "monthly" : "weekly";
+  if (requestedMode === "monthly" && (!monthNum || !yearNum || monthNum < 1 || monthNum > 12 || yearNum < 2000 || yearNum > 2100)) {
+    return res.status(400).json({ error: true, message: "Parâmetros de mês/ano inválidos para ranking mensal" });
+  }
 
   const result = await getRankData(
     {
@@ -69,8 +120,10 @@ export async function getRank(req: Request, res: Response) {
       search: search as string | undefined,
       regions,
       series: seriesFilter,
+      month: monthNum,
+      year: yearNum,
     },
-    Number.isFinite(period) && period > 0 ? period : 4
+    { mode: requestedMode },
   );
-  return res.json({ error: false, data: result.data, totals: result.totals });
+  return res.json({ error: false, data: result.data, totals: result.totals, mode: requestedMode });
 }
