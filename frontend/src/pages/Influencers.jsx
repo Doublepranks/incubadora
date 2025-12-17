@@ -63,7 +63,7 @@ const Influencers = () => {
 
   const [search, setSearch] = useState("");
   const [platformFilter, setPlatformFilter] = useState("");
-  const [periodFilter, setPeriodFilter] = useState("30");
+  const [periodFilter, setPeriodFilter] = useState("7");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");

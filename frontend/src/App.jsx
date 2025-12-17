@@ -10,6 +10,7 @@ const Reports = lazy(() => import('./pages/Reports'));
 const Users = lazy(() => import('./pages/Users'));
 const Influencers = lazy(() => import('./pages/Influencers'));
 const SysAdmin = lazy(() => import('./pages/SysAdmin'));
+const MapView = lazy(() => import('./pages/MapView'));
 
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const { isAuthenticated, authLoading, user } = useApp();
@@ -62,6 +63,13 @@ const AppRoutes = () => {
         <SuspenseWrapper>
           <ProtectedRoute>
             <Influencers />
+          </ProtectedRoute>
+        </SuspenseWrapper>
+      } />
+      <Route path="/mapview" element={
+        <SuspenseWrapper>
+          <ProtectedRoute>
+            <MapView />
           </ProtectedRoute>
         </SuspenseWrapper>
       } />

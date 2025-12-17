@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { Search, LayoutDashboard, Users, Shield, LogOut, FileBarChart, ServerCog, ChevronRight } from 'lucide-react';
+import { Home, Users, Search, BarChart3, Settings, LogOut, ChevronRight, UserCircle, Map, LayoutDashboard, ServerCog, Shield } from 'lucide-react';
 
 const Sidebar = () => {
     const {
@@ -63,7 +63,8 @@ const Sidebar = () => {
                     <h2 className="px-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2 font-mono">Menu Principal</h2>
                     <LinkItem to="/" icon={LayoutDashboard} label="Dashboard" />
                     {canAccessInfluencers && <LinkItem to="/influencers" icon={Users} label="Influenciadores" />}
-                    <LinkItem to="/reports" icon={FileBarChart} label="Relatórios" />
+                    <LinkItem to="/reports" icon={BarChart3} label="Relatórios" />
+                    <LinkItem to="/mapview" icon={Map} label="Mapa de Influenciadores" />
                 </div>
 
                 {/* Admin Section - MOVED HERE */}

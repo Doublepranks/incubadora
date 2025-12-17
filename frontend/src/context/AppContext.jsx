@@ -27,7 +27,7 @@ export const AppProvider = ({ children }) => {
         return Array.from(new Set(list)).sort((a, b) => a.localeCompare(b, 'pt-BR'));
     }, [sidebarPool, selectedState]);
     const [filters, setFilters] = useState({
-        periodDays: 30,
+        periodDays: 7,
         platform: '',
     });
 
