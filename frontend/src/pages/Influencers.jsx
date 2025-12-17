@@ -415,25 +415,24 @@ const Influencers = () => {
               <CheckCircle2 size={16} /> {status}
             </div>
           )}
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-280px)]">
             <table className="w-full text-sm text-left">
               <thead className="text-xs uppercase bg-zinc-900/80 text-zinc-500 font-medium">
                 <tr>
-                  <th className="px-6 py-4">Nome</th>
-                  <th className="px-6 py-4">Série</th>
-                  <th className="px-6 py-4">UF</th>
-                  <th className="px-6 py-4">Município</th>
-                  <th className="px-6 py-4">Plataformas</th>
-                  <th className="px-6 py-4">Seguidores</th>
-                  <th className="px-6 py-4">Posts</th>
-                  <th className="px-6 py-4">Crescimento</th>
-                  <th className="px-6 py-4 text-right">Ações</th>
+                  <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Nome</th>
+                  <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Série</th>
+                  <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Localização</th>
+                  <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Plataformas</th>
+                  <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Seguidores</th>
+                  <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Posts</th>
+                  <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Crescimento</th>
+                  <th className="px-4 xl:px-6 py-3 xl:py-4 text-right sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {influencers.map((inf) => (
                   <tr key={inf.id} className="hover:bg-white/5 transition-colors group">
-                    <td className="px-6 py-4">
+                    <td className="px-4 xl:px-6 py-3 xl:py-4">
                       <div className="flex items-center gap-4">
                         <div className="h-10 w-10 rounded-full bg-zinc-800 overflow-hidden flex items-center justify-center text-zinc-400 ring-2 ring-white/5">
                           {inf.avatarUrl ? (
@@ -448,12 +447,13 @@ const Influencers = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 xl:px-6 py-3 xl:py-4">
                       <SeriesBadge series={inf.series} size="sm" />
                     </td>
-                    <td className="px-6 py-4 text-zinc-400">{inf.state}</td>
-                    <td className="px-6 py-4 text-zinc-400">{inf.city || "-"}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 xl:px-6 py-3 xl:py-4 text-zinc-400">
+                      {inf.city ? `${inf.city}/${inf.state}` : inf.state}
+                    </td>
+                    <td className="px-4 xl:px-6 py-3 xl:py-4">
                       <div className="flex flex-wrap gap-2">
                         {inf.platforms?.map((p) => (
                           <span
@@ -465,14 +465,14 @@ const Influencers = () => {
                         ))}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-zinc-300 font-mono text-xs">{formatNumber(inf.totalFollowers)}</td>
-                    <td className="px-6 py-4 text-zinc-300 font-mono text-xs">{formatNumber(inf.totalPosts)}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 xl:px-6 py-3 xl:py-4 text-zinc-300 font-mono text-xs">{formatNumber(inf.totalFollowers)}</td>
+                    <td className="px-4 xl:px-6 py-3 xl:py-4 text-zinc-300 font-mono text-xs">{formatNumber(inf.totalPosts)}</td>
+                    <td className="px-4 xl:px-6 py-3 xl:py-4">
                       <span className={`font-semibold ${inf.growthPercent >= 0 ? "text-emerald-400" : "text-red-400"}`}>
                         {inf.growthPercent ? `${inf.growthPercent.toFixed(1)}%` : "0%"}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 xl:px-6 py-3 xl:py-4">
                       <div className="flex items-center gap-1 justify-end opacity-60 group-hover:opacity-100 transition-opacity">
                         <button onClick={() => openEdit(inf)} className="p-1.5 rounded-lg hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 transition-colors" title="Editar">
                           <Edit2 size={16} />
@@ -495,7 +495,7 @@ const Influencers = () => {
                 ))}
                 {influencers.length === 0 && (
                   <tr>
-                    <td colSpan={9} className="px-6 py-12 text-center text-zinc-500">
+                    <td colSpan={8} className="px-4 xl:px-6 py-12 text-center text-zinc-500">
                       <div className="flex flex-col items-center">
                         <Users size={48} className="mb-4 opacity-20" />
                         <p>Nenhum influenciador encontrado com os filtros atuais.</p>

@@ -43,7 +43,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div className="fixed left-4 top-4 bottom-4 w-72 glass-panel rounded-3xl flex flex-col z-50 overflow-hidden border border-white/5 bg-zinc-950/80 backdrop-blur-xl">
+        <div className="fixed left-4 top-4 bottom-4 w-64 xl:w-72 glass-panel rounded-3xl flex flex-col z-50 overflow-hidden border border-white/5 bg-zinc-950/80 backdrop-blur-xl">
             {/* Header */}
             <div className="p-6 border-b border-white/5">
                 <div className="flex items-center gap-3">
