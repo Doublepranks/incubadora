@@ -7,6 +7,23 @@ const AppContext = createContext();
 export const AppProvider = ({ children }) => {
     const prefersDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     const [darkMode, setDarkMode] = useState(prefersDark);
+
+    // Sidebar collapse state with localStorage persistence
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('sidebarState') === 'collapsed';
+        }
+        return false;
+    });
+
+    const toggleSidebar = useCallback(() => {
+        setIsSidebarCollapsed(prev => {
+            const newState = !prev;
+            localStorage.setItem('sidebarState', newState ? 'collapsed' : 'expanded');
+            return newState;
+        });
+    }, []);
+
     const [selectedState, setSelectedState] = useState('');
     const [selectedMunicipality, setSelectedMunicipality] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -147,6 +164,8 @@ export const AppProvider = ({ children }) => {
     return (
         <AppContext.Provider value={{
             darkMode,
+            isSidebarCollapsed,
+            toggleSidebar,
             selectedState,
             setSelectedState,
             selectedMunicipality,
