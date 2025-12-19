@@ -114,15 +114,32 @@ export async function getOverview(filters: MetricsFilters) {
       FROM profile_metrics
     )
     SELECT 
-      COALESCE(SUM(end_followers), 0) as total_followers,
       COALESCE(SUM(end_followers - start_followers), 0) as total_growth,
       COALESCE(SUM(CASE WHEN platform != 'x' THEN GREATEST(end_posts - start_posts, 0) ELSE 0 END), 0) as total_posts
     FROM aggregated
   `;
 
-  const metricsResult = await prisma.$queryRawUnsafe<{ total_followers: bigint; total_growth: bigint; total_posts: bigint }[]>(metricsQuery, ...params);
+  const metricsResult = await prisma.$queryRawUnsafe<{ total_growth: bigint; total_posts: bigint }[]>(metricsQuery, ...params);
 
-  const totalFollowers = Number(metricsResult[0]?.total_followers ?? 0);
+  // Separate query for absolute total followers (no period filter)
+  const absoluteFollowersQuery = `
+    WITH latest_metrics AS (
+      SELECT DISTINCT ON (sp.id)
+        sp.id as profile_id,
+        m.followers_count
+      FROM "SocialProfile" sp
+      INNER JOIN "Influencer" i ON i.id = sp.influencer_id
+      INNER JOIN "MetricDaily" m ON m.social_profile_id = sp.id
+      ${influencerWhere}
+      ORDER BY sp.id, m.date DESC
+    )
+    SELECT COALESCE(SUM(followers_count), 0) as total_followers
+    FROM latest_metrics
+  `;
+
+  const absoluteFollowersResult = await prisma.$queryRawUnsafe<{ total_followers: bigint }[]>(absoluteFollowersQuery, ...params.slice(0, params.length - (since ? 1 : 0)));
+
+  const totalFollowers = Number(absoluteFollowersResult[0]?.total_followers ?? 0);
   const totalGrowth = Number(metricsResult[0]?.total_growth ?? 0);
   const totalPosts = Number(metricsResult[0]?.total_posts ?? 0);
   const startFollowers = totalFollowers - totalGrowth;
