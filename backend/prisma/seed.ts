@@ -1,156 +1,162 @@
 import "dotenv/config";
 import { prisma } from "../src/config/prisma";
 import { hashPassword } from "../src/services/authService";
-import { Platform } from "@prisma/client";
+import { Platform, Series, Sex } from "@prisma/client";
+
+const CITIES = [
+  { city: "São Paulo", state: "SP" },
+  { city: "Rio de Janeiro", state: "RJ" },
+  { city: "Belo Horizonte", state: "MG" },
+  { city: "Porto Alegre", state: "RS" },
+  { city: "Curitiba", state: "PR" },
+  { city: "Salvador", state: "BA" },
+  { city: "Recife", state: "PE" },
+  { city: "Fortaleza", state: "CE" },
+  { city: "Brasília", state: "DF" },
+  { city: "Manaus", state: "AM" },
+];
+
+const SERIES: Series[] = ["Elite", "A2", "A3", "Institucional", "Cortes", "Noticias"];
+
+const MALE_NAMES = ["Carlos", "João", "Pedro", "Lucas", "Mateus", "Gabriel", "Rafael", "Bruno", "Daniel", "Eduardo"];
+const FEMALE_NAMES = ["Ana", "Maria", "Julia", "Fernanda", "Larissa", "Amanda", "Beatriz", "Camila", "Mariana", "Bruna"];
+const SURNAMES = ["Silva", "Santos", "Oliveira", "Souza", "Rodrigues", "Ferreira", "Almeida", "Pereira", "Lima", "Costa"];
+
+function randomInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomElement<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
 async function seedAdmin() {
-  const email = process.env.SEED_ADMIN_EMAIL;
-  const password = process.env.SEED_ADMIN_PASSWORD;
+  const email = process.env.SEED_ADMIN_EMAIL ?? "admin@admin.com";
+  const password = process.env.SEED_ADMIN_PASSWORD ?? "admin";
   const name = process.env.SEED_ADMIN_NAME ?? "Admin";
-
-  if (!email || !password) {
-    console.warn("SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD are required to seed an admin user. Skipping admin seed.");
-    return;
-  }
 
   const passwordHash = await hashPassword(password);
 
   await prisma.user.upsert({
     where: { email },
-    update: {
-      name,
-      passwordHash,
-      role: "admin_global",
-    },
-    create: {
-      email,
-      name,
-      passwordHash,
-      role: "admin_global",
-    },
+    update: { name, passwordHash, role: "admin_global" },
+    create: { email, name, passwordHash, role: "admin_global" },
   });
-
-  console.log(`Seeded/updated admin user with email: ${email}`);
+  console.log(`Seeded admin: ${email}`);
 }
 
-async function seedRegional() {
-  const email = process.env.SEED_REGIONAL_EMAIL || "admin.regional@local";
-  const password = process.env.SEED_REGIONAL_PASSWORD || "changeme123";
-  const name = process.env.SEED_REGIONAL_NAME || "Admin Regional";
-  const regions = (process.env.SEED_REGIONAL_UF || "PE,RN")
-    .split(",")
-    .map((r) => r.trim().toUpperCase())
-    .filter(Boolean);
-
-  const passwordHash = await hashPassword(password);
-
-  const user = await prisma.user.upsert({
-    where: { email },
-    update: { name, passwordHash, role: "admin_regional" },
-    create: { email, name, passwordHash, role: "admin_regional" },
-  });
-
-  await prisma.userRegion.deleteMany({ where: { userId: user.id } });
-  if (regions.length > 0) {
-    await prisma.userRegion.createMany({
-      data: regions.map((uf) => ({ userId: user.id, uf })),
-      skipDuplicates: true,
-    });
-  }
-
-  console.log(`Seeded/updated regional admin: ${email} with UFs: ${regions.join(",") || "none"}`);
+async function clearDatabase() {
+  console.log("Clearing database...");
+  await prisma.metricDaily.deleteMany();
+  await prisma.socialProfile.deleteMany();
+  await prisma.influencer.deleteMany();
+  // Keep users (admins) to allow login
 }
 
-type ProfileSeed = {
-  platform: Platform;
-  handle: string;
-  url: string;
-  startFollowers: number;
-};
-
-function generateMetrics(startFollowers: number, days: number) {
+function generateHistory(startFollowers: number, months: number = 6) {
   const metrics = [];
-  let current = startFollowers;
-  for (let i = days; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    const growth = Math.floor(Math.random() * 80) + 20; // 20-99 growth/day
-    const posts = Math.floor(Math.random() * 3); // 0-2 posts/day
-    current += growth;
+  const today = new Date();
+
+  // Start from approximately 6 months ago, aligned to a Monday if possible?
+  // Let's just go back 26 weeks.
+  const weeks = 26;
+  let currentFollowers = startFollowers;
+  let currentPosts = randomInt(50, 500);
+
+  for (let w = weeks; w >= 0; w--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - (w * 7)); // Weekly points
+
+    // Ensure it falls on a day "around" Monday if we wanted, but simple -7 days is fine for "weekly".
+
+    // Growth logic: Linear + Random noise
+    const weeklyGrowth = Math.floor(startFollowers * 0.02) + randomInt(-100, 500); // ~2% weekly growth
+    const postsAdded = randomInt(0, 5);
+
+    currentFollowers += Math.max(0, weeklyGrowth); // No negative followers usually
+    currentPosts += postsAdded;
+
     metrics.push({
       date,
-      followersCount: current,
-      postsCount: posts,
+      followersCount: currentFollowers,
+      postsCount: currentPosts,
     });
   }
   return metrics;
 }
 
-async function seedInfluencer(name: string, state: string, city: string, avatarUrl: string, profiles: ProfileSeed[]) {
-  const influencer = await prisma.influencer.create({
-    data: {
-      name,
-      state,
-      city,
-      avatarUrl,
-    },
-  });
+async function seedMockData() {
+  console.log("Generating 100 mock influencers...");
 
-  for (const profile of profiles) {
-    const social = await prisma.socialProfile.create({
+  const total = 100;
+  const targetFemale = 35; // 35% to be safe > 30%
+
+  for (let i = 0; i < total; i++) {
+    const isFemale = i < targetFemale;
+    const firstName = isFemale ? randomElement(FEMALE_NAMES) : randomElement(MALE_NAMES);
+    const surname = randomElement(SURNAMES);
+    const name = `${firstName} ${surname}`;
+    const sex: Sex = isFemale ? "feminino" : "masculino";
+
+    const location = randomElement(CITIES);
+    const series = randomElement(SERIES);
+
+    // Create Influencer
+    const influencer = await prisma.influencer.create({
       data: {
-        influencerId: influencer.id,
-        platform: profile.platform,
-        handle: profile.handle,
-        url: profile.url,
-        externalId: profile.handle,
+        name,
+        state: location.state,
+        city: location.city,
+        avatarUrl: `https://ui-avatars.com/api/?name=${name.replace(" ", "+")}&background=random`,
+        sex,
+        series,
       },
     });
 
-    const metrics = generateMetrics(profile.startFollowers, 60);
-    for (const metric of metrics) {
-      await prisma.metricDaily.create({
+    // Create Profiles (All 5 platforms for rich data)
+    const platforms: Platform[] = ["instagram", "x", "youtube", "tiktok", "kwai"];
+
+    for (const p of platforms) {
+      const startFollowers = randomInt(10000, 2000000); // 10k to 2M
+      const handle = `@${firstName.toLowerCase()}${surname.toLowerCase()}_${p}`;
+
+      const profile = await prisma.socialProfile.create({
         data: {
-          socialProfileId: social.id,
-          date: metric.date,
-          followersCount: metric.followersCount,
-          postsCount: metric.postsCount,
-        },
+          influencerId: influencer.id,
+          platform: p,
+          handle,
+          url: `https://${p}.com/${handle}`,
+        }
+      });
+
+      // Generate 6 months of weekly history
+      const history = generateHistory(startFollowers);
+
+      const metricsData = history.map(h => ({
+        socialProfileId: profile.id,
+        date: h.date,
+        followersCount: h.followersCount,
+        postsCount: h.postsCount
+      }));
+
+      await prisma.metricDaily.createMany({
+        data: metricsData
       });
     }
+
+    if (i % 10 === 0) console.log(`Generated ${i} / ${total}`);
   }
 
-  console.log(`Seeded influencer: ${name}`);
+  console.log("Mock data generation complete.");
 }
 
-async function seedData() {
-  await seedAdmin();
-  await seedRegional();
-
-  const influencers = await prisma.influencer.count();
-  if (influencers > 0) {
-    console.log("Influencers already exist, skipping influencer seed.");
-    return;
-  }
-
-  await seedInfluencer("Carlos Silva", "SP", "São Paulo", "https://i.pravatar.cc/150?img=1", [
-    { platform: Platform.instagram, handle: "@carlos.silva", url: "https://instagram.com/carlos.silva", startFollowers: 120000 },
-    { platform: Platform.x, handle: "@carlossilva", url: "https://x.com/carlossilva", startFollowers: 45000 },
-    { platform: Platform.youtube, handle: "CarlosSilvaTV", url: "https://youtube.com/carlossilva", startFollowers: 80000 },
-  ]);
-
-  await seedInfluencer("Amanda Souza", "RJ", "Rio de Janeiro", "https://i.pravatar.cc/150?img=2", [
-    { platform: Platform.instagram, handle: "@amanda.souza", url: "https://instagram.com/amanda.souza", startFollowers: 290000 },
-    { platform: Platform.kwai, handle: "@amandasouza", url: "https://kwai.com/amandasouza", startFollowers: 480000 },
-  ]);
-
-  await seedInfluencer("Roberto Mendes", "MG", "Belo Horizonte", "https://i.pravatar.cc/150?img=3", [
-    { platform: Platform.instagram, handle: "@roberto.mendes", url: "https://instagram.com/roberto.mendes", startFollowers: 49500 },
-    { platform: Platform.x, handle: "@betomendes", url: "https://x.com/betomendes", startFollowers: 11800 },
-  ]);
+async function main() {
+  await seedAdmin(); // Always ensure admin exists
+  await clearDatabase();
+  await seedMockData();
 }
 
-seedData()
+main()
   .catch((e) => {
     console.error(e);
     process.exit(1);

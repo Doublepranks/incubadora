@@ -79,15 +79,23 @@ const InfluencerDetail = () => {
         influencer.socialProfiles.forEach((p) => {
             const metrics = p.metrics || [];
             if (metrics.length === 0) return;
-            const start = metrics[0].followersCount;
-            const end = metrics[metrics.length - 1].followersCount;
-            totalFollowers += end;
-            // Para posts, ignorar X (Twitter)
+            const startFollowersMetric = metrics[0].followersCount;
+            const endFollowersMetric = metrics[metrics.length - 1].followersCount;
+
+            totalFollowers += endFollowersMetric;
+            growthAbsolute += endFollowersMetric - startFollowersMetric;
+
+            // Para posts, assumindo que metrics.postsCount é CUMULATIVO (Total de posts do perfil até a data)
+            // Calculamos o delta do período: Último - Primeiro
             if (p.platform !== 'x') {
-                totalPosts += metrics.reduce((sum, m) => sum + m.postsCount, 0);
+                const startPosts = metrics[0].postsCount;
+                const endPosts = metrics[metrics.length - 1].postsCount;
+                // Se houve crescimento de posts, adiciona. (Pode ser negativo se deletou, assumimos 0 nesse caso para KPI total?)
+                const delta = Math.max(0, endPosts - startPosts);
+                totalPosts += delta;
+
                 metrics.forEach((m) => daysCounted.add(m.date.split('T')[0]));
             }
-            growthAbsolute += end - start;
         });
 
         const startFollowers = totalFollowers - growthAbsolute;
@@ -188,12 +196,6 @@ const InfluencerDetail = () => {
                                     {days}d
                                 </button>
                             ))}
-                            <button
-                                onClick={() => setFilters((prev) => ({ ...prev, periodDays: 'all' }))}
-                                className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${filters.periodDays === 'all' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-400 hover:text-white'}`}
-                            >
-                                Tudo
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -219,8 +221,23 @@ const InfluencerDetail = () => {
                 {influencer.socialProfiles.map((profile) => {
                     const historyDates = profile.metrics.map((m) => formatMetricDate(m.date));
                     const historyFollowers = profile.metrics.map((m) => m.followersCount);
-                    const totalPosts = profile.metrics.reduce((sum, m) => sum + m.postsCount, 0);
-                    const postsCounts = profile.metrics.map((m) => m.postsCount);
+
+                    // Calc daily posts delta
+                    let profileTotalPostsInPeriod = 0;
+                    const postsDeltas = profile.metrics.map((m, i, arr) => {
+                        if (i === 0) return 0; // First day usually has no delta reference
+                        const prev = arr[i - 1].postsCount;
+                        const curr = m.postsCount;
+                        const diff = curr - prev;
+                        return Math.max(0, diff); // Avoid negatives
+                    });
+
+                    if (profile.metrics.length > 0) {
+                        const start = profile.metrics[0].postsCount;
+                        const end = profile.metrics[profile.metrics.length - 1].postsCount;
+                        profileTotalPostsInPeriod = Math.max(0, end - start);
+                    }
+
                     const hasMetrics = profile.metrics.length > 0;
                     const formatInt = (val) => Math.round(Number(val) || 0);
 
@@ -253,7 +270,7 @@ const InfluencerDetail = () => {
                         colors: ['#6D28D9'], // violet-700
                         tooltip: { theme: 'dark', y: { formatter: (val) => formatInt(val).toLocaleString() } },
                     };
-                    const postsChartSeries = [{ name: 'Posts', data: postsCounts.map((v) => formatInt(v)) }];
+                    const postsChartSeries = [{ name: 'Posts (Novos)', data: postsDeltas.map((v) => formatInt(v)) }]; // Using Deltas instead of Raw Counts
 
                     const lastUpdate = profile.metrics[profile.metrics.length - 1]?.date;
 
@@ -283,7 +300,7 @@ const InfluencerDetail = () => {
                                     <div className="bg-zinc-900/50 rounded-xl p-4 border border-white/5">
                                         <div className="flex items-center justify-between mb-4">
                                             <h4 className="text-sm font-semibold text-zinc-300">Atividade de Posts</h4>
-                                            <span className="text-xs text-zinc-500">{totalPosts} posts no período</span>
+                                            <span className="text-xs text-zinc-500">{profileTotalPostsInPeriod} posts no período</span>
                                         </div>
                                         <LazyChart options={postsChartOptions} series={postsChartSeries} type="bar" height={100} />
                                     </div>

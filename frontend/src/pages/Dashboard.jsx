@@ -47,47 +47,56 @@ const Dashboard = () => {
 
     useEffect(() => {
         if (authLoading || !user) return;
+
+        // Helper function that returns data or default value on error
+        const safeFetch = async (url, defaultValue) => {
+            try {
+                const res = await fetch(url, { credentials: 'include' });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const json = await res.json();
+                return json.data ?? defaultValue;
+            } catch (err) {
+                console.warn(`Failed to fetch ${url}:`, err);
+                return defaultValue;
+            }
+        };
+
         const fetchData = async () => {
             setLoading(true);
             setError('');
+
             try {
-                const [overviewRes, timelineRes, topGrowthRes, tableRes] = await Promise.all([
-                    fetch(`${API_URL}/metrics/overview?${params.toString()}`, { credentials: 'include' }),
-                    fetch(`${API_URL}/metrics/timeline?${params.toString()}`, { credentials: 'include' }),
-                    fetch(`${API_URL}/metrics/top-growth?limit=5&${params.toString()}`, { credentials: 'include' }),
-                    fetch(`${API_URL}/influencers?${params.toString()}`, { credentials: 'include' }),
+                // Fetch all data in parallel, but handle each independently
+                const [
+                    overviewData,
+                    timelineData,
+                    topGrowthData,
+                    tableData,
+                    platformData,
+                    stateData,
+                    genderData,
+                    genderRegionData
+                ] = await Promise.all([
+                    safeFetch(`${API_URL}/metrics/overview?${params.toString()}`, { totalInfluencers: 0, totalFollowers: 0, totalPosts: 0, growthPercent: 0 }),
+                    safeFetch(`${API_URL}/metrics/timeline?${params.toString()}`, []),
+                    safeFetch(`${API_URL}/metrics/top-growth?limit=5&${params.toString()}`, []),
+                    safeFetch(`${API_URL}/influencers?${params.toString()}`, []),
+                    safeFetch(`${API_URL}/metrics/platform-distribution`, []),
+                    safeFetch(`${API_URL}/metrics/state-distribution?${params.toString()}`, []),
+                    safeFetch(`${API_URL}/metrics/gender-distribution?${params.toString()}`, []),
+                    safeFetch(`${API_URL}/metrics/gender-by-region?${params.toString()}`, []),
                 ]);
 
-                const [platformRes, stateRes, genderRes, genderRegionRes] = await Promise.all([
-                    fetch(`${API_URL}/metrics/platform-distribution`, { credentials: 'include' }),
-                    fetch(`${API_URL}/metrics/state-distribution?${params.toString()}`, { credentials: 'include' }),
-                    fetch(`${API_URL}/metrics/gender-distribution?${params.toString()}`, { credentials: 'include' }),
-                    fetch(`${API_URL}/metrics/gender-by-region?${params.toString()}`, { credentials: 'include' }),
-                ]);
-
-                if (!overviewRes.ok || !timelineRes.ok || !topGrowthRes.ok || !tableRes.ok || !platformRes.ok || !stateRes.ok || !genderRes.ok || !genderRegionRes.ok) {
-                    throw new Error('Erro ao carregar dados do dashboard');
-                }
-
-                const overviewJson = await overviewRes.json();
-                const timelineJson = await timelineRes.json();
-                const topGrowthJson = await topGrowthRes.json();
-                const tableJson = await tableRes.json();
-                const platformJson = await platformRes.json();
-                const stateJson = await stateRes.json();
-                const genderJson = await genderRes.json();
-                const genderRegionJson = await genderRegionRes.json();
-
-                setOverview(overviewJson.data || { totalInfluencers: 0, totalFollowers: 0, totalPosts: 0, growthPercent: 0 });
-                setTimeline(timelineJson.data || []);
-                setTopGrowth(topGrowthJson.data || []);
-                setTableData(tableJson.data || []);
-                setPlatformDistribution(platformJson.data || []);
-                setStateDistribution(stateJson.data || []);
-                setGenderDistribution(genderJson.data || []);
-                setGenderByRegion(genderRegionJson.data || []);
+                setOverview(overviewData);
+                setTimeline(timelineData);
+                setTopGrowth(topGrowthData);
+                setTableData(tableData);
+                setPlatformDistribution(platformData);
+                setStateDistribution(stateData);
+                setGenderDistribution(genderData);
+                setGenderByRegion(genderRegionData);
             } catch (err) {
-                console.error('Erro ao carregar dashboard', err);
+                console.error('Erro crítico ao carregar dashboard', err);
                 setError('Não foi possível carregar o dashboard. Tente novamente mais tarde.');
             } finally {
                 setLoading(false);
@@ -247,12 +256,6 @@ const Dashboard = () => {
                                 {days}d
                             </button>
                         ))}
-                        <button
-                            onClick={() => setFilters((prev) => ({ ...prev, periodDays: 'all' }))}
-                            className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${filters.periodDays === 'all' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-400 hover:text-white'}`}
-                        >
-                            Tudo
-                        </button>
                     </div>
 
                     <div className="relative group">

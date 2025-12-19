@@ -198,14 +198,26 @@ async function getWeeklyRank(filters: ReportFilters): Promise<RankResult> {
   // Calculate the start of the current week (Monday)
   const thisWeekStart = startOfWeekMonday(new Date());
 
-  // For weekly ranking, we want to compare the two most recent COMPLETED weeks
-  // Current week may have incomplete data, so we go back to last Monday (end of prev week)
-  // and compare the previous 2 complete weeks
-  const weekCurrStart = new Date(thisWeekStart);
-  weekCurrStart.setDate(weekCurrStart.getDate() - 7); // Last Monday (start of most recent complete week)
+  // Define 4 weeks back: W0 (Current Complete), W1, W2, W3
+  // Current logic: "Weekly Ranking" compares last 2 completed weeks usually
+  // But user request implies generic "Monday Anchor" for any week displayed.
 
-  const weekPrevStart = new Date(weekCurrStart);
-  weekPrevStart.setDate(weekPrevStart.getDate() - 7); // Monday before that (start of week before)
+  // Let's define the week buckets.
+  // W0: Most recent Monday (could be partial week if today is Tues)
+  // W1: Monday before W0
+  // ...
+
+  const weeks: Date[] = [];
+  for (let i = 0; i < 4; i++) {
+    const d = new Date(thisWeekStart);
+    d.setDate(d.getDate() - (i * 7));
+    weeks.push(d);
+  }
+  // weeks[0] = This Monday
+  // weeks[1] = Last Monday
+
+  // Range for DB Query: From W3 start up to now
+  const queryStartDate = weeks[3];
 
   const whereConditions: Prisma.InfluencerWhereInput[] = [];
   if (filters.regions && filters.regions.length > 0) whereConditions.push({ state: { in: filters.regions } });
@@ -220,7 +232,7 @@ async function getWeeklyRank(filters: ReportFilters): Promise<RankResult> {
       socialProfiles: {
         include: {
           metrics: {
-            where: { date: { gte: weekPrevStart } },
+            where: { date: { gte: queryStartDate } },
             orderBy: { date: "asc" },
           },
         },
@@ -229,32 +241,47 @@ async function getWeeklyRank(filters: ReportFilters): Promise<RankResult> {
   }) as any[];
 
   const rows: RankRow[] = influencers.map((inf) => {
-    let prevTotal = 0;
-    let currTotal = 0;
+    // Helper to find anchored value for a specific week start
+    const getWeekValue = (profileMetrics: any[], weekStart: Date) => {
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekEnd.getDate() + 7);
 
-    inf.socialProfiles.forEach((p: any) => {
-      let prevMetric: any = null;
-      let currMetric: any = null;
-
-      p.metrics.forEach((m: any) => {
-        const mDate = new Date(m.date);
-        if (mDate >= weekPrevStart && mDate < weekCurrStart) {
-          if (!prevMetric || mDate > prevMetric.date) {
-            prevMetric = { date: mDate, followers: m.followersCount };
-          }
-        } else if (mDate >= weekCurrStart) {
-          if (!currMetric || mDate > currMetric.date) {
-            currMetric = { date: mDate, followers: m.followersCount };
-          }
-        }
+      // Filter metrics for this week
+      const weekMetrics = profileMetrics.filter(m => {
+        const d = new Date(m.date);
+        return d >= weekStart && d < weekEnd;
       });
 
-      prevTotal += prevMetric?.followers ?? 0;
-      currTotal += currMetric?.followers ?? 0;
+      if (weekMetrics.length === 0) return 0;
+
+      // 1. Priority: Monday Data
+      // Check if any metric is exactly on the weekStart (Monday)
+      // Note: Dates are usually YYYY-MM-DD 00:00:00 or similar.
+      // We rely on date comparison. Assuming metrics are stored normalized or we check day difference.
+      const mondayMetric = weekMetrics.find(m => {
+        const d = new Date(m.date);
+        // Simple equal check if times are aligned, or check distinct day
+        return d.getDate() === weekStart.getDate() && d.getMonth() === weekStart.getMonth();
+      });
+
+      if (mondayMetric) return mondayMetric.followersCount;
+
+      // 2. Fallback: Latest data in that week
+      // Since weekMetrics is filtered by week, the last item (sorted by asc date) is the latest.
+      return weekMetrics[weekMetrics.length - 1].followersCount;
+    };
+
+    let totalW3 = 0, totalW2 = 0, totalW1 = 0, totalW0 = 0;
+
+    inf.socialProfiles.forEach((p: any) => {
+      totalW0 += getWeekValue(p.metrics, weeks[0]);
+      totalW1 += getWeekValue(p.metrics, weeks[1]);
+      totalW2 += getWeekValue(p.metrics, weeks[2]);
+      totalW3 += getWeekValue(p.metrics, weeks[3]);
     });
 
-    const growthAbs = currTotal - prevTotal;
-    const growthPct = prevTotal > 0 ? (growthAbs / prevTotal) * 100 : 0;
+    const growthAbs = totalW0 - totalW1;
+    const growthPct = totalW1 > 0 ? (growthAbs / totalW1) * 100 : 0;
 
     return {
       id: inf.id,
@@ -262,7 +289,7 @@ async function getWeeklyRank(filters: ReportFilters): Promise<RankResult> {
       state: inf.state,
       city: inf.city,
       series: inf.series ?? null,
-      weeks: { w3: 0, w2: 0, w1: prevTotal, w0: currTotal },
+      weeks: { w3: totalW3, w2: totalW2, w1: totalW1, w0: totalW0 },
       growthAbs,
       growthPct,
     };
