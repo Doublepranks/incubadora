@@ -338,7 +338,7 @@ Fazer mudanças incrementais:
 - Focar nas partes pedidas pelo usuário.
 
 Ambiente (WSL):
-- O repositório está acessível via WSL em `/mnt/d/Antigravity coding/Incubadora`. Prefira rodar comandos com `wsl` usando esse path sempre que possível para reduzir fricção do PowerShell.
+- O repositório pode estar acessível via WSL em `/mnt/d/Antigravity coding/Incubadora` ou nativamente em linux. Prefira rodar comandos com `wsl` usando esse path sempre que possível para reduzir fricção do PowerShell.
 
 Respeitar a estrutura existente:
 - Antes de criar novas pastas/arquivos, ver o que já existe.
