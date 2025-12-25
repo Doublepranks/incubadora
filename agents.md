@@ -3,8 +3,8 @@ CONTEXTO DO PROJETO
 Você é um agente de código trabalhando neste repositório para construir uma dashboard interna de monitoramento de influenciadores políticos.
 
 - Uso interno (MBL), sem SEO, sem acesso público.
-- O usuário faz login e cai em um Dashboard Geral com visão agregada de todos os influenciadores.
-- Depois pode navegar por Estado → Município → Influenciador.
+- O usuário faz login (Sistema atual: Email + Senha com Bcrypt/HttpOnly Cookies) e cai em um Dashboard Geral com visão agregada.
+- Navegação hierárquica por Estado → Município → Influenciador.
 - Há uma tela de Relatórios com cards 1:1 (pensados em 1080x1080), mostrando desempenho das últimas 4 semanas, exportação em Excel e botão de compartilhamento em PNG.
 - Dados vêm de uma API externa (Apify), processados por um backend Node.js e salvos em PostgreSQL.
 
@@ -183,7 +183,9 @@ Logs:
 
 INTEGRAÇÃO COM APIFY
 
-- Toda a lógica de Apify deve ficar em um service dedicado, por exemplo: backend/src/services/apifyService.ts
+- Integração completa via `services/apifyService.ts`.
+- Jobs de sincronização periódica (cron) e endpoints manuais de "Forçar Sincronização".
+- Logs de sucesso/erro salvos em `SyncLog`.
 
 Funções típicas:
 - fetchProfileMetrics(profile, since?).
@@ -299,12 +301,12 @@ Botão “Exportar relatório geral”:
 - Percentual de crescimento na última semana por rede.
 - Não incluir avatar/fotos no Excel, apenas dados numéricos/textuais.
 
-Backend para relatórios:
-- Centralizar:
-- Agrupamento semanal (segunda a domingo).
-- Cálculo das últimas 4 semanas para cada perfil/plataforma.
-- Cálculo da variação percentual na última semana.
-- O frontend deve receber os dados já agregados, prontos para serem usados em cards e exportação.
+302: Backend para relatórios (IMPLEMENTADO):
+303: - ReportController centraliza lógica.
+304: - Agrupamento semanal (segunda a domingo) e mensal.
+305: - Cálculo das últimas 4 semanas para cada perfil/plataforma.
+306: - Cálculo da variação percentual.
+307: - Exportação Excel (.xlsx) e geração de PNG (html-to-image) já funcionais.
 
 DOCKER E DEPLOY
 

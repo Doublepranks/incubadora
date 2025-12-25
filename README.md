@@ -3,8 +3,8 @@
 Repositório organizado em `frontend/` (React + Vite + Tailwind + ApexCharts) e `backend/` (Node + Express + Prisma + PostgreSQL). Uso interno, alinhado ao PRD de dashboard/relatórios para monitoramento de influenciadores.
 
 ## Estrutura
-- `frontend/`: app Vite atual (mock), rotas `/login`, `/` e `/influencer/:id`, Tailwind e ApexCharts.
-- `backend/`: scaffold Express + Prisma, rotas base `/api/health`, schema com `users`, `influencers`, `social_profiles`, `metrics_daily`, `sync_logs`.
+- `frontend/`: App React/Vite completo. Autenticação integrada, gráficos ApexCharts, relatórios com exportação Excel/PNG.
+- `backend/`: API Express + Prisma robusta. Autenticação JWT/Cookie, integração Apify (Jobs + Triggers), Controllers estruturados para Métricas, Relatórios e GEO.
 - `docker-compose.yml`: serviços `frontend`, `backend` e `postgres` (porta 4173/3000/5432).
 - `.env.example`: variáveis necessárias (DB, auth secret, Apify token, flags de cookie).
 
@@ -60,7 +60,7 @@ Frontend em `http://localhost:4173` (ajuste `VITE_API_URL` conforme backend). O 
 - Job agendado segue o cron acima (desabilite com `ENABLE_SYNC_JOB=false`).
 
 ## Próximos passos (fase 1 → 2)
-- Implementar autenticação real (email/senha, cookies HttpOnly/Secure).
-- Expor rotas `/auth`, `/influencers`, `/metrics`, `/geo`, `/reports` consumindo Prisma.
-- Integrar Apify service e rotinas de coleta (jobs diários) populando `metrics_daily` e `sync_logs`.
-- Atualizar frontend para consumir backend real (filtros período/plataforma, relatórios 1:1, exportação Excel, compartilhamento PNG).
+- Monitorar performance dos jobs de sincronização Apify.
+- Manter segurança (rotação de segredos, updates de deps).
+- Refinar UI/UX com feedback de uso real.
+- Expansão de novas plataformas conforme demanda.
