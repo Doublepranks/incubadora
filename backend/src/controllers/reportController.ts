@@ -99,8 +99,8 @@ export async function exportExcel(req: Request, res: Response) {
 export async function getRank(req: Request, res: Response) {
   const { state, city, search, periodWeeks, series, mode, month, year } = req.query;
   const regions = (req as any).userRegions as string[] | undefined;
-  const monthNum = month ? Number(month) : undefined;
-  const yearNum = year ? Number(year) : undefined;
+  let monthNum = month ? Number(month) : undefined;
+  let yearNum = year ? Number(year) : undefined;
 
   const seriesProvided = typeof series !== "undefined";
   if (seriesProvided && !VALID_SERIES.includes(series as Series)) {
@@ -109,8 +109,17 @@ export async function getRank(req: Request, res: Response) {
   const seriesFilter = seriesProvided ? (series as Series) : undefined;
 
   const requestedMode = mode === "monthly" || (monthNum && yearNum) ? "monthly" : "weekly";
-  if (requestedMode === "monthly" && (!monthNum || !yearNum || monthNum < 1 || monthNum > 12 || yearNum < 2000 || yearNum > 2100)) {
-    return res.status(400).json({ error: true, message: "Parâmetros de mês/ano inválidos para ranking mensal" });
+
+  // Default to current month/year if mode is monthly but parameters are missing
+  if (requestedMode === "monthly") {
+    const now = new Date();
+    if (!monthNum) monthNum = now.getMonth() + 1;
+    if (!yearNum) yearNum = now.getFullYear();
+
+    // Validate after defaulting
+    if (monthNum < 1 || monthNum > 12 || yearNum < 2000 || yearNum > 2100) {
+      return res.status(400).json({ error: true, message: "Parâmetros de mês/ano inválidos para ranking mensal" });
+    }
   }
 
   const result = await getRankData(

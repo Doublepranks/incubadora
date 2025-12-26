@@ -149,13 +149,15 @@ const Reports = () => {
     };
 
     const handleExportMonthlyRank = async () => {
-        if (!monthFilter || !yearFilter) {
-            setRankError('Selecione mês e ano para gerar o ranking mensal.');
-            return;
-        }
         setRankError('');
         setRankLoading(true);
         setRankMode('monthly');
+
+        // Default to current month/year if not selected
+        const now = new Date();
+        const useMonth = monthFilter || (now.getMonth() + 1).toString();
+        const useYear = yearFilter || now.getFullYear().toString();
+
         try {
             const params = new URLSearchParams();
             if (effectiveState) params.append('state', effectiveState);
@@ -163,8 +165,8 @@ const Reports = () => {
             if (search) params.append('search', search);
             if (seriesFilter) params.append('series', seriesFilter);
             params.append('mode', 'monthly');
-            params.append('month', monthFilter);
-            params.append('year', yearFilter);
+            params.append('month', useMonth);
+            params.append('year', useYear);
             const res = await fetch(`${API_URL}/reports/rank?${params.toString()}`, { credentials: 'include' });
             if (!res.ok) {
                 const errJson = await res.json().catch(() => ({}));
@@ -179,7 +181,7 @@ const Reports = () => {
                 const link = document.createElement('a');
                 const today = new Date().toISOString().split('T')[0];
                 link.href = dataUrl;
-                link.download = `rank-mensal-${monthFilter}-${yearFilter}.png`;
+                link.download = `rank-mensal-${useMonth}-${useYear}.png`;
                 link.click();
             }
         } catch (err) {
@@ -226,7 +228,6 @@ const Reports = () => {
                         onClick={handleExportMonthlyRank}
                         disabled={rankLoading}
                         className="flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-zinc-800 text-white hover:bg-zinc-700 border border-white/5 disabled:opacity-50 transition-colors"
-                        title={!monthFilter || !yearFilter ? 'Selecione mês e ano' : ''}
                     >
                         {rankLoading && rankMode === 'monthly' ? <Loader2 size={16} className="mr-2 animate-spin" /> : <ListOrdered size={16} className="mr-2" />}
                         Ranking Mensal
@@ -335,16 +336,21 @@ const Reports = () => {
             )}
 
             <div className="absolute -left-[9999px] top-0">
-                <div ref={rankRef} className="min-w-[700px] bg-zinc-950 text-white rounded-xl shadow-2xl p-6 border border-zinc-800">
-                    <div className="flex items-center justify-between mb-4">
+                <div ref={rankRef} className="w-[800px] bg-zinc-950 text-white rounded-xl shadow-2xl p-6 border border-zinc-800" style={{ width: 800 }}>
+                    <div className="flex items-start justify-between mb-6">
                         <div>
-                            <h3 className="text-xl font-bold">
+                            <h3 className="text-2xl font-bold whitespace-nowrap mb-1">
                                 {rankMode === 'weekly' ? 'Ranking Semanal' : 'Ranking Mensal'}
                             </h3>
                             <p className="text-sm text-zinc-400">
                                 {rankMode === 'weekly'
                                     ? `Semana atual vs. passada`
-                                    : `${new Date(2000, parseInt(monthFilter) - 1).toLocaleString('pt-BR', { month: 'long' })} / ${yearFilter}`
+                                    : (() => {
+                                        const now = new Date();
+                                        const displayMonth = monthFilter || (now.getMonth() + 1).toString();
+                                        const displayYear = yearFilter || now.getFullYear().toString();
+                                        return `${new Date(2000, parseInt(displayMonth) - 1).toLocaleString('pt-BR', { month: 'long' })} / ${displayYear}`;
+                                    })()
                                 }
                                 {effectiveState ? ` • ${effectiveState}` : ''}
                                 {selectedMunicipality ? ` / ${selectedMunicipality}` : ''}
