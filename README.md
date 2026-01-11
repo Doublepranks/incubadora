@@ -1,66 +1,96 @@
-# Dashboard de Influenciadores — Estrutura do MVP
+# Incubadora - Dashboard de Influenciadores
 
-Repositório organizado em `frontend/` (React + Vite + Tailwind + ApexCharts) e `backend/` (Node + Express + Prisma + PostgreSQL). Uso interno, alinhado ao PRD de dashboard/relatórios para monitoramento de influenciadores.
+Dashboard interno para monitoramento e análise de influenciadores políticos, integrado com Apify para coleta de dados de múltiplas plataformas (Instagram, X, YouTube, Kwai, TikTok).
 
-## Estrutura
-- `frontend/`: App React/Vite completo. Autenticação integrada, gráficos ApexCharts, relatórios com exportação Excel/PNG.
-- `backend/`: API Express + Prisma robusta. Autenticação JWT/Cookie, integração Apify (Jobs + Triggers), Controllers estruturados para Métricas, Relatórios e GEO.
-- `docker-compose.yml`: serviços `frontend`, `backend` e `postgres` (porta 4173/3000/5432).
-- `.env.example`: variáveis necessárias (DB, auth secret, Apify token, flags de cookie).
+## 🚀 Funcionalidades
 
-## Requisitos
-- Node 20+ (para execuções locais sem Docker).
-- Docker + Docker Compose (para subir stack completa).
+- **Dashboard Geral**: Visão agregada de KPIs (Seguidores, Posts, Crescimento), gráficos de evolução e distribuição por plataforma/estado/gênero.
+- **Relatórios**: Cards 1:1 para cada influenciador com desempenho das últimas 4 semanas, exportáveis como imagem (PNG) para compartilhamento.
+- **Rankings**: Geração de rankings semanais e mensais com variação percentual e absoluta.
+- **Exportação de Dados**: Exportação geral em Excel (.xlsx).
+- **Gestão de Usuários**: Níveis de acesso (Admin Global, Admin Regional, System Admin).
 
-## Limpeza de mocks e normalização de Nadson
-Se precisar remover os influenciadores de mock (Ana Costa, Bruno Lima, Carla Mendes, Diego Rocha, Elisa Prado) e consolidar apenas um registro do Nadson:
-- Script: `backend/scripts/cleanup_demo_data.js`
-- O que faz:
-  - Remove os 5 mockados acima.
-  - Procura entradas cujo nome contenha “nadson” (case-insensitive); mantém a que tiver mais métricas/perfis, remove duplicatas e renomeia para `Nadson Ferreira`, cidade `Moju`, estado `PA`.
-- Como rodar (com docker-compose levantado):
-  ```bash
-  docker exec -i incubadora-backend-1 node scripts/cleanup_demo_data.js
-  ```
+## 🛠️ Stack Tecnológico
 
-## Como rodar (Docker)
-1) Copie `.env.example` para `.env` e ajuste valores (especialmente `AUTH_SECRET`, `DATABASE_URL`, `COOKIE_SECURE`).  
-2) `docker-compose up -d` (sobe Postgres, backend, frontend).  
-   - Frontend: http://localhost:4173  
-   - Backend: http://localhost:3000/api/health  
-3) Após ajustar schema, rode migrações no contêiner ou local: `cd backend && npx prisma migrate dev` (use a mesma `DATABASE_URL`).
+- **Frontend**: React, Vite, Tailwind CSS, ApexCharts.
+- **Backend**: Node.js, Express, Prisma ORM.
+- **Banco de Dados**: PostgreSQL.
+- **Infraestrutura**: Docker & Docker Compose.
 
-## Como rodar local (sem Docker)
-### Backend
+## 📋 Pré-requisitos
+
+- Docker e Docker Compose instalados.
+- Node.js 20+ (apenas se for rodar localmente fora do Docker).
+
+## 🔧 Configuração e Execução
+
+### 1. Configurar Variáveis de Ambiente
+
+Copie o arquivo de exemplo e ajuste as variáveis necessárias:
+
 ```bash
-cd backend
-cp ../.env.example ../.env   # se ainda não existir .env
-npm install
-npx prisma generate
-npm run prisma:seed          # opcional, cria/atualiza admin se SEED_ADMIN_* estiverem setados
-npm run dev
+cp .env.example .env
 ```
-Backend escuta em `PORT` (padrão 3000).
 
-### Frontend
+Principais variáveis no `.env`:
+
+- `DATABASE_URL`: URL de conexão com o PostgreSQL.
+- `AUTH_SECRET`: Segredo para assinatura de cookies de sessão.
+- `FRONTEND_URL`: URL base do frontend (ex: `http://localhost:4173`).
+- `CORS_ALLOWED_ORIGINS`: (Opcional) Lista de origens adicionais permitidas pelo CORS, separadas por vírgula (ex: `http://127.0.0.1:4173`).
+- `APIFY_TOKEN`: Token de integração com a Apify (necessário para sincronização de dados).
+
+### 2. Executar com Docker (Recomendado)
+
+Suba toda a stack (Frontend, Backend, Banco de Dados):
+
 ```bash
-cd frontend
-npm install
-npm run dev -- --host --port 4173
+docker-compose up -d --build
 ```
-Frontend em `http://localhost:4173` (ajuste `VITE_API_URL` conforme backend). O contexto de autenticação chama `/auth/login`, `/auth/me`, `/auth/logout` no backend com cookies (`credentials: include`).
 
-## Integração Apify
-- Configure no `.env` do backend:
-  - `APIFY_TOKEN=...`
-  - `APIFY_ACTOR_ID=...` (ex.: `wsp_usuario/actor-name` ou ID do actor)
-  - `ENABLE_SYNC_JOB=true|false` (cron liga/desliga)
-  - `SYNC_CRON=0 3 * * MON` (padrão semanal, segunda 03:00 UTC)
-- Endpoint manual: `POST /api/sync/run` dispara a coleta e grava em `metrics_daily` + `sync_logs`.
-- Job agendado segue o cron acima (desabilite com `ENABLE_SYNC_JOB=false`).
+- **Frontend**: [http://localhost:4173](http://localhost:4173)
+- **Backend**: [http://localhost:3000](http://localhost:3000)
 
-## Próximos passos (fase 1 → 2)
-- Monitorar performance dos jobs de sincronização Apify.
-- Manter segurança (rotação de segredos, updates de deps).
-- Refinar UI/UX com feedback de uso real.
-- Expansão de novas plataformas conforme demanda.
+### 3. Migrações e Seed
+
+Na primeira execução, é necessário criar o esquema do banco e popular com dados iniciais:
+
+```bash
+# Executar dentro do container do backend
+docker exec -i incubadora-backend-1 npx prisma migrate dev --name init
+docker exec -i incubadora-backend-1 npm run prisma:seed
+```
+
+> **Nota**: Se estiver usando `distrobox` ou similar, prefixe os comandos docker com o executor do host (ex: `distrobox-host-exec docker ...`).
+
+## 🔑 Credenciais de Acesso
+
+O seed padrão cria os seguintes usuários para testes:
+
+| Papel | Email | Senha |
+|-------|-------|-------|
+| **Admin Padrão** | `admin@example.com` | `changeme123` |
+| **System Admin** | `system@incubadora.com` | `system_admin_secure` |
+
+> ⚠️ **Importante**: Altere estas senhas imediatamente em ambiente de produção.
+
+## 📂 Estrutura do Projeto
+
+```
+/
+├── frontend/           # Aplicação React (Vite)
+│   ├── src/components  # Componentes reutilizáveis
+│   ├── src/pages       # Páginas da aplicação (Dashboard, Relatórios, etc.)
+│   └── src/context     # Contexto global (Auth, Estado)
+├── backend/            # API Node.js (Express)
+│   ├── src/controllers # Lógica dos endpoints
+│   ├── src/services    # Regras de negócio e integrações (Apify)
+│   └── prisma/         # Schema do banco de dados e migrações
+└── docker-compose.yml  # Orquestração dos containers
+```
+
+## 🤝 Contribuição
+
+1. Para correções em ambiente de desenvolvimento, verifique se a URL de acesso corresponde ao `FRONTEND_URL` ou adicione-a ao `CORS_ALLOWED_ORIGINS`.
+2. Mantenha o padrão de código (ESLint + Prettier).
+3. Utilize branches para features (`feat/nome-da-feature`) ou correções (`fix/nome-do-bug`).
