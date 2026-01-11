@@ -94,3 +94,9 @@ O seed padrão cria os seguintes usuários para testes:
 1. Para correções em ambiente de desenvolvimento, verifique se a URL de acesso corresponde ao `FRONTEND_URL` ou adicione-a ao `CORS_ALLOWED_ORIGINS`.
 2. Mantenha o padrão de código (ESLint + Prettier).
 3. Utilize branches para features (`feat/nome-da-feature`) ou correções (`fix/nome-do-bug`).
+
+## 📄 Licença
+
+**Proprietário e Confidencial.**
+Este projeto é de código fechado (closed source). A redistribuição, cópia ou uso não autorizado é estritamente proibido.
+Todos os direitos reservados à Incubadora (2025).
