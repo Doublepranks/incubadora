@@ -553,9 +553,55 @@ async function scrapeKwaiProfiles(profiles: ProfileInput[], date: string): Promi
                     }
                 }
 
+                // Padrão 3: JSON-LD (Schema.org) - Most reliable
+                if (!followers) {
+                    try {
+                        const jsonLdScripts = await page.$$eval('script[type="application/ld+json"]', (scripts: Element[]) => scripts.map(s => s.textContent));
+                        for (const script of jsonLdScripts) {
+                            if (script && script.includes('FollowAction')) {
+                                try {
+                                    const data = JSON.parse(script);
+
+                                    // Recursive search for FollowAction
+                                    const searchForFollowers = (obj: any): number | null => {
+                                        if (!obj || typeof obj !== 'object') return null;
+
+                                        if (obj['@type'] === 'Person' && obj.interactionStatistic) {
+                                            const stats = Array.isArray(obj.interactionStatistic) ? obj.interactionStatistic : [obj.interactionStatistic];
+                                            const followStat = stats.find((s: any) => s.interactionType && s.interactionType['@type'] === 'https://schema.org/FollowAction');
+                                            if (followStat) return followStat.userInteractionCount;
+                                        }
+
+                                        if (obj.interactionType && obj.interactionType['@type'] === 'https://schema.org/FollowAction' && obj.userInteractionCount) {
+                                            return obj.userInteractionCount;
+                                        }
+
+                                        for (const key in obj) {
+                                            const res = searchForFollowers(obj[key]);
+                                            if (res !== null) return res;
+                                        }
+                                        return null;
+                                    };
+
+                                    const found = searchForFollowers(data);
+                                    if (found !== null) {
+                                        followers = typeof found === 'string' ? parseInt(found) : found;
+                                        break;
+                                    }
+                                } catch (e) {
+                                    // ignore parse error
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        log.warning(`Failed to parse JSON-LD for ${username}: ${e}`);
+                    }
+                }
+
                 // Tentar extrair posts/vídeos
                 const videosMatch = pageContent.match(/"video[Cc]ount"\s*:\s*(\d+)/) ||
-                    pageContent.match(/(\d+)\s*(?:vídeos?|videos?)/i);
+                    pageContent.match(/(\d+)\s*(?:vídeos?|videos?)/i) ||
+                    pageContent.match(/"photo"\s*:\s*(\d+)/);
                 if (videosMatch) {
                     posts = parseInt(videosMatch[1]);
                 }
@@ -636,6 +682,7 @@ async function scrapeKwaiProfiles(profiles: ProfileInput[], date: string): Promi
     }));
 
     await crawler.run(requests);
+    await crawler.teardown(); // Ensure cleanup
 
     return kwaiResults;
 }

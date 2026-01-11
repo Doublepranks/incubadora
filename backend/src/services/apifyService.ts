@@ -114,6 +114,70 @@ export async function fetchProfilesBatch(profiles: SocialProfile[], _days = 7): 
   return { metrics: map, errors };
 }
 
+export async function fetchStateBatch(profiles: SocialProfile[]): Promise<FetchBatchResult> {
+  const actorId = process.env.APIFY_STATE_SYNC_ACTOR_ID;
+  const token = process.env.APIFY_TOKEN;
+
+  if (!actorId || !token) {
+    throw new Error("APIFY_STATE_SYNC_ACTOR_ID ou APIFY_TOKEN ausente. Configure o actor de estado antes de rodar.");
+  }
+
+  const datasetItems = await runActorAndGetItems(actorId, token, profiles, 1);
+  const map = new Map<number, MetricPoint[]>();
+  const errors: RetryCandidate[] = [];
+
+  datasetItems.forEach((item) => {
+    const status = item.status ?? item.sync_status ?? "ok";
+    if (!item.platform || !item.username) return;
+    const normalizedUsername = item.username.replace(/^@/, "").toLowerCase();
+    const profile = profiles.find(
+      (p) =>
+        p.platform === item.platform &&
+        (p.handle.replace(/^@/, "").toLowerCase() === normalizedUsername || (p.externalId ?? "").toLowerCase() === normalizedUsername),
+    );
+    if (!profile) return;
+
+    if (status === "error") {
+      errors.push({
+        profileId: profile.id,
+        platform: item.platform,
+        username: normalizedUsername,
+        errorCode: item.error_code ?? item.errorMessage ?? item.error_message ?? null,
+        errorMessage: (item.error_message as string | null) ?? (item.errorMessage as string | null) ?? null,
+        attempt: item.attempt ?? null,
+        runId: item.runId ?? null,
+        sourceActorId: item.sourceActorId ?? null,
+      });
+      return;
+    }
+
+    const metricsFromActor: MetricPoint[] = [];
+    const followersCountValue = normalizeNumber(item.followers_count);
+    const postsCountValue = normalizeNumber(item.posts_count);
+
+    if (item.metrics && item.metrics.length > 0) {
+      item.metrics.forEach((m) => {
+        metricsFromActor.push({
+          date: normalizeDateOnly(m.date),
+          followersCount: m.followers,
+          postsCount: m.posts,
+        });
+      });
+    } else if (item.followers_count !== undefined || item.posts_count !== undefined) {
+      metricsFromActor.push({
+        date: normalizeDateOnly(item.date ?? new Date()),
+        followersCount: followersCountValue ?? 0,
+        postsCount: postsCountValue ?? 0,
+      });
+    }
+
+    if (metricsFromActor.length === 0) return;
+    map.set(profile.id, metricsFromActor);
+  });
+
+  return { metrics: map, errors };
+}
+
 export async function fetchRetryBatch(profiles: SocialProfile[]): Promise<FetchBatchResult> {
   const actorId = process.env.APIFY_RETRY_ACTOR_ID;
   const token = process.env.APIFY_TOKEN;

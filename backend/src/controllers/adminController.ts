@@ -1,7 +1,43 @@
 import { LogLevel, LogType } from "@prisma/client";
 import { Request, Response } from "express";
 import { listLogs, logActivity, logSystem } from "../services/logService";
-import { retryFailedSyncs, syncAllProfiles } from "../services/syncService";
+import { retryFailedSyncs, syncAllProfiles, syncStateProfiles } from "../services/syncService";
+
+export async function triggerStateSyncNow(req: Request, res: Response) {
+  const userId = req.user?.id ?? null;
+  const { state } = req.body;
+
+  if (!state) {
+    return res.status(400).json({ error: true, message: "State is required" });
+  }
+
+  await logActivity({
+    userId,
+    message: `Disparou coleta por estado (${state})`,
+    meta: { ip: req.ip, userAgent: req.headers["user-agent"], state },
+  });
+
+  try {
+    const result = await syncStateProfiles(state);
+    await logSystem({
+      level: LogLevel.info,
+      message: `Coleta estadual concluída (${state})`,
+      meta: { userId, state, ...result },
+    });
+    return res.json({ error: false, ...result });
+  } catch (err) {
+    await logSystem({
+      level: LogLevel.error,
+      message: `Coleta estadual falhou (${state})`,
+      meta: { userId, state, error: err instanceof Error ? err.message : "Unknown error" },
+    });
+    return res.status(500).json({
+      error: true,
+      message: "Falha ao disparar coleta estadual",
+      details: err instanceof Error ? err.message : "Unknown error",
+    });
+  }
+}
 
 export async function triggerSyncNow(req: Request, res: Response) {
   const userId = req.user?.id ?? null;

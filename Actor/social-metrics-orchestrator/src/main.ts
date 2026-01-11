@@ -271,17 +271,14 @@ for (const platform of platforms) {
     }
 }
 
-// Remove the final massive push loop as data is pushed incrementally
-// for (const result of results) {
-//     await Actor.pushData(result);
-// }
-
 console.log(`\n📊 Summary:`);
 console.log(`   Total results: ${results.length}`);
 console.log(`   ✅ Success: ${results.filter(r => r.sync_status === 'ok').length}`);
 console.log(`   ❌ Failed: ${results.filter(r => r.sync_status === 'error').length}`);
 
+// Force exit to ensure no dangling handles keep the actor alive
 await Actor.exit();
+process.exit(0);
 
 // ============ HELPERS ============
 
@@ -539,9 +536,60 @@ async function scrapeKwaiProfiles(profiles: ProfileInput[], date: string): Promi
                     }
                 }
 
+                // Padrão 3: JSON-LD (Schema.org)
+                if (!followers) {
+                    try {
+                        const jsonLdScripts = await page.$$eval('script[type="application/ld+json"]', scripts => scripts.map(s => s.textContent));
+                        for (const script of jsonLdScripts) {
+                            if (script && script.includes('FollowAction')) {
+                                try {
+                                    const data = JSON.parse(script);
+                                    // Handle array or object
+                                    const graph = Array.isArray(data) ? data : [data];
+
+                                    // Search in graph for Person > interactionStatistic > FollowAction
+                                    // Or just traverse searching for the pattern
+                                    const searchForFollowers = (obj: any): number | null => {
+                                        if (!obj || typeof obj !== 'object') return null;
+
+                                        if (obj['@type'] === 'Person' && obj.interactionStatistic) {
+                                            const stats = Array.isArray(obj.interactionStatistic) ? obj.interactionStatistic : [obj.interactionStatistic];
+                                            const followStat = stats.find((s: any) => s.interactionType && s.interactionType['@type'] === 'https://schema.org/FollowAction');
+                                            if (followStat) return followStat.userInteractionCount;
+                                        }
+
+                                        // Specific structure in one of the dumps
+                                        if (obj.interactionType && obj.interactionType['@type'] === 'https://schema.org/FollowAction' && obj.userInteractionCount) {
+                                            return obj.userInteractionCount;
+                                        }
+
+                                        for (const key in obj) {
+                                            const res = searchForFollowers(obj[key]);
+                                            if (res !== null) return res;
+                                        }
+                                        return null;
+                                    };
+
+                                    const found = searchForFollowers(data);
+                                    if (found !== null) {
+                                        followers = typeof found === 'string' ? parseInt(found) : found;
+                                        break;
+                                    }
+                                } catch (e) {
+                                    // ignore parse error
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        log.warning(`Failed to parse JSON-LD for ${username}: ${e}`);
+                    }
+                }
+
                 // Tentar extrair posts/vídeos
                 const videosMatch = pageContent.match(/"video[Cc]ount"\s*:\s*(\d+)/) ||
-                    pageContent.match(/(\d+)\s*(?:vídeos?|videos?)/i);
+                    pageContent.match(/(\d+)\s*(?:vídeos?|videos?)/i) ||
+                    pageContent.match(/"photo"\s*:\s*(\d+)/); // Nuxt store pattern ownerCount:{..., photo:X}
+
                 if (videosMatch) {
                     posts = parseInt(videosMatch[1]);
                 }
@@ -622,6 +670,7 @@ async function scrapeKwaiProfiles(profiles: ProfileInput[], date: string): Promi
     }));
 
     await crawler.run(requests);
+    await crawler.teardown(); // Ensure cleanup
 
     return kwaiResults;
 }
@@ -792,33 +841,9 @@ async function scrapeYoutubeProfiles(profiles: ProfileInput[], date: string): Pr
                     };
                     youtubeResults.push(res);
                     Actor.pushData(res).catch(console.error);
-                } else {
-                    log.warning(`⚠️ Could not find subscribers for YouTube: ${username}`);
-
-                    // Log partial content for debugging
-                    try {
-                        const content = await page.content();
-                        log.info(`DUMP ${username}: ` + content.substring(0, 1000));
-                    } catch (e) {
-                        log.error(`Failed to dump content: ${e}`);
-                    }
-
-                    const res: MetricResult = {
-                        platform: 'youtube',
-                        username,
-                        date,
-                        followers_count: null,
-                        posts_count: null,
-                        sync_status: 'error',
-                        error_code: 'parse_error',
-                        error_message: 'Could not extract subscribers',
-                        attempt: 1,
-                        runId,
-                        sourceActorId: 'custom-youtube',
-                    };
-                    youtubeResults.push(res);
-                    Actor.pushData(res).catch(console.error);
                 }
+
+                await page.close(); // Ensure page is closed
 
             } catch (error) {
                 log.error(`❌ YouTube ${username} failed: ${error}`);
@@ -837,6 +862,7 @@ async function scrapeYoutubeProfiles(profiles: ProfileInput[], date: string): Pr
                 };
                 youtubeResults.push(res);
                 Actor.pushData(res).catch(console.error);
+                await page.close(); // Ensure page is closed on error too
             }
         },
 
@@ -880,6 +906,7 @@ async function scrapeYoutubeProfiles(profiles: ProfileInput[], date: string): Pr
     });
 
     await crawler.run(requests);
+    await crawler.teardown(); // Ensure cleanup
 
     return youtubeResults;
 }

@@ -101,7 +101,8 @@ const SysAdmin = () => {
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [actionMessage, setActionMessage] = useState('');
   const [actionError, setActionError] = useState('');
-  const [running, setRunning] = useState({ sync: false, retry: false });
+  const [selectedState, setSelectedState] = useState('');
+  const [running, setRunning] = useState({ sync: false, retry: false, state: false });
 
   const searchPlaceholder = useMemo(
     () => (activeTab === 'system' ? 'Buscar em mensagens do sistema' : 'Buscar em atividades de usuários'),
@@ -173,27 +174,35 @@ const SysAdmin = () => {
     return () => clearInterval(id);
   }, [autoRefresh, fetchLogs]);
 
-  const runAction = async (type) => {
+  const runAction = async (type, body = null) => {
     setActionMessage('');
     setActionError('');
     setRunning((prev) => ({ ...prev, [type]: true }));
-    const endpoint = type === 'sync' ? 'sync/run' : 'sync/retry';
+
+    let endpoint = 'sync/run';
+    if (type === 'retry') endpoint = 'sync/retry';
+    if (type === 'state') endpoint = 'sync/state';
+
     try {
-      const res = await fetch(`${API_URL}/admin/${endpoint}`, {
+      const options = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-      });
+      };
+      if (body) options.body = JSON.stringify(body);
+
+      const res = await fetch(`${API_URL}/admin/${endpoint}`, options);
       const json = await res.json();
       if (!res.ok || json.error) {
         throw new Error(json?.message || 'Falha ao disparar ação');
       }
       const summary = `${json.success ?? 0} sucesso(s), ${json.failed ?? 0} falha(s)${json.total ? ` de ${json.total}` : ''}`;
-      setActionMessage(
-        type === 'sync'
-          ? `Coleta disparada: ${summary}`
-          : `Retry disparado: ${summary}`
-      );
+
+      let msg = `Coleta disparada: ${summary}`;
+      if (type === 'retry') msg = `Retry disparado: ${summary}`;
+      if (type === 'state') msg = `Coleta estadual (${body?.state}) disparada: ${summary}`;
+
+      setActionMessage(msg);
       fetchLogs({ mode: 'replace' });
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Erro ao disparar ação');
@@ -214,6 +223,26 @@ const SysAdmin = () => {
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
+          <div className="flex items-center gap-2 bg-zinc-900/50 p-1.5 rounded-xl border border-white/5">
+            <select
+              className="bg-transparent text-sm text-zinc-300 focus:outline-none px-2 py-1 cursor-pointer"
+              value={selectedState}
+              onChange={(e) => setSelectedState(e.target.value)}
+            >
+              <option value="">Selecione UF</option>
+              {["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"].map(uf => (
+                <option key={uf} value={uf}>{uf}</option>
+              ))}
+            </select>
+            <button
+              onClick={() => runAction('state', { state: selectedState })}
+              disabled={running.state || !selectedState}
+              className="p-1.5 rounded-lg hover:bg-white/5 text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Disparar Coleta por Estado"
+            >
+              {running.state ? <Loader2 size={16} className="animate-spin" /> : <PlayCircle size={16} />}
+            </button>
+          </div>
           <button
             onClick={() => runAction('retry')}
             disabled={running.retry}
@@ -236,8 +265,8 @@ const SysAdmin = () => {
       {(actionMessage || actionError) && (
         <div
           className={`rounded-xl p-4 text-sm font-medium border flex items-center gap-3 ${actionError
-              ? 'bg-red-500/10 text-red-400 border-red-500/20'
-              : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+            ? 'bg-red-500/10 text-red-400 border-red-500/20'
+            : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
             }`}
         >
           {actionError ? <AlertTriangle size={18} /> : <RefreshCcw size={18} />}
@@ -257,8 +286,8 @@ const SysAdmin = () => {
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
                   className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-md transition-all ${active
-                      ? 'bg-zinc-800 text-white shadow-sm'
-                      : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900'
+                    ? 'bg-zinc-800 text-white shadow-sm'
+                    : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900'
                     }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
