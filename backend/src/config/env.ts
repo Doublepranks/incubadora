@@ -22,6 +22,8 @@ export const env = {
   authSecret: process.env.AUTH_SECRET ?? "dev-insecure-secret",
   cookieSecure: process.env.COOKIE_SECURE === "true",
   apifyToken: process.env.APIFY_TOKEN ?? "",
+  corsAllowedOrigins: (process.env.CORS_ALLOWED_ORIGINS ?? "").split(",").map(o => o.trim()).filter(Boolean),
+  apifyStateSyncActorId: process.env.APIFY_STATE_SYNC_ACTOR_ID ?? "",
 };
 
 if (!env.databaseUrl) {

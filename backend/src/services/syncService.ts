@@ -1,6 +1,94 @@
 import { prisma } from "../config/prisma";
-import { fetchProfilesBatch, fetchRetryBatch } from "./apifyService";
+import { fetchProfilesBatch, fetchRetryBatch, fetchStateBatch } from "./apifyService";
 import { SyncStatus } from "@prisma/client";
+
+export async function syncStateProfiles(state: string) {
+  const profiles = await prisma.socialProfile.findMany({
+    where: { influencer: { state } },
+  });
+
+  if (profiles.length === 0) {
+    return { success: 0, failed: 0, total: 0 };
+  }
+
+  const { metrics, errors } = await fetchStateBatch(profiles);
+  const errorMap = new Map<number, RetryCandidate[]>();
+  errors.forEach((e) => {
+    const list = errorMap.get(e.profileId) ?? [];
+    list.push(e);
+    errorMap.set(e.profileId, list);
+  });
+
+  let success = 0;
+  let failed = 0;
+
+  for (const profile of profiles) {
+    const log = await prisma.syncLog.create({
+      data: {
+        socialProfileId: profile.id,
+        startedAt: new Date(),
+        status: SyncStatus.success,
+      },
+    });
+
+    try {
+      const profileErrors = errorMap.get(profile.id) ?? [];
+      const profileMetrics = metrics.get(profile.id) ?? [];
+
+      if (profileErrors.length > 0) {
+        const message = profileErrors
+          .map((e) => `[${e.errorCode ?? "error"}] ${e.errorMessage ?? "unknown"}`)
+          .join(" | ");
+
+        await prisma.syncLog.update({
+          where: { id: log.id },
+          data: {
+            finishedAt: new Date(),
+            status: SyncStatus.error,
+            errorMessage: message,
+          },
+        });
+        failed += 1;
+        continue;
+      }
+
+      const data = profileMetrics.map((m) => ({
+        socialProfileId: profile.id,
+        date: m.date,
+        followersCount: m.followersCount,
+        postsCount: m.postsCount,
+      }));
+
+      if (data.length > 0) {
+        for (const row of data) {
+          await prisma.metricDaily.upsert({
+            where: { socialProfileId_date: { socialProfileId: row.socialProfileId, date: row.date } },
+            create: row,
+            update: { followersCount: row.followersCount, postsCount: row.postsCount },
+          });
+        }
+      }
+
+      await prisma.syncLog.update({
+        where: { id: log.id },
+        data: { finishedAt: new Date(), status: SyncStatus.success },
+      });
+      success += 1;
+    } catch (err) {
+      failed += 1;
+      await prisma.syncLog.update({
+        where: { id: log.id },
+        data: {
+          finishedAt: new Date(),
+          status: SyncStatus.error,
+          errorMessage: err instanceof Error ? err.message : "Unknown error",
+        },
+      });
+    }
+  }
+
+  return { success, failed, total: profiles.length };
+}
 
 type SyncFilter = {
   handles?: string[];
