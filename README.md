@@ -45,7 +45,7 @@ Principais variáveis no `.env`:
 Suba toda a stack (Frontend, Backend, Banco de Dados):
 
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 - **Frontend**: [http://localhost:4173](http://localhost:4173)
