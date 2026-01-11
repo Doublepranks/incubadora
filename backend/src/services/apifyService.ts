@@ -116,10 +116,10 @@ export async function fetchProfilesBatch(profiles: SocialProfile[], _days = 7): 
 
 export async function fetchStateBatch(profiles: SocialProfile[]): Promise<FetchBatchResult> {
   const actorId = process.env.APIFY_STATE_SYNC_ACTOR_ID;
-  const token = process.env.APIFY_TOKEN;
+  const token = process.env.APIFY_STATE_TOKEN || process.env.APIFY_TOKEN;
 
   if (!actorId || !token) {
-    throw new Error("APIFY_STATE_SYNC_ACTOR_ID ou APIFY_TOKEN ausente. Configure o actor de estado antes de rodar.");
+    throw new Error("APIFY_STATE_SYNC_ACTOR_ID ou APIFY_STATE_TOKEN ausente. Configure o actor de estado antes de rodar.");
   }
 
   const datasetItems = await runActorAndGetItems(actorId, token, profiles, 1);
