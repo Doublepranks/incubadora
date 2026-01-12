@@ -18,13 +18,13 @@ const SERIES_CONFIG = {
         borderColor: "border-amber-500/50",
     },
     A2: {
-        label: "A-2",
+        label: "Série B",
         bgColor: "bg-blue-500/20",
         textColor: "text-blue-400",
         borderColor: "border-blue-500/50",
     },
     A3: {
-        label: "A-3",
+        label: "Série C",
         bgColor: "bg-cyan-500/20",
         textColor: "text-cyan-400",
         borderColor: "border-cyan-500/50",
@@ -85,8 +85,8 @@ export default function SeriesBadge({ series, size = "md", className = "" }) {
 export const SERIES_OPTIONS = [
     { value: "", label: "Todas as Séries" },
     { value: "Elite", label: "Elite" },
-    { value: "A2", label: "A-2" },
-    { value: "A3", label: "A-3" },
+    { value: "A2", label: "Série B" },
+    { value: "A3", label: "Série C" },
     { value: "Institucional", label: "Institucional" },
     { value: "Cortes", label: "Cortes" },
     { value: "Noticias", label: "Notícias" },

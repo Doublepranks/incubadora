@@ -95,6 +95,19 @@ O seed padrão cria os seguintes usuários para testes:
 2. Mantenha o padrão de código (ESLint + Prettier).
 3. Utilize branches para features (`feat/nome-da-feature`) ou correções (`fix/nome-do-bug`).
 
+## 📝 Decisões de Design
+
+### Mapeamento de Séries
+
+Os valores internos do banco de dados (`A2`, `A3`) são mapeados para labels de exibição diferentes na UI:
+
+| Valor no BD | Label na UI  |
+|-------------|--------------|
+| `A2`        | Série B      |
+| `A3`        | Série C      |
+
+**Motivo**: Evitar migração de banco de dados ao renomear categorias. A configuração está centralizada em `frontend/src/components/SeriesBadge.jsx`.
+
 ## 📄 Licença
 
 **Proprietário e Confidencial.**
