@@ -73,7 +73,17 @@ async function pushResult(result: MetricResult) {
 
 const platforms = Array.from(profilesByPlatform.keys());
 
-for (const platform of platforms) {
+// [TEMPORARY FIX] Disable all platforms except Instagram to mitigate timeouts
+console.log('⚠️ ORCHESTRATOR RUNNING IN RESTRICTED MODE: INSTAGRAM ONLY ⚠️');
+const ENABLED_PLATFORMS = ['instagram'];
+const filteredPlatforms = platforms.filter(p => ENABLED_PLATFORMS.includes(p));
+const skippedPlatforms = platforms.filter(p => !ENABLED_PLATFORMS.includes(p));
+
+if (skippedPlatforms.length > 0) {
+    console.log(`🚫 Skipping platforms: ${skippedPlatforms.join(', ')}`);
+}
+
+for (const platform of filteredPlatforms) {
     if (isTimeRunningOut()) {
         console.warn('⚠️ Soft timeout reached! Stopping processing to ensure clean exit.');
         break;
