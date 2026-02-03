@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { Series } from "@prisma/client";
+import { Platform, Series } from "@prisma/client";
 import { generateExcel, getRankData, getReportData } from "../services/reportService";
 
 const VALID_SERIES: Series[] = ["Elite", "A2", "A3", "Institucional", "Cortes", "Noticias"];
 
 export async function getReportCards(req: Request, res: Response) {
-  const { state, city, search, series, month, year, limit, page } = req.query;
+  const { state, city, search, series, month, year, platform, limit, page } = req.query;
   const regions = (req as any).userRegions as string[] | undefined;
 
   // Validate filters
@@ -43,6 +43,7 @@ export async function getReportCards(req: Request, res: Response) {
       series: seriesFilter,
       month: monthNum,
       year: computedYear,
+      platform: platform as Platform | undefined,
     },
     { pagination: { limit: parsedLimit, offset } },
   );
@@ -60,7 +61,7 @@ export async function getReportCards(req: Request, res: Response) {
 }
 
 export async function exportExcel(req: Request, res: Response) {
-  const { state, city, search, series, month, year } = req.query;
+  const { state, city, search, series, month, year, platform } = req.query;
   const regions = (req as any).userRegions as string[] | undefined;
 
   const seriesProvided = typeof series !== "undefined";
@@ -89,6 +90,7 @@ export async function exportExcel(req: Request, res: Response) {
     series: seriesFilter,
     month: monthNum,
     year: computedYear,
+    platform: platform as Platform | undefined,
   });
 
   res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -97,7 +99,7 @@ export async function exportExcel(req: Request, res: Response) {
 }
 
 export async function getRank(req: Request, res: Response) {
-  const { state, city, search, periodWeeks, series, mode, month, year } = req.query;
+  const { state, city, search, periodWeeks, series, mode, month, year, platform } = req.query;
   const regions = (req as any).userRegions as string[] | undefined;
   let monthNum = month ? Number(month) : undefined;
   let yearNum = year ? Number(year) : undefined;
@@ -131,6 +133,7 @@ export async function getRank(req: Request, res: Response) {
       series: seriesFilter,
       month: monthNum,
       year: yearNum,
+      platform: platform as Platform | undefined,
     },
     { mode: requestedMode },
   );

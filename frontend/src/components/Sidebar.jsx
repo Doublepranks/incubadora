@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { Home, Users, Search, BarChart3, Settings, LogOut, ChevronRight, ChevronLeft, UserCircle, Map, LayoutDashboard, ServerCog, Shield, PanelLeftClose, PanelLeft, Minimize2, Maximize2 } from 'lucide-react';
+import { Home, Users, Search, BarChart3, Settings, LogOut, ChevronRight, ChevronLeft, UserCircle, Map, LayoutDashboard, ServerCog, Shield, PanelLeftClose, PanelLeft, Minimize2, Maximize2, Target } from 'lucide-react';
 
 const Sidebar = () => {
     const {
@@ -68,6 +68,7 @@ const Sidebar = () => {
                     {!isSidebarCollapsed && <h2 className="px-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2 font-mono whitespace-nowrap overflow-hidden">Menu Principal</h2>}
                     <LinkItem to="/" icon={LayoutDashboard} label="Dashboard" />
                     {canAccessInfluencers && <LinkItem to="/influencers" icon={Users} label="Influenciadores" />}
+                    <LinkItem to="/metas" icon={Target} label="Metas" />
                     <LinkItem to="/reports" icon={BarChart3} label="Relatórios" />
                     <LinkItem to="/mapview" icon={Map} label="Mapa" />
                 </div>

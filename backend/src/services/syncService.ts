@@ -1,6 +1,7 @@
 import { prisma } from "../config/prisma";
 import { fetchProfilesBatch, fetchRetryBatch, fetchStateBatch } from "./apifyService";
 import { SyncStatus } from "@prisma/client";
+import { updateGoalsAfterSync } from "./goalsService";
 
 export async function syncStateProfiles(state: string) {
   const profiles = await prisma.socialProfile.findMany({
@@ -84,6 +85,18 @@ export async function syncStateProfiles(state: string) {
           errorMessage: err instanceof Error ? err.message : "Unknown error",
         },
       });
+    }
+  }
+
+  // Update goals for successfully synced influencers
+  if (success > 0) {
+    const influencerIds = [...new Set(profiles.map(p => p.influencerId))];
+    for (const influencerId of influencerIds) {
+      try {
+        await updateGoalsAfterSync(influencerId);
+      } catch (err) {
+        console.error(`Failed to update goals for influencer ${influencerId}:`, err);
+      }
     }
   }
 

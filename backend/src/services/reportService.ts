@@ -11,6 +11,7 @@ type ReportFilters = {
   series?: Series;
   month?: number;
   year?: number;
+  platform?: Platform;
 };
 
 type WeeklyData = {
@@ -61,6 +62,7 @@ export async function getReportData(filters: ReportFilters, options?: { paginati
   if (filters.city) whereConditions.push({ city: filters.city });
   if (filters.series) whereConditions.push({ series: filters.series });
   if (filters.search) whereConditions.push({ name: { contains: filters.search, mode: "insensitive" } });
+  if (filters.platform) whereConditions.push({ socialProfiles: { some: { platform: filters.platform } } });
 
   const where: Prisma.InfluencerWhereInput = { AND: whereConditions };
 
@@ -70,6 +72,7 @@ export async function getReportData(filters: ReportFilters, options?: { paginati
       orderBy: { name: "asc" },
       include: {
         socialProfiles: {
+          where: filters.platform ? { platform: filters.platform } : undefined,
           include: {
             metrics: {
               where: { date: dateFilter },
@@ -225,11 +228,13 @@ async function getWeeklyRank(filters: ReportFilters): Promise<RankResult> {
   if (filters.city) whereConditions.push({ city: filters.city });
   if (filters.series) whereConditions.push({ series: filters.series });
   if (filters.search) whereConditions.push({ name: { contains: filters.search, mode: "insensitive" } });
+  if (filters.platform) whereConditions.push({ socialProfiles: { some: { platform: filters.platform } } });
 
   const influencers = await prisma.influencer.findMany({
     where: { AND: whereConditions },
     include: {
       socialProfiles: {
+        where: filters.platform ? { platform: filters.platform } : undefined,
         include: {
           metrics: {
             where: { date: { gte: queryStartDate } },
@@ -336,11 +341,13 @@ async function getMonthlyRank(filters: Required<Pick<ReportFilters, "month" | "y
   if (filters.city) whereConditions.push({ city: filters.city });
   if (filters.series) whereConditions.push({ series: filters.series });
   if (filters.search) whereConditions.push({ name: { contains: filters.search, mode: "insensitive" } });
+  if (filters.platform) whereConditions.push({ socialProfiles: { some: { platform: filters.platform } } });
 
   const influencers = await prisma.influencer.findMany({
     where: { AND: whereConditions },
     include: {
       socialProfiles: {
+        where: filters.platform ? { platform: filters.platform } : undefined,
         include: {
           metrics: {
             where: { date: { gte: dateStart, lte: dateEnd } },

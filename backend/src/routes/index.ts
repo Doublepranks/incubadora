@@ -8,6 +8,7 @@ import { reportsRouter } from "./reports";
 import { syncRouter } from "./sync";
 import { usersRouter } from "./users";
 import { adminRouter } from "./admin";
+import { goalsRouter } from "./goals";
 
 export const routes = Router();
 
@@ -20,3 +21,4 @@ routes.use("/reports", reportsRouter);
 routes.use("/sync", syncRouter);
 routes.use("/users", usersRouter);
 routes.use("/admin", adminRouter);
+routes.use("/goals", goalsRouter);

@@ -17,11 +17,20 @@ const platformColors = {
     tiktok: '#7d54dc'
 };
 
+const PLATFORM_OPTIONS = [
+    { value: 'instagram', label: 'Instagram' },
+    { value: 'tiktok', label: 'TikTok' },
+    { value: 'youtube', label: 'YouTube' },
+    { value: 'x', label: 'X (Twitter)' },
+    { value: 'kwai', label: 'Kwai' },
+];
+
 const Reports = () => {
     const { user, selectedState, selectedMunicipality } = useApp();
     const [stateFilter, setStateFilter] = useState('');
     const [search, setSearch] = useState('');
     const [seriesFilter, setSeriesFilter] = useState('');
+    const [platformFilter, setPlatformFilter] = useState('');
     const [monthFilter, setMonthFilter] = useState('');
     const [yearFilter, setYearFilter] = useState('');
     const [cards, setCards] = useState([]);
@@ -62,7 +71,9 @@ const Reports = () => {
                 const params = new URLSearchParams();
                 if (effectiveState) params.append('state', effectiveState);
                 if (selectedMunicipality) params.append('city', selectedMunicipality);
+                if (selectedMunicipality) params.append('city', selectedMunicipality);
                 if (seriesFilter) params.append('series', seriesFilter);
+                if (platformFilter) params.append('platform', platformFilter);
                 if (monthFilter) params.append('month', monthFilter);
                 if (yearFilter) params.append('year', yearFilter);
                 if (search) params.append('search', search);
@@ -85,7 +96,7 @@ const Reports = () => {
             }
         };
         fetchData();
-    }, [effectiveState, selectedMunicipality, seriesFilter, monthFilter, yearFilter, search, page]);
+    }, [effectiveState, selectedMunicipality, seriesFilter, platformFilter, monthFilter, yearFilter, search, page]);
 
     const handleExport = async () => {
         try {
@@ -93,6 +104,7 @@ const Reports = () => {
             if (effectiveState) params.append('state', effectiveState);
             if (selectedMunicipality) params.append('city', selectedMunicipality);
             if (seriesFilter) params.append('series', seriesFilter);
+            if (platformFilter) params.append('platform', platformFilter);
             if (monthFilter) params.append('month', monthFilter);
             if (yearFilter) params.append('year', yearFilter);
             const res = await fetch(`${API_URL}/reports/general/export?format=xlsx&${params.toString()}`, {
@@ -122,6 +134,7 @@ const Reports = () => {
             if (selectedMunicipality) params.append('city', selectedMunicipality);
             if (search) params.append('search', search);
             if (seriesFilter) params.append('series', seriesFilter);
+            if (platformFilter) params.append('platform', platformFilter);
             params.append('mode', 'weekly');
             const res = await fetch(`${API_URL}/reports/rank?${params.toString()}`, { credentials: 'include' });
             if (!res.ok) {
@@ -164,6 +177,7 @@ const Reports = () => {
             if (selectedMunicipality) params.append('city', selectedMunicipality);
             if (search) params.append('search', search);
             if (seriesFilter) params.append('series', seriesFilter);
+            if (platformFilter) params.append('platform', platformFilter);
             params.append('mode', 'monthly');
             params.append('month', useMonth);
             params.append('year', useYear);
@@ -261,7 +275,18 @@ const Reports = () => {
                     onChange={(e) => { setSeriesFilter(e.target.value); setPage(1); }}
                     className="px-3 py-2.5 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-zinc-300 focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer"
                 >
+                    <option value="">Todas as séries</option>
                     {SERIES_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                </select>
+                <select
+                    value={platformFilter}
+                    onChange={(e) => { setPlatformFilter(e.target.value); setPage(1); }}
+                    className="px-3 py-2.5 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-zinc-300 focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer"
+                >
+                    <option value="">Todas as redes</option>
+                    {PLATFORM_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
                 </select>
