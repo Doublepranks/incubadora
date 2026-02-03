@@ -2,9 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LazyChart from '../components/LazyChart';
 import SeriesBadge from '../components/SeriesBadge';
-import { ArrowLeft, Instagram, Youtube, Video, Twitter, Loader2, User as UserIcon, Calendar, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Instagram, Youtube, Video, Twitter, Loader2, User as UserIcon, Calendar, TrendingUp, Target } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import * as dateUtils from '../utils/dateUtils';
+import GoalCard from '../components/GoalCard';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -43,6 +44,7 @@ const InfluencerDetail = () => {
     const { filters, setFilters } = useApp();
 
     const [influencer, setInfluencer] = useState(null);
+    const [goals, setGoals] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -68,6 +70,22 @@ const InfluencerDetail = () => {
 
         fetchInfluencer();
     }, [id, filters.periodDays]);
+
+    useEffect(() => {
+        const fetchGoals = async () => {
+            try {
+                const res = await fetch(`${API_URL}/influencers/${id}/goals?status=active`, { credentials: 'include' });
+                if (res.ok) {
+                    const json = await res.json();
+                    setGoals(json.data || []);
+                }
+            } catch (err) {
+                console.error('Error fetching goals:', err);
+            }
+        };
+
+        if (id) fetchGoals();
+    }, [id]);
 
     const kpis = useMemo(() => {
         if (!influencer) return { totalFollowers: 0, totalPosts: 0, growthAbsolute: 0, growthPercent: 0, avgPosts: 0 };
@@ -216,6 +234,21 @@ const InfluencerDetail = () => {
                     </div>
                 ))}
             </div>
+
+            {/* Active Goals Section */}
+            {goals.length > 0 && (
+                <div className="glass-panel p-6 rounded-2xl">
+                    <div className="flex items-center gap-2 mb-4">
+                        <Target size={20} className="text-blue-400" />
+                        <h2 className="text-xl font-semibold text-white">Metas Ativas</h2>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        {goals.map((goal) => (
+                            <GoalCard key={goal.id} goal={goal} compact />
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {influencer.socialProfiles.map((profile) => {

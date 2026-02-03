@@ -41,6 +41,18 @@ enum Series {
   Noticias
 }
 
+enum GoalType {
+  followers
+  posts
+}
+
+enum GoalStatus {
+  active
+  achieved
+  failed
+  cancelled
+}
+
 enum Sex {
   masculino
   feminino
@@ -57,6 +69,7 @@ model User {
   regions      UserRegion[]
   createdNotes InfluencerNote[]
   logs         LogEntry[]
+  createdGoals InfluencerGoal[]
   @@index([role])
 }
 
@@ -73,6 +86,7 @@ model Influencer {
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @updatedAt @map("updated_at")
   notesHistory    InfluencerNote[]
+  goals           InfluencerGoal[]
 
   @@index([state])
   @@index([city])
@@ -158,4 +172,36 @@ model LogEntry {
 
   @@index([type, createdAt])
   @@index([userId])
+}
+
+model InfluencerGoal {
+  id             Int         @id @default(autoincrement())
+  influencerId   Int         @map("influencer_id")
+  type           GoalType
+  status         GoalStatus  @default(active)
+  
+  // Meta específica
+  targetValue    Int         @map("target_value")
+  platform       Platform?
+  
+  // Prazo
+  deadline       DateTime
+  
+  // Rastreamento
+  initialValue   Int?        @map("initial_value")
+  currentValue   Int?        @map("current_value")
+  achievedAt     DateTime?   @map("achieved_at")
+  
+  // Metadados
+  description    String?
+  createdBy      Int         @map("created_by")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  
+  influencer     Influencer  @relation(fields: [influencerId], references: [id], onDelete: Cascade)
+  creator        User        @relation(fields: [createdBy], references: [id], onDelete: Restrict)
+  
+  @@index([influencerId])
+  @@index([status])
+  @@index([deadline])
 }

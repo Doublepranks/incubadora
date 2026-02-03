@@ -7,6 +7,7 @@ import {
   deleteInfluencerHandler,
 } from "../controllers/influencerController";
 import { getNotesHandler, addNoteHandler } from "../controllers/NotesController";
+import { getInfluencerGoalsHandler } from "../controllers/goalsController";
 import { authorize } from "../middlewares/authorize";
 import { requireAuth } from "../middlewares/requireAuth";
 
@@ -22,3 +23,6 @@ influencersRouter.delete("/:id", authorize({ roles: ["admin_global", "system_adm
 // Notes History
 influencersRouter.get("/:id/notes", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), getNotesHandler);
 influencersRouter.post("/:id/notes", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), addNoteHandler);
+
+// Goals
+influencersRouter.get("/:id/goals", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), getInfluencerGoalsHandler);

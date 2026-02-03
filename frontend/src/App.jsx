@@ -11,6 +11,7 @@ const Users = lazy(() => import('./pages/Users'));
 const Influencers = lazy(() => import('./pages/Influencers'));
 const SysAdmin = lazy(() => import('./pages/SysAdmin'));
 const MapView = lazy(() => import('./pages/MapView'));
+const Metas = lazy(() => import('./pages/Metas'));
 
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const { isAuthenticated, authLoading, user } = useApp();
@@ -84,6 +85,13 @@ const AppRoutes = () => {
         <SuspenseWrapper>
           <ProtectedRoute>
             <Users />
+          </ProtectedRoute>
+        </SuspenseWrapper>
+      } />
+      <Route path="/metas" element={
+        <SuspenseWrapper>
+          <ProtectedRoute>
+            <Metas />
           </ProtectedRoute>
         </SuspenseWrapper>
       } />
