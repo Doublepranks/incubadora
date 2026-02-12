@@ -68,7 +68,7 @@ export default function SeriesBadge({ series, size = "md", className = "" }) {
     return (
         <span
             className={clsx(
-                "inline-flex items-center font-medium rounded-full border",
+                "inline-flex items-center font-medium rounded-full border whitespace-nowrap",
                 config.bgColor,
                 config.textColor,
                 config.borderColor,

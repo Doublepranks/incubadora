@@ -1,5 +1,5 @@
 import { prisma } from '../config/prisma';
-import type { GoalType, GoalStatus, Platform } from '@prisma/client';
+import type { GoalType, GoalStatus, Platform, Series } from '@prisma/client';
 
 interface CreateGoalInput {
     influencerId: number;
@@ -65,15 +65,20 @@ async function getInitialValue(influencerId: number, type: GoalType, platform?: 
 
 /**
  * Criar uma nova meta
+ * targetValue do input é tratado como INCREMENTO (quanto crescer)
+ * O valor salvo no banco é absoluto: initialValue + incremento
  */
 export async function createGoal(input: CreateGoalInput) {
     const initialValue = await getInitialValue(input.influencerId, input.type, input.platform);
+
+    // targetValue no banco = valor absoluto a atingir (initial + incremento desejado)
+    const absoluteTarget = (initialValue ?? 0) + input.targetValue;
 
     const goal = await prisma.influencerGoal.create({
         data: {
             influencerId: input.influencerId,
             type: input.type,
-            targetValue: input.targetValue,
+            targetValue: absoluteTarget,
             platform: input.platform,
             deadline: input.deadline,
             description: input.description,
@@ -88,6 +93,46 @@ export async function createGoal(input: CreateGoalInput) {
     });
 
     return goal;
+}
+
+interface CreateSeriesGoalInput {
+    series: Series;
+    type: GoalType;
+    targetValue: number;
+    platform?: Platform;
+    deadline: Date;
+    description?: string;
+    createdBy: number;
+}
+
+/**
+ * Criar metas para todos os influenciadores de uma Série (fan-out)
+ */
+export async function createGoalsForSeries(input: CreateSeriesGoalInput) {
+    const influencers = await prisma.influencer.findMany({
+        where: { series: input.series },
+        select: { id: true, name: true },
+    });
+
+    if (influencers.length === 0) {
+        return { created: 0, goals: [] };
+    }
+
+    const goals = [];
+    for (const inf of influencers) {
+        const goal = await createGoal({
+            influencerId: inf.id,
+            type: input.type,
+            targetValue: input.targetValue,
+            platform: input.platform,
+            deadline: input.deadline,
+            description: input.description ?? `Meta por série (${input.series})`,
+            createdBy: input.createdBy,
+        });
+        goals.push(goal);
+    }
+
+    return { created: goals.length, goals };
 }
 
 /**
@@ -164,6 +209,87 @@ export async function cancelGoal(id: number) {
     });
 
     return goal;
+}
+
+/**
+ * Excluir permanentemente uma meta cancelada
+ */
+export async function deleteGoal(id: number) {
+    const goal = await prisma.influencerGoal.findUnique({ where: { id } });
+
+    if (!goal) {
+        throw new Error('Meta não encontrada');
+    }
+
+    if (goal.status !== 'cancelled') {
+        throw new Error('Apenas metas canceladas podem ser excluídas');
+    }
+
+    await prisma.influencerGoal.delete({ where: { id } });
+
+    return { deleted: true };
+}
+
+/**
+ * Cancelar múltiplas metas ativas em lote
+ */
+export async function batchCancelGoals(ids: number[]) {
+    const result = await prisma.influencerGoal.updateMany({
+        where: {
+            id: { in: ids },
+            status: 'active',
+        },
+        data: { status: 'cancelled' },
+    });
+
+    return { cancelled: result.count };
+}
+
+/**
+ * Excluir permanentemente múltiplas metas canceladas em lote
+ */
+export async function batchDeleteGoals(ids: number[]) {
+    // Validar que todas as metas são canceladas
+    const nonCancelled = await prisma.influencerGoal.findMany({
+        where: {
+            id: { in: ids },
+            status: { not: 'cancelled' },
+        },
+        select: { id: true, status: true },
+    });
+
+    if (nonCancelled.length > 0) {
+        throw new Error(`${nonCancelled.length} meta(s) não estão canceladas e não podem ser excluídas`);
+    }
+
+    const result = await prisma.influencerGoal.deleteMany({
+        where: {
+            id: { in: ids },
+            status: 'cancelled',
+        },
+    });
+
+    return { deleted: result.count };
+}
+
+/**
+ * Editar múltiplas metas em lote (deadline e/ou targetValue)
+ */
+export async function batchUpdateGoals(ids: number[], changes: { deadline?: Date; targetValue?: number }) {
+    const data: any = {};
+    if (changes.deadline !== undefined) data.deadline = changes.deadline;
+    if (changes.targetValue !== undefined) data.targetValue = changes.targetValue;
+
+    if (Object.keys(data).length === 0) {
+        throw new Error('Nenhum campo para atualizar');
+    }
+
+    const result = await prisma.influencerGoal.updateMany({
+        where: { id: { in: ids } },
+        data,
+    });
+
+    return { updated: result.count };
 }
 
 /**

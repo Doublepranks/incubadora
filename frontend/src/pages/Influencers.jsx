@@ -63,6 +63,7 @@ const Influencers = () => {
 
   const [search, setSearch] = useState("");
   const [platformFilter, setPlatformFilter] = useState("");
+  const [seriesFilter, setSeriesFilter] = useState("");
   const [periodFilter, setPeriodFilter] = useState("7");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -108,6 +109,7 @@ const Influencers = () => {
       if (selectedState) params.append("state", selectedState);
       if (selectedMunicipality) params.append("city", selectedMunicipality);
       if (platformFilter) params.append("platform", platformFilter);
+      if (seriesFilter) params.append("series", seriesFilter);
       if (periodFilter) params.append("periodDays", periodFilter);
 
       const res = await fetch(`${API_URL}/influencers?${params.toString()}`, { credentials: "include" });
@@ -129,7 +131,7 @@ const Influencers = () => {
     if (canManage) {
       loadInfluencers();
     }
-  }, [search, selectedState, selectedMunicipality, platformFilter, periodFilter, canManage]);
+  }, [search, selectedState, selectedMunicipality, platformFilter, seriesFilter, periodFilter, canManage]);
 
   const loadFormCities = async (uf) => {
     if (!uf) {
@@ -353,7 +355,7 @@ const Influencers = () => {
 
       {/* Filters */}
       <div className="glass-panel p-4 rounded-xl flex flex-wrap gap-3 items-center">
-        <div className="relative group min-w-[200px] flex-1">
+        <div className="relative group max-w-[240px] flex-1">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-primary transition-colors" />
           <input
             value={search}
@@ -388,6 +390,16 @@ const Influencers = () => {
         >
           <option value="">Todas as plataformas</option>
           {PLATFORMS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
+        </select>
+
+        <select
+          value={seriesFilter}
+          onChange={(e) => setSeriesFilter(e.target.value)}
+          className="px-3 py-2 text-sm bg-zinc-900/50 border border-white/5 rounded-lg text-zinc-300 focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer hover:bg-zinc-800/50"
+        >
+          {SERIES_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
         </select>
 
         <select
@@ -455,14 +467,40 @@ const Influencers = () => {
                     </td>
                     <td className="px-4 xl:px-6 py-3 xl:py-4">
                       <div className="flex flex-wrap gap-2">
-                        {inf.platforms?.map((p) => (
-                          <span
-                            key={p}
-                            className={`px-2 py-0.5 text-[10px] rounded-full font-semibold border ${platformBadgeClasses[p] || "bg-zinc-800 text-zinc-300 border-zinc-700"}`}
-                          >
-                            {p === "x" ? "X" : p.charAt(0).toUpperCase() + p.slice(1)}
-                          </span>
-                        ))}
+                        {inf.platforms?.map((p) => {
+                          const profileLink = inf.profileLinks?.find((pl) => pl.platform === p);
+                          const handle = profileLink?.handle || '';
+                          const profileUrl = profileLink?.url || (() => {
+                            const cleanHandle = handle.replace(/^@/, '');
+                            if (!cleanHandle) return null;
+                            const BASE_URLS = {
+                              instagram: `https://instagram.com/${cleanHandle}`,
+                              x: `https://x.com/${cleanHandle}`,
+                              youtube: `https://youtube.com/@${cleanHandle}`,
+                              tiktok: `https://tiktok.com/@${cleanHandle}`,
+                              kwai: `https://kwai.com/@${cleanHandle}`,
+                            };
+                            return BASE_URLS[p] || null;
+                          })();
+
+                          const Tag = profileUrl ? 'a' : 'span';
+                          const linkProps = profileUrl ? {
+                            href: profileUrl,
+                            target: '_blank',
+                            rel: 'noopener noreferrer',
+                          } : {};
+
+                          return (
+                            <Tag
+                              key={p}
+                              {...linkProps}
+                              className={`px-2 py-0.5 text-[10px] rounded-full font-semibold border ${platformBadgeClasses[p] || "bg-zinc-800 text-zinc-300 border-zinc-700"} ${profileUrl ? 'hover:scale-110 hover:shadow-lg transition-all cursor-pointer' : ''}`}
+                              title={profileUrl ? `Abrir perfil: ${handle || p}` : p}
+                            >
+                              {p === "x" ? "X" : p.charAt(0).toUpperCase() + p.slice(1)}
+                            </Tag>
+                          );
+                        })}
                       </div>
                     </td>
                     <td className="px-4 xl:px-6 py-3 xl:py-4 text-zinc-300 font-mono text-xs">{formatNumber(inf.totalFollowers)}</td>
