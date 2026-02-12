@@ -81,7 +81,7 @@ const Dashboard = () => {
                     safeFetch(`${API_URL}/metrics/timeline?${params.toString()}`, []),
                     safeFetch(`${API_URL}/metrics/top-growth?limit=5&${params.toString()}`, []),
                     safeFetch(`${API_URL}/influencers?${params.toString()}`, []),
-                    safeFetch(`${API_URL}/metrics/platform-distribution`, []),
+                    safeFetch(`${API_URL}/metrics/platform-distribution?${params.toString()}`, []),
                     safeFetch(`${API_URL}/metrics/state-distribution?${params.toString()}`, []),
                     safeFetch(`${API_URL}/metrics/gender-distribution?${params.toString()}`, []),
                     safeFetch(`${API_URL}/metrics/gender-by-region?${params.toString()}`, []),

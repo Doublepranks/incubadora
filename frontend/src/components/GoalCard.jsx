@@ -59,14 +59,20 @@ const PLATFORM_LABELS = {
 /**
  * GoalCard - Exibe uma meta de influenciador com progresso visual
  */
-export default function GoalCard({ goal, onEdit, onCancel, compact = false }) {
+export default function GoalCard({ goal, onEdit, onCancel, onDelete, compact = false }) {
     const statusConfig = STATUS_CONFIG[goal.status] || STATUS_CONFIG.active;
     const StatusIcon = statusConfig.icon;
     const PlatformIcon = PLATFORM_ICONS[goal.platform] || Target;
     const platformColor = PLATFORM_COLORS[goal.platform] || 'text-zinc-400';
 
-    const progress = goal.targetValue > 0
-        ? Math.min(100, ((goal.currentValue || 0) / goal.targetValue) * 100)
+    const initial = goal.initialValue || 0;
+    const current = goal.currentValue || 0;
+    const target = goal.targetValue || 0;
+    const delta = current - initial;
+    const deltaTarget = target - initial;
+
+    const progress = deltaTarget > 0
+        ? Math.min(100, (delta / deltaTarget) * 100)
         : 0;
 
     const daysRemaining = Math.ceil(
@@ -102,7 +108,7 @@ export default function GoalCard({ goal, onEdit, onCancel, compact = false }) {
                 {/* Progress Bar */}
                 <div className="mb-2">
                     <div className="flex justify-between text-xs text-zinc-400 mb-1.5 font-medium">
-                        <span>{(goal.currentValue || 0).toLocaleString()} <span className="text-zinc-600">/</span> {goal.targetValue.toLocaleString()}</span>
+                        <span>+{delta.toLocaleString()} <span className="text-zinc-600">/</span> +{deltaTarget.toLocaleString()}</span>
                         <span className={goal.status === 'achieved' ? 'text-emerald-400' : 'text-zinc-300'}>
                             {Math.round(progress)}%
                         </span>
@@ -181,9 +187,9 @@ export default function GoalCard({ goal, onEdit, onCancel, compact = false }) {
                 <div className="flex justify-between items-end mb-2">
                     <span className="text-sm font-medium text-zinc-400">Progresso Atual</span>
                     <div className="text-right">
-                        <span className="text-xl font-bold text-white">{(goal.currentValue || 0).toLocaleString()}</span>
+                        <span className="text-xl font-bold text-white">+{delta.toLocaleString()}</span>
                         <span className="text-sm text-zinc-500 font-medium mx-1.5">/</span>
-                        <span className="text-sm text-zinc-400 font-medium">{goal.targetValue.toLocaleString()}</span>
+                        <span className="text-sm text-zinc-400 font-medium">+{deltaTarget.toLocaleString()}</span>
                     </div>
                 </div>
 
@@ -246,6 +252,15 @@ export default function GoalCard({ goal, onEdit, onCancel, compact = false }) {
                             Cancelar
                         </button>
                     </div>
+                )}
+
+                {goal.status === 'cancelled' && onDelete && (
+                    <button
+                        onClick={() => onDelete(goal.id)}
+                        className="px-3 py-1.5 text-xs font-semibold bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition border border-red-500/20"
+                    >
+                        Excluir
+                    </button>
                 )}
             </div>
         </div>

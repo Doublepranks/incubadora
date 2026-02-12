@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
-import { Target, Plus, Filter, TrendingUp, CheckCircle2, XCircle, Clock, Loader2, Search } from 'lucide-react';
+import { Target, Plus, Filter, TrendingUp, CheckCircle2, XCircle, Clock, Loader2, Search, LayoutGrid, List, Ban, Trash2, Edit3 } from 'lucide-react';
 import GoalCard from '../components/GoalCard';
+import GoalListItem from '../components/GoalListItem';
 import GoalModal from '../components/GoalModal';
+import BatchEditModal from '../components/BatchEditModal';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -29,12 +31,35 @@ export default function Metas() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingGoal, setEditingGoal] = useState(null);
 
+    // View mode & selection
+    const [viewMode, setViewMode] = useState('cards'); // 'cards' | 'list'
+    const [selectedIds, setSelectedIds] = useState(new Set());
+    const [batchLoading, setBatchLoading] = useState(false);
+    const [isBatchEditOpen, setIsBatchEditOpen] = useState(false);
+
     // Filters
     const [filters, setFilters] = useState({
         status: '',
         type: '',
         influencerId: '',
     });
+
+    // Derived state for batch actions
+    const allSelectedCancelled = useMemo(() => {
+        if (selectedIds.size === 0) return false;
+        return [...selectedIds].every((id) => {
+            const goal = goals.find((g) => g.id === id);
+            return goal?.status === 'cancelled';
+        });
+    }, [selectedIds, goals]);
+
+    const someSelectedActive = useMemo(() => {
+        if (selectedIds.size === 0) return false;
+        return [...selectedIds].some((id) => {
+            const goal = goals.find((g) => g.id === id);
+            return goal?.status === 'active';
+        });
+    }, [selectedIds, goals]);
 
     // Stats
     const stats = {
@@ -87,14 +112,23 @@ export default function Metas() {
 
     const handleCreateGoal = async (goalData) => {
         try {
-            const res = await fetch(`${API_URL}/goals`, {
+            const isSeries = goalData.mode === 'series';
+            const url = isSeries ? `${API_URL}/goals/series` : `${API_URL}/goals`;
+            const { mode: _mode, ...payload } = goalData;
+
+            const res = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify(goalData),
+                body: JSON.stringify(payload),
             });
 
             if (!res.ok) throw new Error('Failed to create goal');
+
+            const result = await res.json();
+            if (isSeries && result.message) {
+                alert(result.message);
+            }
 
             await fetchGoals();
         } catch (error) {
@@ -139,12 +173,135 @@ export default function Metas() {
         }
     };
 
+    const handleDeleteGoal = async (goalId) => {
+        if (!confirm('Tem certeza que deseja EXCLUIR permanentemente esta meta? Esta ação não pode ser desfeita.')) return;
+
+        try {
+            const res = await fetch(`${API_URL}/goals/${goalId}/permanent`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+
+            if (!res.ok) throw new Error('Failed to delete goal');
+
+            await fetchGoals();
+        } catch (error) {
+            console.error('Error deleting goal:', error);
+            alert('Erro ao excluir meta. Tente novamente.');
+        }
+    };
+
+    // Batch handlers
+    const handleToggleSelect = (goalId) => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(goalId)) {
+                next.delete(goalId);
+            } else {
+                next.add(goalId);
+            }
+            return next;
+        });
+    };
+
+    const handleSelectAll = () => {
+        if (selectedIds.size === goals.length) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(goals.map((g) => g.id)));
+        }
+    };
+
+    const handleBatchCancel = async () => {
+        const activeIds = [...selectedIds].filter((id) => {
+            const goal = goals.find((g) => g.id === id);
+            return goal?.status === 'active';
+        });
+
+        if (activeIds.length === 0) {
+            alert('Nenhuma meta ativa selecionada para cancelar.');
+            return;
+        }
+
+        if (!confirm(`Cancelar ${activeIds.length} meta(s) ativa(s)?`)) return;
+
+        try {
+            setBatchLoading(true);
+            const res = await fetch(`${API_URL}/goals/batch/cancel`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ ids: activeIds }),
+            });
+            if (!res.ok) throw new Error('Failed');
+            const result = await res.json();
+            alert(`${result.data.cancelled} meta(s) cancelada(s).`);
+            setSelectedIds(new Set());
+            await fetchGoals();
+        } catch (error) {
+            console.error('Error batch cancelling:', error);
+            alert('Erro ao cancelar metas em lote.');
+        } finally {
+            setBatchLoading(false);
+        }
+    };
+
+    const handleBatchDelete = async () => {
+        if (!confirm(`Excluir permanentemente ${selectedIds.size} meta(s) cancelada(s)? Esta ação não pode ser desfeita.`)) return;
+
+        try {
+            setBatchLoading(true);
+            const res = await fetch(`${API_URL}/goals/batch/delete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ ids: [...selectedIds] }),
+            });
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.error || 'Failed');
+            }
+            const result = await res.json();
+            alert(`${result.data.deleted} meta(s) excluída(s).`);
+            setSelectedIds(new Set());
+            await fetchGoals();
+        } catch (error) {
+            console.error('Error batch deleting:', error);
+            alert(error.message || 'Erro ao excluir metas em lote.');
+        } finally {
+            setBatchLoading(false);
+        }
+    };
+
+    const handleBatchUpdate = async (changes) => {
+        try {
+            setBatchLoading(true);
+            const res = await fetch(`${API_URL}/goals/batch/update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ ids: [...selectedIds], changes }),
+            });
+            if (!res.ok) throw new Error('Failed');
+            const result = await res.json();
+            alert(`${result.data.updated} meta(s) atualizada(s).`);
+            setSelectedIds(new Set());
+            await fetchGoals();
+        } catch (error) {
+            console.error('Error batch updating:', error);
+            alert('Erro ao atualizar metas em lote.');
+        } finally {
+            setBatchLoading(false);
+        }
+    };
+
     const handleFilterChange = (key, value) => {
         setFilters((prev) => ({ ...prev, [key]: value }));
     };
 
     useEffect(() => {
         if (!authLoading && user) {
+            setSelectedIds(new Set());
             fetchGoals();
         }
     }, [filters]);
@@ -172,16 +329,36 @@ export default function Metas() {
                             Acompanhe o crescimento e performance de produção da sua rede
                         </p>
                     </div>
-                    <button
-                        onClick={() => {
-                            setEditingGoal(null);
-                            setIsModalOpen(true);
-                        }}
-                        className="flex items-center gap-2 px-5 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-xl transition font-medium shadow-lg hover:shadow-violet-500/25"
-                    >
-                        <Plus size={20} />
-                        Nova Meta
-                    </button>
+                    <div className="flex items-center gap-3">
+                        {/* View mode toggle */}
+                        <div className="flex bg-zinc-900/50 rounded-lg p-1 border border-white/10">
+                            <button
+                                onClick={() => setViewMode('cards')}
+                                className={`p-2 rounded-md transition-all ${viewMode === 'cards' ? 'bg-white/10 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+                                title="Vista em Cards"
+                            >
+                                <LayoutGrid size={18} />
+                            </button>
+                            <button
+                                onClick={() => setViewMode('list')}
+                                className={`p-2 rounded-md transition-all ${viewMode === 'list' ? 'bg-white/10 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+                                title="Vista em Lista"
+                            >
+                                <List size={18} />
+                            </button>
+                        </div>
+
+                        <button
+                            onClick={() => {
+                                setEditingGoal(null);
+                                setIsModalOpen(true);
+                            }}
+                            className="flex items-center gap-2 px-5 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-xl transition font-medium shadow-lg hover:shadow-violet-500/25"
+                        >
+                            <Plus size={20} />
+                            Nova Meta
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -258,6 +435,53 @@ export default function Metas() {
                 </div>
             </div>
 
+            {/* Batch Toolbar */}
+            {selectedIds.size > 0 && (
+                <div className="glass-panel p-4 rounded-xl flex items-center justify-between animate-fade-in sticky top-4 z-20 border border-violet-500/20 bg-zinc-900/95 backdrop-blur-md">
+                    <div className="flex items-center gap-3">
+                        <span className="text-sm font-semibold text-white">
+                            {selectedIds.size} selecionada{selectedIds.size !== 1 ? 's' : ''}
+                        </span>
+                        <button
+                            onClick={() => setSelectedIds(new Set())}
+                            className="text-xs text-zinc-400 hover:text-white transition"
+                        >
+                            Limpar seleção
+                        </button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        {someSelectedActive && (
+                            <button
+                                onClick={handleBatchCancel}
+                                disabled={batchLoading}
+                                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 rounded-lg transition border border-amber-500/20 disabled:opacity-50"
+                            >
+                                <Ban size={14} />
+                                Cancelar
+                            </button>
+                        )}
+                        {allSelectedCancelled && (
+                            <button
+                                onClick={handleBatchDelete}
+                                disabled={batchLoading}
+                                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg transition border border-red-500/20 disabled:opacity-50"
+                            >
+                                <Trash2 size={14} />
+                                Excluir
+                            </button>
+                        )}
+                        <button
+                            onClick={() => setIsBatchEditOpen(true)}
+                            disabled={batchLoading}
+                            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 rounded-lg transition border border-blue-500/20 disabled:opacity-50"
+                        >
+                            <Edit3 size={14} />
+                            Editar
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Goals List */}
             <div className="min-h-[400px]">
                 {loading ? (
@@ -284,7 +508,7 @@ export default function Metas() {
                             Criar Primeira Meta
                         </button>
                     </div>
-                ) : (
+                ) : viewMode === 'cards' ? (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {goals.map((goal) => (
                             <GoalCard
@@ -295,13 +519,48 @@ export default function Metas() {
                                     setIsModalOpen(true);
                                 }}
                                 onCancel={handleCancelGoal}
+                                onDelete={handleDeleteGoal}
                             />
                         ))}
+                    </div>
+                ) : (
+                    /* List View */
+                    <div className="glass-panel rounded-2xl overflow-hidden border border-white/5">
+                        <table className="w-full">
+                            <thead>
+                                <tr className="border-b border-white/10 bg-white/[0.03]">
+                                    <th className="px-4 py-3 w-12">
+                                        <input
+                                            type="checkbox"
+                                            checked={goals.length > 0 && selectedIds.size === goals.length}
+                                            onChange={handleSelectAll}
+                                            className="w-4 h-4 rounded border-white/20 bg-zinc-900 text-violet-500 focus:ring-violet-500/30 focus:ring-offset-0 cursor-pointer"
+                                        />
+                                    </th>
+                                    <th className="px-4 py-3 text-left text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Influenciador</th>
+                                    <th className="px-4 py-3 text-left text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Plataforma</th>
+                                    <th className="px-4 py-3 text-left text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Tipo</th>
+                                    <th className="px-4 py-3 text-left text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Progresso</th>
+                                    <th className="px-4 py-3 text-left text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Prazo</th>
+                                    <th className="px-4 py-3 text-left text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {goals.map((goal) => (
+                                    <GoalListItem
+                                        key={goal.id}
+                                        goal={goal}
+                                        selected={selectedIds.has(goal.id)}
+                                        onToggleSelect={handleToggleSelect}
+                                    />
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 )}
             </div>
 
-            {/* Modal */}
+            {/* Goal Modal */}
             <GoalModal
                 isOpen={isModalOpen}
                 onClose={() => {
@@ -311,6 +570,14 @@ export default function Metas() {
                 onSave={editingGoal ? handleUpdateGoal : handleCreateGoal}
                 goal={editingGoal}
                 influencers={influencers}
+            />
+
+            {/* Batch Edit Modal */}
+            <BatchEditModal
+                isOpen={isBatchEditOpen}
+                onClose={() => setIsBatchEditOpen(false)}
+                onSave={handleBatchUpdate}
+                selectedCount={selectedIds.size}
             />
         </div>
     );

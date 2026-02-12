@@ -111,6 +111,11 @@ export async function listInfluencers(filters: InfluencerFilters): Promise<Aggre
       series: inf.series ?? null,
       sex: inf.sex ?? null,
       platforms: inf.socialProfiles.map((p) => p.platform),
+      profileLinks: inf.socialProfiles.map((p) => ({
+        platform: p.platform,
+        handle: p.handle,
+        url: p.url,
+      })),
       totalFollowers,
       totalPosts,
       growthAbsolute: growth,

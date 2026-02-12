@@ -4,9 +4,14 @@ import { authorize } from '../middlewares/authorize';
 import {
     listGoalsHandler,
     createGoalHandler,
+    createSeriesGoalHandler,
     getGoalHandler,
     updateGoalHandler,
     cancelGoalHandler,
+    deleteGoalHandler,
+    batchCancelHandler,
+    batchDeleteHandler,
+    batchUpdateHandler,
 } from '../controllers/goalsController';
 
 const goalsRouter = Router();
@@ -18,8 +23,13 @@ const allAdmins = authorize({
 
 goalsRouter.get('/', requireAuth, allAdmins, listGoalsHandler);
 goalsRouter.post('/', requireAuth, allAdmins, createGoalHandler);
+goalsRouter.post('/series', requireAuth, allAdmins, createSeriesGoalHandler);
+goalsRouter.post('/batch/cancel', requireAuth, allAdmins, batchCancelHandler);
+goalsRouter.post('/batch/delete', requireAuth, allAdmins, batchDeleteHandler);
+goalsRouter.post('/batch/update', requireAuth, allAdmins, batchUpdateHandler);
 goalsRouter.get('/:id', requireAuth, allAdmins, getGoalHandler);
 goalsRouter.put('/:id', requireAuth, allAdmins, updateGoalHandler);
 goalsRouter.delete('/:id', requireAuth, allAdmins, cancelGoalHandler);
+goalsRouter.delete('/:id/permanent', requireAuth, allAdmins, deleteGoalHandler);
 
 export { goalsRouter };

@@ -15,14 +15,25 @@ const GOAL_TYPES = [
     { value: 'posts', label: 'Produção de Conteúdo' },
 ];
 
+const SERIES_OPTIONS = [
+    { value: 'Elite', label: 'Elite' },
+    { value: 'A2', label: 'A2' },
+    { value: 'A3', label: 'A3' },
+    { value: 'Institucional', label: 'Institucional' },
+    { value: 'Cortes', label: 'Cortes' },
+    { value: 'Noticias', label: 'Notícias' },
+];
+
 /**
  * GoalModal - Modal para criar e editar metas de influenciadores
  */
 export default function GoalModal({ isOpen, onClose, onSave, goal = null, influencers = [] }) {
     const isEditing = !!goal;
+    const [mode, setMode] = useState('individual'); // 'individual' | 'series'
 
     const [formData, setFormData] = useState({
         influencerId: goal?.influencerId || '',
+        series: '',
         type: goal?.type || 'followers',
         platform: goal?.platform || '',
         targetValue: goal?.targetValue || '',
@@ -34,8 +45,10 @@ export default function GoalModal({ isOpen, onClose, onSave, goal = null, influe
 
     useEffect(() => {
         if (goal) {
+            setMode('individual');
             setFormData({
                 influencerId: goal.influencerId || '',
+                series: '',
                 type: goal.type || 'followers',
                 platform: goal.platform || '',
                 targetValue: goal.targetValue || '',
@@ -53,7 +66,8 @@ export default function GoalModal({ isOpen, onClose, onSave, goal = null, influe
     const validate = () => {
         const newErrors = {};
 
-        if (!formData.influencerId) newErrors.influencerId = 'Selecione um influenciador';
+        if (mode === 'individual' && !formData.influencerId) newErrors.influencerId = 'Selecione um influenciador';
+        if (mode === 'series' && !formData.series) newErrors.series = 'Selecione uma série';
         if (!formData.targetValue || formData.targetValue <= 0) {
             newErrors.targetValue = 'Valor alvo deve ser maior que zero';
         }
@@ -70,14 +84,17 @@ export default function GoalModal({ isOpen, onClose, onSave, goal = null, influe
 
         onSave({
             ...formData,
+            mode,
             targetValue: Number(formData.targetValue),
         });
         handleClose();
     };
 
     const handleClose = () => {
+        setMode('individual');
         setFormData({
             influencerId: '',
+            series: '',
             type: 'followers',
             platform: '',
             targetValue: '',
@@ -120,28 +137,88 @@ export default function GoalModal({ isOpen, onClose, onSave, goal = null, influe
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="p-8 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Influenciador */}
-                        <div className="col-span-2">
-                            <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
-                                Influenciador <span className="text-red-400">*</span>
-                            </label>
-                            <select
-                                value={formData.influencerId}
-                                onChange={(e) => handleChange('influencerId', e.target.value)}
-                                disabled={isEditing}
-                                className="w-full px-4 py-3 bg-zinc-900/50 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
-                            >
-                                <option value="">Selecione um influenciador...</option>
-                                {influencers.map((inf) => (
-                                    <option key={inf.id} value={inf.id}>
-                                        {inf.name}
-                                    </option>
-                                ))}
-                            </select>
-                            {errors.influencerId && (
-                                <p className="text-red-400 text-xs mt-1.5">{errors.influencerId}</p>
-                            )}
-                        </div>
+                        {/* Mode Toggle */}
+                        {!isEditing && (
+                            <div className="col-span-2">
+                                <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
+                                    Modo de Criação
+                                </label>
+                                <div className="flex bg-zinc-900/50 rounded-xl p-1 border border-white/10">
+                                    <button
+                                        type="button"
+                                        onClick={() => setMode('individual')}
+                                        className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${mode === 'individual'
+                                            ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/20'
+                                            : 'text-zinc-400 hover:text-white'
+                                            }`}
+                                    >
+                                        Individual
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setMode('series')}
+                                        className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${mode === 'series'
+                                            ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/20'
+                                            : 'text-zinc-400 hover:text-white'
+                                            }`}
+                                    >
+                                        Por Série
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Influenciador (Individual mode) */}
+                        {mode === 'individual' && (
+                            <div className="col-span-2">
+                                <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
+                                    Influenciador <span className="text-red-400">*</span>
+                                </label>
+                                <select
+                                    value={formData.influencerId}
+                                    onChange={(e) => handleChange('influencerId', e.target.value)}
+                                    disabled={isEditing}
+                                    className="w-full px-4 py-3 bg-zinc-900/50 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed appearance-none"
+                                >
+                                    <option value="">Selecione um influenciador...</option>
+                                    {influencers.map((inf) => (
+                                        <option key={inf.id} value={inf.id}>
+                                            {inf.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.influencerId && (
+                                    <p className="text-red-400 text-xs mt-1.5">{errors.influencerId}</p>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Série (Series mode) */}
+                        {mode === 'series' && (
+                            <div className="col-span-2">
+                                <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
+                                    Série <span className="text-red-400">*</span>
+                                </label>
+                                <select
+                                    value={formData.series}
+                                    onChange={(e) => handleChange('series', e.target.value)}
+                                    className="w-full px-4 py-3 bg-zinc-900/50 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all appearance-none"
+                                >
+                                    <option value="">Selecione uma série...</option>
+                                    {SERIES_OPTIONS.map((s) => (
+                                        <option key={s.value} value={s.value}>
+                                            {s.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.series && (
+                                    <p className="text-red-400 text-xs mt-1.5">{errors.series}</p>
+                                )}
+                                <p className="text-zinc-500 text-xs mt-1.5">
+                                    A meta será criada para todos os influenciadores desta série.
+                                </p>
+                            </div>
+                        )}
 
                         {/* Plataforma */}
                         <div>
@@ -188,16 +265,21 @@ export default function GoalModal({ isOpen, onClose, onSave, goal = null, influe
                         {/* Valor Alvo */}
                         <div>
                             <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
-                                {formData.type === 'followers' ? 'Meta de Seguidores' : 'Meta de Posts'} <span className="text-red-400">*</span>
+                                Crescimento Desejado <span className="text-red-400">*</span>
                             </label>
                             <input
                                 type="number"
                                 min="1"
                                 value={formData.targetValue}
                                 onChange={(e) => handleChange('targetValue', e.target.value)}
-                                placeholder="Ex: 100000"
+                                placeholder="Ex: 200"
                                 className="w-full px-4 py-3 bg-zinc-900/50 border border-white/10 rounded-xl text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
                             />
+                            <p className="text-zinc-600 text-[10px] mt-1">
+                                {formData.type === 'followers'
+                                    ? 'Quantos seguidores a mais o influenciador deve ganhar'
+                                    : 'Quantos posts a mais o influenciador deve produzir'}
+                            </p>
                             {errors.targetValue && (
                                 <p className="text-red-400 text-xs mt-1.5">{errors.targetValue}</p>
                             )}
