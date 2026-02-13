@@ -149,8 +149,12 @@ const Sidebar = () => {
                                     className="w-full flex items-center p-2 rounded-lg hover:bg-white/5 group transition-colors text-left border border-transparent hover:border-white/5"
                                 >
 
-                                    <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center mr-3 shrink-0 ring-1 ring-white/10">
-                                        <Users size={14} className="text-zinc-400" />
+                                    <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center mr-3 shrink-0 ring-1 ring-white/10 overflow-hidden">
+                                        {inf.avatarUrl ? (
+                                            <img src={inf.avatarUrl} alt={inf.name} className="h-full w-full object-cover" />
+                                        ) : (
+                                            <Users size={14} className="text-zinc-400" />
+                                        )}
                                     </div>
                                     <div className="min-w-0 flex-1">
                                         <div className="text-sm font-medium text-zinc-200 truncate group-hover:text-white transition-colors">{inf.name}</div>
