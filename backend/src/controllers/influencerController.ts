@@ -23,7 +23,7 @@ type InfluencerBody = {
 };
 
 export async function getInfluencers(req: Request, res: Response) {
-  const { search, state, city, platform, periodDays, series } = req.query;
+  const { search, state, city, platform, periodDays, series, page, limit } = req.query;
   const period =
     periodDays === "all"
       ? null
@@ -35,7 +35,12 @@ export async function getInfluencers(req: Request, res: Response) {
   // Validate series if provided
   const seriesFilter = series && VALID_SERIES.includes(series as Series) ? (series as Series) : undefined;
 
-  const data = await listInfluencers({
+  // Pagination
+  const pageNum = Math.max(1, Number(page) || 1);
+  const limitNum = Math.min(100, Math.max(1, Number(limit) || 20));
+  const offset = (pageNum - 1) * limitNum;
+
+  const { items, total } = await listInfluencers({
     search: search as string | undefined,
     state: state as string | undefined,
     city: city as string | undefined,
@@ -44,9 +49,15 @@ export async function getInfluencers(req: Request, res: Response) {
     regions,
     series: seriesFilter,
     sex: req.query.sex as Sex | undefined,
+  }, {
+    pagination: { limit: limitNum, offset }
   });
 
-  return res.json({ error: false, data });
+  return res.json({
+    error: false,
+    data: items,
+    pagination: { total, page: pageNum, limit: limitNum }
+  });
 }
 
 export async function getInfluencer(req: Request, res: Response) {

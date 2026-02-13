@@ -71,7 +71,7 @@ const Login = () => {
                         {/* Card 2: Profile Stats */}
                         <div className="absolute bottom-4 left-0 w-52 p-4 bg-zinc-900/60 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl transform -rotate-3 z-20 hover:rotate-0 hover:scale-105 transition-all duration-500">
                             <div className="flex items-center gap-3 mb-3">
-                                <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center">
+                                <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center">
                                     <User size={20} className="text-white" />
                                 </div>
                                 <div>
@@ -149,7 +149,7 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-4 rounded-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(124,58,237,0.3)] hover:shadow-[0_0_30px_rgba(124,58,237,0.5)]"
+                            className="w-full bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg shadow-primary/20 transform hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center group"
                         >
                             {isLoading ? (
                                 <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

@@ -117,7 +117,7 @@ const Dashboard = () => {
         xaxis: { categories: timeline.map(t => formatMetricDate(t.date)), ...baseAxisColors, tooltip: { enabled: false } },
         yaxis: { ...baseAxisColors },
         grid: { borderColor: gridColor, strokeDashArray: 0, yaxis: { lines: { show: true } } },
-        colors: ['#8b5cf6'], // violet-500
+        colors: ['#F59E0B'], // amber-500
         fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 90, 100] } },
         theme: { mode: 'dark' }
     }), [timeline, formatMetricDate]);
@@ -281,7 +281,7 @@ const Dashboard = () => {
                 {[
                     { label: 'Influenciadores', value: overview.totalInfluencers, icon: Users, color: 'text-blue-400', bg: 'bg-blue-400/10' },
                     { label: 'Seguidores Totais', value: overview.totalFollowers.toLocaleString(), icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
-                    { label: 'Crescimento', value: formatSignedPercent(overview.growthPercent || 0, 2), icon: TrendingUp, color: 'text-violet-400', bg: 'bg-violet-400/10' },
+                    { label: 'Crescimento', value: formatSignedPercent(overview.growthPercent || 0, 2), icon: TrendingUp, color: 'text-amber-400', bg: 'bg-amber-400/10' },
                     { label: 'Posts no Período', value: overview.totalPosts, icon: Activity, color: 'text-orange-400', bg: 'bg-orange-400/10', sub: '(Exceto X)' }
                 ].map((kpi, idx) => (
                     <div key={idx} className="glass-card p-6 rounded-2xl flex items-start justify-between group">
@@ -344,7 +344,7 @@ const Dashboard = () => {
                                     <div className="w-8 text-xs font-bold text-zinc-400 text-center">{s.state}</div>
                                     <div className="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden">
                                         <div
-                                            className="h-full bg-violet-500 rounded-full"
+                                            className="h-full bg-amber-500 rounded-full"
                                             style={{ width: `${(s.count / maxStateCount) * 100}%` }}
                                         />
                                     </div>

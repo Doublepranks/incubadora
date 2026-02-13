@@ -248,7 +248,7 @@ const Reports = () => {
                     </button>
                     <button
                         onClick={handleExport}
-                        className="flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-primary text-white hover:bg-primary/90 shadow-[0_0_15px_rgba(124,58,237,0.3)] transition-all"
+                        className="flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-primary text-black hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all"
                     >
                         <Download size={16} className="mr-2" />
                         Exportar Geral (.xlsx)

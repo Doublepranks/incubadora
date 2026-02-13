@@ -254,7 +254,7 @@ const SysAdmin = () => {
           <button
             onClick={() => runAction('sync')}
             disabled={running.sync}
-            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl bg-primary text-white hover:bg-primary/90 shadow-[0_0_15px_rgba(124,58,237,0.3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl bg-primary text-black hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02]"
           >
             {running.sync ? <Loader2 className="w-4 h-4 animate-spin" /> : <PlayCircle className="w-4 h-4" />}
             Nova Coleta (Manual)

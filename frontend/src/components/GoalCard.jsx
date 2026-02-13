@@ -120,7 +120,7 @@ export default function GoalCard({ goal, onEdit, onCancel, onDelete, compact = f
                                 goal.status === 'achieved' ? 'bg-gradient-to-r from-emerald-500 to-emerald-400' :
                                     goal.status === 'failed' ? 'bg-gradient-to-r from-red-500 to-red-400' :
                                         goal.status === 'cancelled' ? 'bg-zinc-600' :
-                                            'bg-gradient-to-r from-blue-600 to-violet-600'
+                                            'bg-gradient-to-r from-amber-500 to-orange-500'
                             )}
                             style={{ width: `${progress}%` }}
                         />
@@ -200,7 +200,7 @@ export default function GoalCard({ goal, onEdit, onCancel, onDelete, compact = f
                             goal.status === 'achieved' ? 'bg-gradient-to-r from-emerald-500 to-emerald-400' :
                                 goal.status === 'failed' ? 'bg-gradient-to-r from-red-500 to-red-400' :
                                     goal.status === 'cancelled' ? 'bg-zinc-600' :
-                                        'bg-gradient-to-r from-blue-600 to-violet-600'
+                                        'bg-gradient-to-r from-amber-500 to-orange-500'
                         )}
                         style={{ width: `${progress}%` }}
                     >

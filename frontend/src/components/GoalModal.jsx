@@ -148,7 +148,7 @@ export default function GoalModal({ isOpen, onClose, onSave, goal = null, influe
                                         type="button"
                                         onClick={() => setMode('individual')}
                                         className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${mode === 'individual'
-                                            ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/20'
+                                            ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20'
                                             : 'text-zinc-400 hover:text-white'
                                             }`}
                                     >
@@ -158,7 +158,7 @@ export default function GoalModal({ isOpen, onClose, onSave, goal = null, influe
                                         type="button"
                                         onClick={() => setMode('series')}
                                         className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${mode === 'series'
-                                            ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/20'
+                                            ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20'
                                             : 'text-zinc-400 hover:text-white'
                                             }`}
                                     >
@@ -328,10 +328,10 @@ export default function GoalModal({ isOpen, onClose, onSave, goal = null, influe
                         <button
                             type="submit"
                             className={clsx(
-                                "flex-1 px-6 py-3 rounded-xl transition font-semibold shadow-lg text-white",
+                                "flex-1 px-6 py-3 rounded-xl transition font-semibold shadow-lg text-black",
                                 isEditing
                                     ? "bg-amber-500 hover:bg-amber-600 shadow-amber-500/20"
-                                    : "bg-violet-600 hover:bg-violet-500 shadow-violet-500/20"
+                                    : "bg-amber-500 hover:bg-amber-400 shadow-amber-500/20"
                             )}
                         >
                             {isEditing ? 'Salvar Alterações' : 'Criar Meta'}

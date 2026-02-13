@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Activity, Edit2, FileText, Loader2, Plus, Trash2, X, Users, CheckCircle2, AlertCircle, Search, Filter, Eye } from "lucide-react";
+import { Activity, Edit2, FileText, Loader2, Plus, Trash2, X, Users, CheckCircle2, AlertCircle, Search, Filter, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import { useApp } from "../context/AppContext";
 import HistoryModal from "../components/HistoryModal";
 import SeriesBadge, { SERIES_OPTIONS } from "../components/SeriesBadge";
@@ -27,6 +27,8 @@ const platformBadgeClasses = {
   kwai: "bg-[#FF8F00]/20 text-[#FF8F00] border-[#FF8F00]/30",
   tiktok: "bg-[#00F2EA]/20 text-[#00F2EA] border-[#00F2EA]/30",
 };
+
+const PAGE_SIZE = 20;
 
 const formatNumber = (value) => {
   if (value === null || value === undefined) return "0";
@@ -69,6 +71,9 @@ const Influencers = () => {
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
   const [influencers, setInfluencers] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
 
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
@@ -111,6 +116,8 @@ const Influencers = () => {
       if (platformFilter) params.append("platform", platformFilter);
       if (seriesFilter) params.append("series", seriesFilter);
       if (periodFilter) params.append("periodDays", periodFilter);
+      params.append("page", page);
+      params.append("limit", PAGE_SIZE);
 
       const res = await fetch(`${API_URL}/influencers?${params.toString()}`, { credentials: "include" });
       if (!res.ok) {
@@ -119,6 +126,7 @@ const Influencers = () => {
       }
       const json = await res.json();
       setInfluencers(json.data || []);
+      setTotalItems(json.pagination?.total || 0);
     } catch (err) {
       console.error(err);
       setError("Não foi possível carregar a lista. Tente novamente.");
@@ -131,7 +139,12 @@ const Influencers = () => {
     if (canManage) {
       loadInfluencers();
     }
-  }, [search, selectedState, selectedMunicipality, platformFilter, seriesFilter, periodFilter, canManage]);
+  }, [search, selectedState, selectedMunicipality, platformFilter, seriesFilter, periodFilter, page, canManage]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [search, selectedState, selectedMunicipality, platformFilter, seriesFilter, periodFilter]);
 
   const loadFormCities = async (uf) => {
     if (!uf) {
@@ -346,7 +359,7 @@ const Influencers = () => {
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center px-4 py-2 text-sm font-semibold rounded-xl bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+          className="flex items-center px-4 py-2 text-sm font-semibold rounded-xl bg-primary hover:bg-primary/90 text-black shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
         >
           <Plus size={18} className="mr-2" />
           Novo influenciador
@@ -524,7 +537,7 @@ const Influencers = () => {
                         <button onClick={() => handleDelete(inf.id)} className="p-1.5 rounded-lg hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-colors" title="Remover">
                           <Trash2 size={16} />
                         </button>
-                        <button onClick={() => navigate(`/influencer/${inf.id}`)} className="p-1.5 rounded-lg hover:bg-violet-500/20 text-violet-400 hover:text-violet-300 transition-colors" title="Detalhes">
+                        <button onClick={() => navigate(`/influencer/${inf.id}`)} className="p-1.5 rounded-lg hover:bg-amber-500/20 text-amber-400 hover:text-amber-300 transition-colors" title="Detalhes">
                           <Eye size={16} />
                         </button>
                       </div>
@@ -544,6 +557,27 @@ const Influencers = () => {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {!loading && influencers.length > 0 && (
+        <div className="flex items-center justify-center space-x-2 text-sm text-zinc-400 mt-6">
+          <button
+            disabled={page === 1}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            className="p-2 border border-white/10 rounded-lg hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <span className="font-medium px-4">Página {page} de {totalPages}</span>
+          <button
+            disabled={page >= totalPages}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            className="p-2 border border-white/10 rounded-lg hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronRight size={16} />
+          </button>
         </div>
       )}
 
@@ -694,7 +728,7 @@ const Influencers = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-medium shadow-lg shadow-primary/20 transition-all active:scale-95 disabled:opacity-50 disabled:scale-100"
+                  className="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-black font-medium shadow-lg shadow-primary/20 transition-all active:scale-95 disabled:opacity-50 disabled:scale-100"
                 >
                   {saving ? <Loader2 className="animate-spin inline mr-2" size={16} /> : null}
                   Salvar Influenciador
@@ -786,7 +820,7 @@ const Influencers = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="w-full px-4 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-medium shadow-lg shadow-primary/20 transition-all active:scale-95 flex items-center justify-center gap-2"
+                  className="w-full px-4 py-3 rounded-xl bg-primary hover:bg-primary/90 text-black font-medium shadow-lg shadow-primary/20 transition-all active:scale-95 flex items-center justify-center gap-2"
                 >
                   {saving ? <Loader2 className="animate-spin" size={18} /> : <CheckCircle2 size={18} />}
                   Registrar Métrica
