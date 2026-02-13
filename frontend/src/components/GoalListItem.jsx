@@ -60,7 +60,7 @@ export default function GoalListItem({ goal, selected, onToggleSelect }) {
             className={clsx(
                 'border-b border-white/5 transition-colors cursor-pointer',
                 selected
-                    ? 'bg-violet-500/10 hover:bg-violet-500/15'
+                    ? 'bg-amber-500/10 hover:bg-amber-500/15'
                     : 'hover:bg-white/[0.03]'
             )}
             onClick={() => onToggleSelect(goal.id)}
@@ -72,7 +72,7 @@ export default function GoalListItem({ goal, selected, onToggleSelect }) {
                     checked={selected}
                     onChange={() => onToggleSelect(goal.id)}
                     onClick={(e) => e.stopPropagation()}
-                    className="w-4 h-4 rounded border-white/20 bg-zinc-900 text-violet-500 focus:ring-violet-500/30 focus:ring-offset-0 cursor-pointer"
+                    className="w-4 h-4 rounded border-white/20 bg-zinc-900 text-amber-500 focus:ring-amber-500/30 focus:ring-offset-0 cursor-pointer"
                 />
             </td>
 
@@ -108,7 +108,7 @@ export default function GoalListItem({ goal, selected, onToggleSelect }) {
                                 goal.status === 'achieved' ? 'bg-emerald-500' :
                                     goal.status === 'failed' ? 'bg-red-500' :
                                         goal.status === 'cancelled' ? 'bg-zinc-600' :
-                                            'bg-gradient-to-r from-blue-600 to-violet-600'
+                                            'bg-gradient-to-r from-amber-500 to-orange-500'
                             )}
                             style={{ width: `${progress}%` }}
                         />

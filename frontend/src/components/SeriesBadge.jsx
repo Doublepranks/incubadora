@@ -31,9 +31,9 @@ const SERIES_CONFIG = {
     },
     Institucional: {
         label: "Institucional",
-        bgColor: "bg-purple-500/20",
-        textColor: "text-purple-400",
-        borderColor: "border-purple-500/50",
+        bgColor: "bg-zinc-500/20",
+        textColor: "text-zinc-400",
+        borderColor: "border-zinc-500/50",
     },
     Cortes: {
         label: "Cortes",

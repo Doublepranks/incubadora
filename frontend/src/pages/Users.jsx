@@ -16,7 +16,7 @@ const emptyForm = {
 };
 
 const roleBadges = {
-  admin_global: { label: "Admin Global", bg: "bg-purple-500/10", text: "text-purple-400", border: "border-purple-500/20" },
+  admin_global: { label: "Admin Global", bg: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/20" },
   system_admin: { label: "System Admin", bg: "bg-indigo-500/10", text: "text-indigo-400", border: "border-indigo-500/20" },
   admin_regional: { label: "Admin Regional", bg: "bg-blue-500/10", text: "text-blue-400", border: "border-blue-500/20" },
   admin_estadual: { label: "Admin Estadual", bg: "bg-cyan-500/10", text: "text-cyan-400", border: "border-cyan-500/20" },
@@ -163,7 +163,7 @@ const Users = () => {
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center px-4 py-2.5 text-sm font-semibold rounded-xl bg-primary hover:bg-primary/90 text-white shadow-[0_0_15px_rgba(124,58,237,0.3)] transition-all hover:scale-[1.02]"
+          className="flex items-center px-4 py-2.5 text-sm font-semibold rounded-xl bg-primary hover:bg-primary/90 text-black shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
         >
           <Plus size={18} className="mr-2" />
           Novo usuário
@@ -395,7 +395,7 @@ const Users = () => {
                     submitting ||
                     ((form.role !== "admin_global" && form.role !== "system_admin") && form.regions.length === 0)
                   }
-                  className="px-6 py-2.5 text-sm font-semibold rounded-xl bg-primary text-white hover:bg-primary/90 shadow-[0_0_15px_rgba(124,58,237,0.3)] transition-all disabled:opacity-50 disabled:shadow-none hover:scale-[1.02]"
+                  className="px-6 py-2.5 text-sm font-semibold rounded-xl bg-primary text-black hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all disabled:opacity-50 disabled:shadow-none hover:scale-[1.02]"
                 >
                   {submitting ? <Loader2 className="animate-spin inline mr-2" size={16} /> : null}
                   Salvar Usuário

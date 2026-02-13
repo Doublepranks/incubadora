@@ -318,11 +318,10 @@ export default function Metas() {
         <div className="space-y-8 animate-fade-in p-6">
             {/* Header Panel */}
             <div className="glass-panel p-8 rounded-2xl relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent pointer-events-none" />
                 <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     <div>
                         <h1 className="text-3xl font-bold text-white flex items-center gap-3 tracking-tight">
-                            <Target size={32} className="text-blue-400" />
+                            <Target size={32} className="text-amber-500" />
                             Metas de Influenciadores
                         </h1>
                         <p className="text-zinc-400 mt-2 text-lg">
@@ -353,7 +352,7 @@ export default function Metas() {
                                 setEditingGoal(null);
                                 setIsModalOpen(true);
                             }}
-                            className="flex items-center gap-2 px-5 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-xl transition font-medium shadow-lg hover:shadow-violet-500/25"
+                            className="flex items-center gap-2 px-5 py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-xl transition font-medium shadow-lg hover:shadow-amber-500/25"
                         >
                             <Plus size={20} />
                             Nova Meta
@@ -437,7 +436,7 @@ export default function Metas() {
 
             {/* Batch Toolbar */}
             {selectedIds.size > 0 && (
-                <div className="glass-panel p-4 rounded-xl flex items-center justify-between animate-fade-in sticky top-4 z-20 border border-violet-500/20 bg-zinc-900/95 backdrop-blur-md">
+                <div className="glass-panel p-4 rounded-xl flex items-center justify-between animate-fade-in sticky top-4 z-20 border border-amber-500/20 bg-zinc-900/95 backdrop-blur-md">
                     <div className="flex items-center gap-3">
                         <span className="text-sm font-semibold text-white">
                             {selectedIds.size} selecionada{selectedIds.size !== 1 ? 's' : ''}
@@ -502,7 +501,7 @@ export default function Metas() {
                         </p>
                         <button
                             onClick={() => setIsModalOpen(true)}
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-500 text-white rounded-xl transition font-medium shadow-lg shadow-violet-500/20"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-xl transition font-medium shadow-lg shadow-amber-500/20"
                         >
                             <Plus size={20} />
                             Criar Primeira Meta
@@ -534,7 +533,7 @@ export default function Metas() {
                                             type="checkbox"
                                             checked={goals.length > 0 && selectedIds.size === goals.length}
                                             onChange={handleSelectAll}
-                                            className="w-4 h-4 rounded border-white/20 bg-zinc-900 text-violet-500 focus:ring-violet-500/30 focus:ring-offset-0 cursor-pointer"
+                                            className="w-4 h-4 rounded border-white/20 bg-zinc-900 text-amber-500 focus:ring-amber-500/30 focus:ring-offset-0 cursor-pointer"
                                         />
                                     </th>
                                     <th className="px-4 py-3 text-left text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Influenciador</th>

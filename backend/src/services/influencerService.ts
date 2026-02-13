@@ -47,7 +47,10 @@ export type AggregatedInfluencer = {
   growthPercent: number;
 };
 
-export async function listInfluencers(filters: InfluencerFilters): Promise<AggregatedInfluencer[]> {
+export async function listInfluencers(
+  filters: InfluencerFilters,
+  options?: { pagination?: { limit: number; offset: number } }
+): Promise<{ items: AggregatedInfluencer[]; total: number }> {
   const since = filters.periodDays === null ? undefined : daysAgo(filters.periodDays ?? 30);
 
   const where: Prisma.InfluencerWhereInput = {
@@ -68,22 +71,30 @@ export async function listInfluencers(filters: InfluencerFilters): Promise<Aggre
     ],
   };
 
-  const influencers = await prisma.influencer.findMany({
-    where,
-    include: {
-      socialProfiles: {
-        where: filters.platform ? { platform: filters.platform } : {},
-        include: {
-          metrics: {
-            where: since ? { date: { gte: since } } : undefined,
-            orderBy: { date: "asc" },
+  const [influencers, total] = await Promise.all([
+    prisma.influencer.findMany({
+      where,
+      orderBy: { name: "asc" },
+      include: {
+        socialProfiles: {
+          where: filters.platform ? { platform: filters.platform } : {},
+          include: {
+            metrics: {
+              where: since ? { date: { gte: since } } : undefined,
+              orderBy: { date: "asc" },
+            },
           },
         },
       },
-    },
-  });
+      take: options?.pagination?.limit,
+      skip: options?.pagination?.offset,
+    }),
+    options?.pagination
+      ? prisma.influencer.count({ where })
+      : Promise.resolve(0),
+  ]);
 
-  return influencers.map((inf) => {
+  const items = influencers.map((inf) => {
     let totalFollowers = 0;
     let totalPosts = 0;
     let growth = 0;
@@ -122,6 +133,8 @@ export async function listInfluencers(filters: InfluencerFilters): Promise<Aggre
       growthPercent,
     };
   });
+
+  return { items, total: options?.pagination ? total : items.length };
 }
 
 export async function listStates() {

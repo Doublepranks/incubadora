@@ -6,7 +6,7 @@ import { useApp } from "../context/AppContext";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 const ROLE_MAP = {
-    admin_global: { label: "Admin Global", bg: "bg-purple-500/10", text: "text-purple-400", border: "border-purple-500/20" },
+    admin_global: { label: "Admin Global", bg: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/20" },
     system_admin: { label: "System Admin", bg: "bg-indigo-500/10", text: "text-indigo-400", border: "border-indigo-500/20" },
     admin_regional: { label: "Admin Regional", bg: "bg-blue-500/10", text: "text-blue-400", border: "border-blue-500/20" },
     admin_estadual: { label: "Admin Estadual", bg: "bg-cyan-500/10", text: "text-cyan-400", border: "border-cyan-500/20" },

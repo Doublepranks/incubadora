@@ -300,7 +300,7 @@ const InfluencerDetail = () => {
                         xaxis: { categories: historyDates, ...baseAxisColors, labels: { show: false } },
                         yaxis: { ...baseAxisColors, labels: { style: { colors: '#a1a1aa' }, formatter: (val) => formatInt(val) } },
                         grid: { show: false },
-                        colors: ['#6D28D9'], // violet-700
+                        colors: ['#F59E0B'], // amber-500
                         tooltip: { theme: 'dark', y: { formatter: (val) => formatInt(val).toLocaleString() } },
                     };
                     const postsChartSeries = [{ name: 'Posts (Novos)', data: postsDeltas.map((v) => formatInt(v)) }]; // Using Deltas instead of Raw Counts

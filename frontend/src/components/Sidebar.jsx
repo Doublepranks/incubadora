@@ -34,7 +34,7 @@ const Sidebar = () => {
                 to={to}
                 title={isSidebarCollapsed ? label : undefined}
                 className={`group flex items-center ${isSidebarCollapsed ? 'justify-center px-2' : 'px-4'} py-3 text-sm font-medium rounded-xl transition-all duration-200 relative overflow-hidden ${active
-                    ? "bg-primary text-white shadow-[0_0_20px_rgba(124,58,237,0.3)]"
+                    ? "bg-primary text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]"
                     : "text-zinc-400 hover:text-white hover:bg-white/5"
                     }`}
             >
@@ -50,7 +50,7 @@ const Sidebar = () => {
             {/* Header */}
             <div className="p-4 border-b border-white/5 flex items-center justify-center relative min-h-[72px]">
                 <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center w-full' : 'w-full gap-3'}`}>
-                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-violet-500 flex items-center justify-center shadow-lg shadow-primary/20 shrink-0">
+                    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/20 shrink-0">
                         <span className="font-bold text-white">I</span>
                     </div>
                     {!isSidebarCollapsed && (

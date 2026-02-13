@@ -18,14 +18,14 @@ const MapView = () => {
             <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-4">
                 <div className="glass-panel p-8 md:p-12 rounded-3xl max-w-2xl mx-auto backdrop-blur-xl bg-zinc-950/70 border-white/10 shadow-2xl">
                     <div className="flex justify-center mb-6">
-                        <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center shadow-lg shadow-primary/20 animate-pulse-slow">
+                        <div className="h-20 w-20 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/20 animate-pulse-slow">
                             <Map size={40} className="text-white" />
                         </div>
                     </div>
 
                     <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">
                         Mapa de Calor & <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">
                             Distribuição Geográfica
                         </span>
                     </h1>
