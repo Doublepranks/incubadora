@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getInfluencers,
+  getInfluencerSummary,
   getInfluencer,
   createInfluencerHandler,
   updateInfluencerHandler,
@@ -15,6 +16,7 @@ export const influencersRouter = Router();
 
 influencersRouter.use(requireAuth);
 influencersRouter.get("/", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), getInfluencers);
+influencersRouter.get("/summary", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), getInfluencerSummary);
 influencersRouter.post("/", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), createInfluencerHandler);
 influencersRouter.get("/:id", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), getInfluencer);
 influencersRouter.put("/:id", authorize({ roles: ["admin_global", "system_admin", "admin_regional", "admin_estadual"] }), updateInfluencerHandler);

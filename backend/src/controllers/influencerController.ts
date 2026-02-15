@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { listInfluencers, getInfluencerById, createInfluencer, updateInfluencer, deleteInfluencer } from "../services/influencerService";
+import { listInfluencers, listInfluencerSummary, getInfluencerById, createInfluencer, updateInfluencer, deleteInfluencer } from "../services/influencerService";
 import { prisma } from "../config/prisma";
 import { Platform, Series, Sex } from "@prisma/client";
 
@@ -35,10 +35,17 @@ export async function getInfluencers(req: Request, res: Response) {
   // Validate series if provided
   const seriesFilter = series && VALID_SERIES.includes(series as Series) ? (series as Series) : undefined;
 
-  // Pagination
-  const pageNum = Math.max(1, Number(page) || 1);
-  const limitNum = Math.min(100, Math.max(1, Number(limit) || 20));
-  const offset = (pageNum - 1) * limitNum;
+  // Pagination — only apply when page or limit are explicitly provided
+  const wantsPagination = page !== undefined || limit !== undefined;
+  let paginationOpts: { limit: number; offset: number } | undefined;
+  let pageNum = 1;
+  let limitNum = 0;
+
+  if (wantsPagination) {
+    pageNum = Math.max(1, Number(page) || 1);
+    limitNum = Math.min(100, Math.max(1, Number(limit) || 20));
+    paginationOpts = { limit: limitNum, offset: (pageNum - 1) * limitNum };
+  }
 
   const { items, total } = await listInfluencers({
     search: search as string | undefined,
@@ -50,14 +57,32 @@ export async function getInfluencers(req: Request, res: Response) {
     series: seriesFilter,
     sex: req.query.sex as Sex | undefined,
   }, {
-    pagination: { limit: limitNum, offset }
+    pagination: paginationOpts
   });
 
   return res.json({
     error: false,
     data: items,
-    pagination: { total, page: pageNum, limit: limitNum }
+    pagination: { total, page: pageNum, limit: wantsPagination ? limitNum : total }
   });
+}
+
+export async function getInfluencerSummary(req: Request, res: Response) {
+  const { search, state, city, limit } = req.query;
+  const regions = (req as any).userRegions as string[] | undefined;
+
+  const limitNum = limit ? Math.min(200, Math.max(1, Number(limit) || 20)) : undefined;
+
+  const items = await listInfluencerSummary({
+    search: search as string | undefined,
+    state: state as string | undefined,
+    city: city as string | undefined,
+    regions,
+  }, {
+    limit: limitNum,
+  });
+
+  return res.json({ error: false, data: items });
 }
 
 export async function getInfluencer(req: Request, res: Response) {
