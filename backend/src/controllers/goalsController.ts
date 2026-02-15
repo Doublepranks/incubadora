@@ -82,7 +82,7 @@ export async function createGoalHandler(req: Request, res: Response) {
             type: type as GoalType,
             targetValue: Number(targetValue),
             platform,
-            deadline: new Date(deadline),
+            deadline: new Date(deadline + 'T12:00:00.000Z'),
             description,
             createdBy: userId,
         });
@@ -139,7 +139,7 @@ export async function createSeriesGoalHandler(req: Request, res: Response) {
             type: type as GoalType,
             targetValue: Number(targetValue),
             platform,
-            deadline: new Date(deadline),
+            deadline: new Date(deadline + 'T12:00:00.000Z'),
             description,
             createdBy: userId,
             regions,
@@ -330,7 +330,7 @@ export async function batchUpdateHandler(req: Request, res: Response) {
         }
 
         const parsedChanges: { deadline?: Date; targetValue?: number } = {};
-        if (changes.deadline) parsedChanges.deadline = new Date(changes.deadline);
+        if (changes.deadline) parsedChanges.deadline = new Date(changes.deadline + 'T12:00:00.000Z');
         if (changes.targetValue) parsedChanges.targetValue = Number(changes.targetValue);
 
         const result = await goalsService.batchUpdateGoals(ids.map(Number), parsedChanges, regions);
