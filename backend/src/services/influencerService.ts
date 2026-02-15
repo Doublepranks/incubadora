@@ -137,6 +137,47 @@ export async function listInfluencers(
   return { items, total: options?.pagination ? total : items.length };
 }
 
+/**
+ * Lightweight listing — returns only basic fields (no metric aggregation).
+ * Used by Dashboard table, Metas dropdown, and Sidebar.
+ */
+export async function listInfluencerSummary(
+  filters: Pick<InfluencerFilters, 'search' | 'state' | 'city' | 'regions'>,
+  options?: { limit?: number }
+) {
+  const where: Prisma.InfluencerWhereInput = {
+    AND: [
+      filters.regions && filters.regions.length > 0 ? { state: { in: filters.regions } } : {},
+      filters.state ? { state: filters.state } : {},
+      filters.city ? { city: filters.city } : {},
+      filters.search
+        ? {
+          OR: [
+            { name: { contains: filters.search, mode: "insensitive" } },
+            { city: { contains: filters.search, mode: "insensitive" } },
+          ],
+        }
+        : {},
+    ],
+  };
+
+  const items = await prisma.influencer.findMany({
+    where,
+    orderBy: { name: "asc" },
+    select: {
+      id: true,
+      name: true,
+      city: true,
+      state: true,
+      avatarUrl: true,
+      series: true,
+    },
+    ...(options?.limit ? { take: options.limit } : {}),
+  });
+
+  return items;
+}
+
 export async function listStates() {
   const states = await prisma.influencer.findMany({
     distinct: ["state"],

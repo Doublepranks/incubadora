@@ -75,9 +75,9 @@ export default function GoalCard({ goal, onEdit, onCancel, onDelete, compact = f
         ? Math.min(100, (delta / deltaTarget) * 100)
         : 0;
 
-    const daysRemaining = Math.ceil(
-        (new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24)
-    );
+    const daysRemaining = goal.deadline
+        ? Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24))
+        : 0;
 
     const isUrgent = daysRemaining >= 0 && daysRemaining <= 7 && goal.status === 'active';
     const isExpiringSoon = daysRemaining > 7 && daysRemaining <= 30 && goal.status === 'active';

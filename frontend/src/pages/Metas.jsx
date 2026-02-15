@@ -100,7 +100,7 @@ export default function Metas() {
 
     const fetchInfluencers = async () => {
         try {
-            const res = await fetch(`${API_URL}/influencers`, { credentials: 'include' });
+            const res = await fetch(`${API_URL}/influencers/summary`, { credentials: 'include' });
             if (!res.ok) throw new Error('Failed to fetch influencers');
 
             const json = await res.json();

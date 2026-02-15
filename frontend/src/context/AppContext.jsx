@@ -151,15 +151,12 @@ export const AppProvider = ({ children }) => {
         const params = new URLSearchParams();
         if (searchQuery) params.append('search', searchQuery);
         if (selectedState) params.append('state', selectedState);
-        if (filters.periodDays !== '') {
-            params.append('periodDays', filters.periodDays);
-        }
-        const url = `${API_URL}/influencers?${params.toString()}`;
+        const url = `${API_URL}/influencers/summary?${params.toString()}`;
         fetch(url, { credentials: 'include' })
             .then(res => res.json())
             .then(json => setSidebarPool(json.data || []))
             .catch(err => console.error('Failed to load influencers', err));
-    }, [authLoading, user, searchQuery, selectedState, filters.periodDays]);
+    }, [authLoading, user, searchQuery, selectedState]);
 
     return (
         <AppContext.Provider value={{

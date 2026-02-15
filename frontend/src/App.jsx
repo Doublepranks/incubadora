@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 import Layout from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const Login = lazy(() => import('./pages/Login'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -22,7 +23,7 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
   if (requireAdmin && user?.role !== 'system_admin') {
     return <Navigate to="/" replace />;
   }
-  return <Layout>{children}</Layout>;
+  return <Layout><ErrorBoundary>{children}</ErrorBoundary></Layout>;
 };
 
 const SuspenseWrapper = ({ children }) => (
