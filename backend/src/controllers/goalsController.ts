@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import * as goalsService from '../services/goalsService';
+import { prisma } from '../config/prisma';
 import type { GoalType, GoalStatus, Series } from '@prisma/client';
 
 /**
@@ -9,13 +10,14 @@ import type { GoalType, GoalStatus, Series } from '@prisma/client';
 export async function listGoalsHandler(req: Request, res: Response) {
     try {
         const { influencerId, status, type } = req.query;
+        const regions = (req as any).userRegions as string[] | undefined;
 
         const filters: any = {};
         if (influencerId) filters.influencerId = Number(influencerId);
         if (status) filters.status = status as GoalStatus;
         if (type) filters.type = type as GoalType;
 
-        const goals = await goalsService.listGoals(filters);
+        const goals = await goalsService.listGoals(filters, regions);
 
         return res.json({ success: true, data: goals });
     } catch (error) {
@@ -35,6 +37,7 @@ export async function createGoalHandler(req: Request, res: Response) {
     try {
         const { influencerId, type, targetValue, platform, deadline, description } = req.body;
         const userId = req.user?.id;
+        const regions = (req as any).userRegions as string[] | undefined;
 
         if (!userId) {
             return res.status(401).json({ success: false, error: 'Unauthorized' });
@@ -45,6 +48,20 @@ export async function createGoalHandler(req: Request, res: Response) {
                 success: false,
                 error: 'Missing required fields: influencerId, type, targetValue, deadline',
             });
+        }
+
+        // Validar que o influenciador pertence ao escopo do usuário
+        if (regions && regions.length > 0) {
+            const inf = await prisma.influencer.findFirst({
+                where: { id: Number(influencerId), state: { in: regions } },
+                select: { id: true },
+            });
+            if (!inf) {
+                return res.status(403).json({
+                    success: false,
+                    error: 'Influenciador fora do seu escopo de acesso',
+                });
+            }
         }
 
         // Validar tipo
@@ -88,6 +105,7 @@ export async function createSeriesGoalHandler(req: Request, res: Response) {
     try {
         const { series, type, targetValue, platform, deadline, description } = req.body;
         const userId = req.user?.id;
+        const regions = (req as any).userRegions as string[] | undefined;
 
         if (!userId) {
             return res.status(401).json({ success: false, error: 'Unauthorized' });
@@ -124,6 +142,7 @@ export async function createSeriesGoalHandler(req: Request, res: Response) {
             deadline: new Date(deadline),
             description,
             createdBy: userId,
+            regions,
         });
 
         return res.status(201).json({
@@ -241,6 +260,7 @@ export async function batchCancelHandler(req: Request, res: Response) {
     try {
         const { ids } = req.body;
         const userId = req.user?.id;
+        const regions = (req as any).userRegions as string[] | undefined;
 
         if (!userId) {
             return res.status(401).json({ success: false, error: 'Unauthorized' });
@@ -250,7 +270,7 @@ export async function batchCancelHandler(req: Request, res: Response) {
             return res.status(400).json({ success: false, error: 'ids must be a non-empty array' });
         }
 
-        const result = await goalsService.batchCancelGoals(ids.map(Number));
+        const result = await goalsService.batchCancelGoals(ids.map(Number), regions);
 
         return res.json({ success: true, data: result });
     } catch (error) {
@@ -267,6 +287,7 @@ export async function batchDeleteHandler(req: Request, res: Response) {
     try {
         const { ids } = req.body;
         const userId = req.user?.id;
+        const regions = (req as any).userRegions as string[] | undefined;
 
         if (!userId) {
             return res.status(401).json({ success: false, error: 'Unauthorized' });
@@ -276,7 +297,7 @@ export async function batchDeleteHandler(req: Request, res: Response) {
             return res.status(400).json({ success: false, error: 'ids must be a non-empty array' });
         }
 
-        const result = await goalsService.batchDeleteGoals(ids.map(Number));
+        const result = await goalsService.batchDeleteGoals(ids.map(Number), regions);
 
         return res.json({ success: true, data: result });
     } catch (error: any) {
@@ -294,6 +315,7 @@ export async function batchUpdateHandler(req: Request, res: Response) {
     try {
         const { ids, changes } = req.body;
         const userId = req.user?.id;
+        const regions = (req as any).userRegions as string[] | undefined;
 
         if (!userId) {
             return res.status(401).json({ success: false, error: 'Unauthorized' });
@@ -311,7 +333,7 @@ export async function batchUpdateHandler(req: Request, res: Response) {
         if (changes.deadline) parsedChanges.deadline = new Date(changes.deadline);
         if (changes.targetValue) parsedChanges.targetValue = Number(changes.targetValue);
 
-        const result = await goalsService.batchUpdateGoals(ids.map(Number), parsedChanges);
+        const result = await goalsService.batchUpdateGoals(ids.map(Number), parsedChanges, regions);
 
         return res.json({ success: true, data: result });
     } catch (error: any) {
@@ -329,11 +351,12 @@ export async function getInfluencerGoalsHandler(req: Request, res: Response) {
     try {
         const { id } = req.params;
         const { status } = req.query;
+        const regions = (req as any).userRegions as string[] | undefined;
 
         const filters: any = { influencerId: Number(id) };
         if (status) filters.status = status as GoalStatus;
 
-        const goals = await goalsService.listGoals(filters);
+        const goals = await goalsService.listGoals(filters, regions);
 
         return res.json({ success: true, data: goals });
     } catch (error) {
