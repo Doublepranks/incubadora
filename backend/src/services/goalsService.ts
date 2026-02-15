@@ -103,14 +103,21 @@ interface CreateSeriesGoalInput {
     deadline: Date;
     description?: string;
     createdBy: number;
+    regions?: string[];
 }
 
 /**
  * Criar metas para todos os influenciadores de uma Série (fan-out)
+ * Quando regions é fornecido, cria apenas para influenciadores das UFs autorizadas.
  */
 export async function createGoalsForSeries(input: CreateSeriesGoalInput) {
+    const where: any = { series: input.series };
+    if (input.regions && input.regions.length > 0) {
+        where.state = { in: input.regions };
+    }
+
     const influencers = await prisma.influencer.findMany({
-        where: { series: input.series },
+        where,
         select: { id: true, name: true },
     });
 
@@ -137,13 +144,17 @@ export async function createGoalsForSeries(input: CreateSeriesGoalInput) {
 
 /**
  * Listar metas com filtros
+ * Quando regions é fornecido, retorna apenas metas de influenciadores das UFs autorizadas.
  */
-export async function listGoals(filters: GoalFilters = {}) {
+export async function listGoals(filters: GoalFilters = {}, regions?: string[]) {
     const where: any = {};
 
     if (filters.influencerId) where.influencerId = filters.influencerId;
     if (filters.status) where.status = filters.status;
     if (filters.type) where.type = filters.type;
+    if (regions && regions.length > 0) {
+        where.influencer = { state: { in: regions } };
+    }
 
     const goals = await prisma.influencerGoal.findMany({
         where,
@@ -233,12 +244,17 @@ export async function deleteGoal(id: number) {
 /**
  * Cancelar múltiplas metas ativas em lote
  */
-export async function batchCancelGoals(ids: number[]) {
+export async function batchCancelGoals(ids: number[], regions?: string[]) {
+    const where: any = {
+        id: { in: ids },
+        status: 'active',
+    };
+    if (regions && regions.length > 0) {
+        where.influencer = { state: { in: regions } };
+    }
+
     const result = await prisma.influencerGoal.updateMany({
-        where: {
-            id: { in: ids },
-            status: 'active',
-        },
+        where,
         data: { status: 'cancelled' },
     });
 
@@ -248,11 +264,18 @@ export async function batchCancelGoals(ids: number[]) {
 /**
  * Excluir permanentemente múltiplas metas canceladas em lote
  */
-export async function batchDeleteGoals(ids: number[]) {
+export async function batchDeleteGoals(ids: number[], regions?: string[]) {
+    const scopeFilter: any = {
+        id: { in: ids },
+    };
+    if (regions && regions.length > 0) {
+        scopeFilter.influencer = { state: { in: regions } };
+    }
+
     // Validar que todas as metas são canceladas
     const nonCancelled = await prisma.influencerGoal.findMany({
         where: {
-            id: { in: ids },
+            ...scopeFilter,
             status: { not: 'cancelled' },
         },
         select: { id: true, status: true },
@@ -264,7 +287,7 @@ export async function batchDeleteGoals(ids: number[]) {
 
     const result = await prisma.influencerGoal.deleteMany({
         where: {
-            id: { in: ids },
+            ...scopeFilter,
             status: 'cancelled',
         },
     });
@@ -275,7 +298,7 @@ export async function batchDeleteGoals(ids: number[]) {
 /**
  * Editar múltiplas metas em lote (deadline e/ou targetValue)
  */
-export async function batchUpdateGoals(ids: number[], changes: { deadline?: Date; targetValue?: number }) {
+export async function batchUpdateGoals(ids: number[], changes: { deadline?: Date; targetValue?: number }, regions?: string[]) {
     const data: any = {};
     if (changes.deadline !== undefined) data.deadline = changes.deadline;
     if (changes.targetValue !== undefined) data.targetValue = changes.targetValue;
@@ -284,8 +307,13 @@ export async function batchUpdateGoals(ids: number[], changes: { deadline?: Date
         throw new Error('Nenhum campo para atualizar');
     }
 
+    const where: any = { id: { in: ids } };
+    if (regions && regions.length > 0) {
+        where.influencer = { state: { in: regions } };
+    }
+
     const result = await prisma.influencerGoal.updateMany({
-        where: { id: { in: ids } },
+        where,
         data,
     });
 
