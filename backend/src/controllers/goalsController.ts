@@ -9,13 +9,14 @@ import type { GoalType, GoalStatus, Series } from '@prisma/client';
  */
 export async function listGoalsHandler(req: Request, res: Response) {
     try {
-        const { influencerId, status, type } = req.query;
+        const { influencerId, status, type, state } = req.query;
         const regions = (req as any).userRegions as string[] | undefined;
 
         const filters: any = {};
         if (influencerId) filters.influencerId = Number(influencerId);
         if (status) filters.status = status as GoalStatus;
         if (type) filters.type = type as GoalType;
+        if (state) filters.state = state as string;
 
         const goals = await goalsService.listGoals(filters, regions);
 

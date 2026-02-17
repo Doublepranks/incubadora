@@ -22,6 +22,7 @@ interface GoalFilters {
     influencerId?: number;
     status?: GoalStatus;
     type?: GoalType;
+    state?: string;
 }
 
 /**
@@ -152,14 +153,26 @@ export async function listGoals(filters: GoalFilters = {}, regions?: string[]) {
     if (filters.influencerId) where.influencerId = filters.influencerId;
     if (filters.status) where.status = filters.status;
     if (filters.type) where.type = filters.type;
-    if (regions && regions.length > 0) {
+
+    // State filter: user-requested state must intersect with access-control regions
+    if (filters.state && regions && regions.length > 0) {
+        // Only allow if the requested state is within authorized regions
+        if (regions.includes(filters.state)) {
+            where.influencer = { state: filters.state };
+        } else {
+            // User requested a state outside their authorized regions — return empty
+            where.influencer = { state: '__none__' };
+        }
+    } else if (filters.state) {
+        where.influencer = { state: filters.state };
+    } else if (regions && regions.length > 0) {
         where.influencer = { state: { in: regions } };
     }
 
     const goals = await prisma.influencerGoal.findMany({
         where,
         include: {
-            influencer: { select: { id: true, name: true } },
+            influencer: { select: { id: true, name: true, state: true } },
             creator: { select: { id: true, name: true } },
         },
         orderBy: { createdAt: 'desc' },
