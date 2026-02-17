@@ -437,11 +437,11 @@ const Influencers = () => {
         <div className="glass-card rounded-2xl overflow-hidden shadow-xl">
           {status && (
             <div className="px-6 py-3 bg-emerald-900/20 text-emerald-400 border-b border-emerald-900/30 flex items-center gap-2">
-              <CheckCircle2 size={16} /> {status}
+              <CheckCircle2 size={16} /> <span>{status}</span>
             </div>
           )}
           <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-280px)]">
-            <table className="w-full text-sm text-left">
+            <table className="w-full text-sm text-left notranslate" translate="no">
               <thead className="text-xs uppercase bg-zinc-900/80 text-zinc-500 font-medium">
                 <tr>
                   <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Nome</th>
@@ -468,7 +468,7 @@ const Influencers = () => {
                         </div>
                         <div>
                           <div className="font-semibold text-white">{inf.name}</div>
-                          <div className="text-xs text-zinc-500">{inf.city || "-"} - {inf.state}</div>
+                          <div className="text-xs text-zinc-500"><span>{inf.city || "-"}</span> - <span>{inf.state}</span></div>
                         </div>
                       </div>
                     </td>
@@ -476,7 +476,7 @@ const Influencers = () => {
                       <SeriesBadge series={inf.series} size="sm" />
                     </td>
                     <td className="px-4 xl:px-6 py-3 xl:py-4 text-zinc-400">
-                      {inf.city ? `${inf.city}/${inf.state}` : inf.state}
+                      <span>{inf.city ? `${inf.city}/${inf.state}` : inf.state}</span>
                     </td>
                     <td className="px-4 xl:px-6 py-3 xl:py-4">
                       <div className="flex flex-wrap gap-2">
@@ -510,7 +510,7 @@ const Influencers = () => {
                               className={`px-2 py-0.5 text-[10px] rounded-full font-semibold border ${platformBadgeClasses[p] || "bg-zinc-800 text-zinc-300 border-zinc-700"} ${profileUrl ? 'hover:scale-110 hover:shadow-lg transition-all cursor-pointer' : ''}`}
                               title={profileUrl ? `Abrir perfil: ${handle || p}` : p}
                             >
-                              {p === "x" ? "X" : p.charAt(0).toUpperCase() + p.slice(1)}
+                              <span>{p === "x" ? "X" : p.charAt(0).toUpperCase() + p.slice(1)}</span>
                             </Tag>
                           );
                         })}
