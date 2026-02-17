@@ -131,7 +131,10 @@ export default function Metas() {
                 body: JSON.stringify(payload),
             });
 
-            if (!res.ok) throw new Error('Failed to create goal');
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || 'Falha ao criar meta');
+            }
 
             const result = await res.json();
             if (isSeries && result.message) {
@@ -141,7 +144,7 @@ export default function Metas() {
             await fetchGoals();
         } catch (error) {
             console.error('Error creating goal:', error);
-            alert('Erro ao criar meta. Tente novamente.');
+            alert(error.message || 'Erro ao criar meta. Tente novamente.');
         }
     };
 
@@ -154,12 +157,15 @@ export default function Metas() {
                 body: JSON.stringify(goalData),
             });
 
-            if (!res.ok) throw new Error('Failed to update goal');
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || 'Falha ao atualizar meta');
+            }
 
             await fetchGoals();
         } catch (error) {
             console.error('Error updating goal:', error);
-            alert('Erro ao atualizar meta. Tente novamente.');
+            alert(error.message || 'Erro ao atualizar meta. Tente novamente.');
         }
     };
 
