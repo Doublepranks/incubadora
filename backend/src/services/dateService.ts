@@ -1,3 +1,7 @@
+/**
+ * Date utilities — assume TZ=America/Sao_Paulo set at process startup (server.ts).
+ * All local date operations (getDay, setHours) use BRT.
+ */
 export function daysAgo(days: number) {
   const date = new Date();
   date.setHours(0, 0, 0, 0);
