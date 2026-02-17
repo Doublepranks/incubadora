@@ -89,7 +89,14 @@ export async function createGoalHandler(req: Request, res: Response) {
         });
 
         return res.status(201).json({ success: true, data: goal });
-    } catch (error) {
+    } catch (error: any) {
+        // Check for business-rule errors from the service
+        if (error?.message?.startsWith('METRICS_REQUIRED:')) {
+            return res.status(400).json({
+                success: false,
+                error: error.message.replace('METRICS_REQUIRED:', ''),
+            });
+        }
         console.error('Error creating goal:', error);
         return res.status(500).json({
             success: false,
@@ -146,9 +153,14 @@ export async function createSeriesGoalHandler(req: Request, res: Response) {
             regions,
         });
 
+        const skippedCount = result.skipped ?? 0;
+        const skippedMsg = skippedCount > 0
+            ? ` (${skippedCount} ignorado(s) por falta de métricas)`
+            : '';
+
         return res.status(201).json({
             success: true,
-            message: `${result.created} metas criadas para a série ${series}`,
+            message: `${result.created} metas criadas para a série ${series}${skippedMsg}`,
             data: result,
         });
     } catch (error) {

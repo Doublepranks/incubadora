@@ -107,6 +107,15 @@ export async function createInfluencerHandler(req: Request, res: Response) {
     return res.status(400).json({ error: true, message: "name and state are required" });
   }
 
+  const profiles = body.profiles ?? [];
+  const hasValidProfile = profiles.some((p) => p.handle || p.url);
+  if (!hasValidProfile) {
+    return res.status(400).json({
+      error: true,
+      message: "É necessário informar pelo menos um perfil de rede social (handle ou link).",
+    });
+  }
+
   const regions = (req as any).userRegions as string[] | undefined;
   const state = body.state.toUpperCase();
   if (regions && regions.length > 0 && !regions.includes(state)) {

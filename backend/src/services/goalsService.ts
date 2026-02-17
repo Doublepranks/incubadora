@@ -72,8 +72,15 @@ async function getInitialValue(influencerId: number, type: GoalType, platform?: 
 export async function createGoal(input: CreateGoalInput) {
     const initialValue = await getInitialValue(input.influencerId, input.type, input.platform);
 
+    // Impedir criação de meta sem dados métricos de referência
+    if (initialValue === null) {
+        throw new Error(
+            'METRICS_REQUIRED:Este influenciador ainda não possui métricas registradas para a plataforma selecionada. Cadastre pelo menos uma coleta de dados antes de atribuir uma meta.'
+        );
+    }
+
     // targetValue no banco = valor absoluto a atingir (initial + incremento desejado)
-    const absoluteTarget = (initialValue ?? 0) + input.targetValue;
+    const absoluteTarget = initialValue + input.targetValue;
 
     const goal = await prisma.influencerGoal.create({
         data: {
@@ -127,20 +134,29 @@ export async function createGoalsForSeries(input: CreateSeriesGoalInput) {
     }
 
     const goals = [];
+    const skipped: string[] = [];
     for (const inf of influencers) {
-        const goal = await createGoal({
-            influencerId: inf.id,
-            type: input.type,
-            targetValue: input.targetValue,
-            platform: input.platform,
-            deadline: input.deadline,
-            description: input.description ?? `Meta por série (${input.series})`,
-            createdBy: input.createdBy,
-        });
-        goals.push(goal);
+        try {
+            const goal = await createGoal({
+                influencerId: inf.id,
+                type: input.type,
+                targetValue: input.targetValue,
+                platform: input.platform,
+                deadline: input.deadline,
+                description: input.description ?? `Meta por série (${input.series})`,
+                createdBy: input.createdBy,
+            });
+            goals.push(goal);
+        } catch (err: any) {
+            if (err?.message?.startsWith('METRICS_REQUIRED:')) {
+                skipped.push(inf.name);
+                continue;
+            }
+            throw err; // re-throw unexpected errors
+        }
     }
 
-    return { created: goals.length, goals };
+    return { created: goals.length, skipped: skipped.length, skippedNames: skipped, goals };
 }
 
 /**

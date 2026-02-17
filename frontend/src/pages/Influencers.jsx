@@ -265,8 +265,12 @@ const Influencers = () => {
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || "Erro ao salvar influenciador");
+        let errorMsg = "Erro ao salvar influenciador";
+        try {
+          const data = await res.json();
+          errorMsg = data.message || errorMsg;
+        } catch { /* ignore parse error */ }
+        throw new Error(errorMsg);
       }
 
       await loadInfluencers();
