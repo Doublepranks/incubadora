@@ -42,7 +42,14 @@ export default function Metas() {
         status: '',
         type: '',
         influencerId: '',
+        state: '',
     });
+
+    // Derive unique states from influencers list
+    const uniqueStates = useMemo(() => {
+        const states = [...new Set(influencers.map((inf) => inf.state).filter(Boolean))];
+        return states.sort();
+    }, [influencers]);
 
     // Derived state for batch actions
     const allSelectedCancelled = useMemo(() => {
@@ -82,6 +89,7 @@ export default function Metas() {
             if (filters.status) params.append('status', filters.status);
             if (filters.type) params.append('type', filters.type);
             if (filters.influencerId) params.append('influencerId', filters.influencerId);
+            if (filters.state) params.append('state', filters.state);
 
             const res = await fetch(`${API_URL}/goals?${params.toString()}`, {
                 credentials: 'include',
@@ -388,7 +396,7 @@ export default function Metas() {
                     <h2 className="text-sm font-semibold text-white uppercase tracking-wider">Filtros</h2>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
                         <select
                             value={filters.status}
@@ -412,6 +420,21 @@ export default function Metas() {
                             {TYPE_FILTERS.map((opt) => (
                                 <option key={opt.value} value={opt.value}>
                                     {opt.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div>
+                        <select
+                            value={filters.state}
+                            onChange={(e) => handleFilterChange('state', e.target.value)}
+                            className="w-full px-4 py-2.5 bg-zinc-900/50 border border-white/10 rounded-xl text-zinc-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium appearance-none cursor-pointer hover:bg-zinc-900/70"
+                        >
+                            <option value="">Todos os Estados</option>
+                            {uniqueStates.map((uf) => (
+                                <option key={uf} value={uf}>
+                                    {uf}
                                 </option>
                             ))}
                         </select>
