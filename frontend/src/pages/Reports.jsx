@@ -71,7 +71,6 @@ const Reports = () => {
                 const params = new URLSearchParams();
                 if (effectiveState) params.append('state', effectiveState);
                 if (selectedMunicipality) params.append('city', selectedMunicipality);
-                if (selectedMunicipality) params.append('city', selectedMunicipality);
                 if (seriesFilter) params.append('series', seriesFilter);
                 if (platformFilter) params.append('platform', platformFilter);
                 if (monthFilter) params.append('month', monthFilter);
@@ -107,9 +106,11 @@ const Reports = () => {
             if (platformFilter) params.append('platform', platformFilter);
             if (monthFilter) params.append('month', monthFilter);
             if (yearFilter) params.append('year', yearFilter);
+            if (search) params.append('search', search);
             const res = await fetch(`${API_URL}/reports/general/export?format=xlsx&${params.toString()}`, {
                 credentials: 'include'
             });
+            if (!res.ok) throw new Error('Erro ao exportar relatório');
             const blob = await res.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -417,15 +418,15 @@ const Reports = () => {
                                     </td>
                                     {rankMode === 'weekly' ? (
                                         <>
-                                            <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w1 ?? 0).toLocaleString('pt-BR')}</td>
-                                            <td className="p-3 text-right border-b border-zinc-800/50 font-medium text-white">{(row.weeks.w0 ?? 0).toLocaleString('pt-BR')}</td>
+                                            <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{row.weeks.w1 != null ? row.weeks.w1.toLocaleString('pt-BR') : '–'}</td>
+                                            <td className="p-3 text-right border-b border-zinc-800/50 font-medium text-white">{row.weeks.w0 != null ? row.weeks.w0.toLocaleString('pt-BR') : '–'}</td>
                                         </>
                                     ) : (
                                         <>
-                                            <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w3 ?? 0).toLocaleString('pt-BR')}</td>
-                                            <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w2 ?? 0).toLocaleString('pt-BR')}</td>
-                                            <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{(row.weeks.w1 ?? 0).toLocaleString('pt-BR')}</td>
-                                            <td className="p-3 text-right border-b border-zinc-800/50 font-medium text-white">{(row.weeks.w0 ?? 0).toLocaleString('pt-BR')}</td>
+                                            <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{row.weeks.w3 != null ? row.weeks.w3.toLocaleString('pt-BR') : '–'}</td>
+                                            <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{row.weeks.w2 != null ? row.weeks.w2.toLocaleString('pt-BR') : '–'}</td>
+                                            <td className="p-3 text-right border-b border-zinc-800/50 text-zinc-300">{row.weeks.w1 != null ? row.weeks.w1.toLocaleString('pt-BR') : '–'}</td>
+                                            <td className="p-3 text-right border-b border-zinc-800/50 font-medium text-white">{row.weeks.w0 != null ? row.weeks.w0.toLocaleString('pt-BR') : '–'}</td>
                                         </>
                                     )}
                                     <td className="p-3 text-right border-b border-zinc-800/50 text-emerald-400">{(row.growthAbs ?? 0).toLocaleString('pt-BR')}</td>
@@ -568,7 +569,6 @@ const ReportCard = ({ card }) => {
                 }
             }
         }
-        return null;
     };
 
     const handleShare = async () => {

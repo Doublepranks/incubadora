@@ -31,7 +31,7 @@ type RankRow = {
   state: string;
   city: string | null;
   series: Series | null;
-  weeks: { w3: number; w2: number; w1: number; w0: number };
+  weeks: { w3: number | null; w2: number | null; w1: number | null; w0: number | null };
   growthAbs: number;
   growthPct: number;
 };
@@ -247,7 +247,7 @@ async function getWeeklyRank(filters: ReportFilters): Promise<RankResult> {
 
   const rows: RankRow[] = influencers.map((inf) => {
     // Helper to find anchored value for a specific week start
-    const getWeekValue = (profileMetrics: any[], weekStart: Date) => {
+    const getWeekValue = (profileMetrics: any[], weekStart: Date): number | null => {
       const weekEnd = new Date(weekStart);
       weekEnd.setDate(weekEnd.getDate() + 7);
 
@@ -257,36 +257,37 @@ async function getWeeklyRank(filters: ReportFilters): Promise<RankResult> {
         return d >= weekStart && d < weekEnd;
       });
 
-      if (weekMetrics.length === 0) return 0;
+      if (weekMetrics.length === 0) return null; // sem dados
 
       // 1. Priority: Monday Data
-      // Check if any metric is exactly on the weekStart (Monday)
-      // Note: Dates are usually YYYY-MM-DD 00:00:00 or similar.
-      // We rely on date comparison. Assuming metrics are stored normalized or we check day difference.
       const mondayMetric = weekMetrics.find(m => {
         const d = new Date(m.date);
-        // Simple equal check if times are aligned, or check distinct day
         return d.getDate() === weekStart.getDate() && d.getMonth() === weekStart.getMonth();
       });
 
       if (mondayMetric) return mondayMetric.followersCount;
 
       // 2. Fallback: Latest data in that week
-      // Since weekMetrics is filtered by week, the last item (sorted by asc date) is the latest.
       return weekMetrics[weekMetrics.length - 1].followersCount;
     };
 
-    let totalW3 = 0, totalW2 = 0, totalW1 = 0, totalW0 = 0;
+    let totalW3: number | null = null, totalW2: number | null = null, totalW1: number | null = null, totalW0: number | null = null;
 
     inf.socialProfiles.forEach((p: any) => {
-      totalW0 += getWeekValue(p.metrics, weeks[0]);
-      totalW1 += getWeekValue(p.metrics, weeks[1]);
-      totalW2 += getWeekValue(p.metrics, weeks[2]);
-      totalW3 += getWeekValue(p.metrics, weeks[3]);
+      const v0 = getWeekValue(p.metrics, weeks[0]);
+      const v1 = getWeekValue(p.metrics, weeks[1]);
+      const v2 = getWeekValue(p.metrics, weeks[2]);
+      const v3 = getWeekValue(p.metrics, weeks[3]);
+      if (v0 !== null) totalW0 = (totalW0 ?? 0) + v0;
+      if (v1 !== null) totalW1 = (totalW1 ?? 0) + v1;
+      if (v2 !== null) totalW2 = (totalW2 ?? 0) + v2;
+      if (v3 !== null) totalW3 = (totalW3 ?? 0) + v3;
     });
 
-    const growthAbs = totalW0 - totalW1;
-    const growthPct = totalW1 > 0 ? (growthAbs / totalW1) * 100 : 0;
+    const safeW0 = totalW0 ?? 0;
+    const safeW1 = totalW1 ?? 0;
+    const growthAbs = safeW0 - safeW1;
+    const growthPct = safeW1 > 0 ? (growthAbs / safeW1) * 100 : 0;
 
     return {
       id: inf.id,
@@ -302,10 +303,10 @@ async function getWeeklyRank(filters: ReportFilters): Promise<RankResult> {
 
   const totals = rows.reduce(
     (acc, row) => {
-      acc.w3 += row.weeks.w3;
-      acc.w2 += row.weeks.w2;
-      acc.w1 += row.weeks.w1;
-      acc.w0 += row.weeks.w0;
+      acc.w3 += row.weeks.w3 ?? 0;
+      acc.w2 += row.weeks.w2 ?? 0;
+      acc.w1 += row.weeks.w1 ?? 0;
+      acc.w0 += row.weeks.w0 ?? 0;
       acc.growthAbs += row.growthAbs;
       return acc;
     },
@@ -350,7 +351,7 @@ async function getMonthlyRank(filters: Required<Pick<ReportFilters, "month" | "y
         where: filters.platform ? { platform: filters.platform } : undefined,
         include: {
           metrics: {
-            where: { date: { gte: dateStart, lte: dateEnd } },
+            where: { date: { gte: weeksInMonth[0], lte: dateEnd } },
             orderBy: { date: "asc" },
           },
         },
@@ -414,12 +415,12 @@ async function getMonthlyRank(filters: Required<Pick<ReportFilters, "month" | "y
   let baselineSum = 0;
   const totals = rows.reduce(
     (acc, row) => {
-      acc.w3 += row.weeks.w3;
-      acc.w2 += row.weeks.w2;
-      acc.w1 += row.weeks.w1;
-      acc.w0 += row.weeks.w0;
+      acc.w3 += row.weeks.w3 ?? 0;
+      acc.w2 += row.weeks.w2 ?? 0;
+      acc.w1 += row.weeks.w1 ?? 0;
+      acc.w0 += row.weeks.w0 ?? 0;
       acc.growthAbs += row.growthAbs;
-      const rowBaseline = [row.weeks.w3, row.weeks.w2, row.weeks.w1, row.weeks.w0].find((v) => v > 0) ?? 0;
+      const rowBaseline = [row.weeks.w3 ?? 0, row.weeks.w2 ?? 0, row.weeks.w1 ?? 0, row.weeks.w0 ?? 0].find((v) => v > 0) ?? 0;
       baselineSum += rowBaseline;
       return acc;
     },

@@ -313,6 +313,6 @@ function normalizeNumber(value: unknown): number | null {
 
 function normalizeDateOnly(value: unknown): Date {
   const d = new Date(value as any);
-  d.setUTCHours(0, 0, 0, 0);
+  d.setHours(0, 0, 0, 0); // Uses BRT via TZ=America/Sao_Paulo
   return d;
 }
