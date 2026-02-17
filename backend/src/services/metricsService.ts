@@ -152,40 +152,55 @@ export async function getTopGrowth(filters: MetricsFilters, limit = 10) {
   const periodDays = filters.periodDays ?? 30;
   const since = periodDays === null ? null : daysAgo(periodDays);
 
-  // Build WHERE conditions
-  const whereConditions: string[] = [];
+  // Build WHERE conditions — separate influencer-only conditions from
+  // those that reference SocialProfile (sp.*) so we can reuse them safely.
+  const influencerConditions: string[] = [];
+  const allConditions: string[] = [];
   const params: any[] = [];
   let paramIndex = 1;
 
   if (filters.regions && filters.regions.length > 0) {
-    whereConditions.push(`i.state = ANY($${paramIndex})`);
+    const cond = `i.state = ANY($${paramIndex})`;
+    influencerConditions.push(cond);
+    allConditions.push(cond);
     params.push(filters.regions);
     paramIndex++;
   } else if (filters.state) {
-    whereConditions.push(`i.state = $${paramIndex}`);
+    const cond = `i.state = $${paramIndex}`;
+    influencerConditions.push(cond);
+    allConditions.push(cond);
     params.push(filters.state);
     paramIndex++;
   }
 
   if (filters.city) {
-    whereConditions.push(`i.city = $${paramIndex}`);
+    const cond = `i.city = $${paramIndex}`;
+    influencerConditions.push(cond);
+    allConditions.push(cond);
     params.push(filters.city);
     paramIndex++;
   }
 
   if (filters.series) {
-    whereConditions.push(`i.series = $${paramIndex}::"Series"`);
+    const cond = `i.series = $${paramIndex}::"Series"`;
+    influencerConditions.push(cond);
+    allConditions.push(cond);
     params.push(filters.series);
     paramIndex++;
   }
 
   if (filters.platform) {
-    whereConditions.push(`sp.platform = $${paramIndex}::"Platform"`);
+    // Platform condition references sp.*, so only add to allConditions
+    allConditions.push(`sp.platform = $${paramIndex}::"Platform"`);
     params.push(filters.platform);
     paramIndex++;
   }
 
-  const influencerWhere = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
+  // Full WHERE (for CTEs that JOIN SocialProfile)
+  const influencerWhere = allConditions.length > 0 ? `WHERE ${allConditions.join(' AND ')}` : '';
+  // Influencer-only WHERE (for final SELECT on Influencer table — no sp.* refs)
+  const influencerOnlyWhere = influencerConditions.length > 0 ? `WHERE ${influencerConditions.join(' AND ')}` : '';
+
   const metricsWhere = since ? `AND m.date >= $${paramIndex}` : '';
   if (since) {
     params.push(since);
@@ -228,7 +243,7 @@ export async function getTopGrowth(filters: MetricsFilters, limit = 10) {
       END as "growthPercent"
     FROM "Influencer" i
     LEFT JOIN influencer_growth ig ON ig.influencer_id = i.id
-    ${influencerWhere.replace(/sp\./g, '')}
+    ${influencerOnlyWhere}
     ORDER BY ig.growth_absolute DESC NULLS LAST
     LIMIT ${limitParam}
   `;
