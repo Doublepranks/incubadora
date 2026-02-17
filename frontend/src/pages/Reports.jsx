@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import LazyChart from '../components/LazyChart';
 import SeriesBadge, { SERIES_OPTIONS } from '../components/SeriesBadge';
@@ -36,6 +36,7 @@ const Reports = () => {
     const [cards, setCards] = useState([]);
     const [totalItems, setTotalItems] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [initialLoad, setInitialLoad] = useState(true);
     const [page, setPage] = useState(1);
     const [error, setError] = useState('');
     const [rankLoading, setRankLoading] = useState(false);
@@ -44,6 +45,16 @@ const Reports = () => {
     const [rankTotals, setRankTotals] = useState(null);
     const [rankMode, setRankMode] = useState('weekly'); // 'weekly' or 'monthly'
     const rankRef = useRef(null);
+
+    // Debounced search: only fire API after user stops typing for 400ms
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search);
+            setPage(1);
+        }, 400);
+        return () => clearTimeout(timer);
+    }, [search]);
 
     // Allowed states based on RBAC
     const allowedStates = useMemo(() => {
@@ -75,7 +86,7 @@ const Reports = () => {
                 if (platformFilter) params.append('platform', platformFilter);
                 if (monthFilter) params.append('month', monthFilter);
                 if (yearFilter) params.append('year', yearFilter);
-                if (search) params.append('search', search);
+                if (debouncedSearch) params.append('search', debouncedSearch);
 
                 params.append('page', page);
                 params.append('limit', PAGE_SIZE);
@@ -92,10 +103,11 @@ const Reports = () => {
                 setError('Não foi possível carregar os relatórios. Tente novamente mais tarde.');
             } finally {
                 setLoading(false);
+                setInitialLoad(false);
             }
         };
         fetchData();
-    }, [effectiveState, selectedMunicipality, seriesFilter, platformFilter, monthFilter, yearFilter, search, page]);
+    }, [effectiveState, selectedMunicipality, seriesFilter, platformFilter, monthFilter, yearFilter, debouncedSearch, page]);
 
     const handleExport = async () => {
         try {
@@ -207,7 +219,7 @@ const Reports = () => {
         }
     };
 
-    if (loading) {
+    if (initialLoad) {
         return (
             <div className="flex items-center justify-center h-[calc(100vh-200px)] text-zinc-500">
                 <Loader2 className="animate-spin mr-2" size={24} /> Carregando relatórios...
@@ -215,7 +227,7 @@ const Reports = () => {
         );
     }
 
-    if (error) {
+    if (error && !cards.length) {
         return (
             <div className="p-6 text-red-400 bg-red-900/20 rounded-xl border border-red-900/50">
                 {error}
@@ -266,7 +278,6 @@ const Reports = () => {
                         value={search}
                         onChange={(e) => {
                             setSearch(e.target.value);
-                            setPage(1);
                         }}
                         className="w-full pl-10 pr-4 py-2.5 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-zinc-600"
                     />
@@ -325,10 +336,17 @@ const Reports = () => {
                 </select>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {cards.map((card) => (
-                    <ReportCard key={card.id} card={card} />
-                ))}
+            <div className="relative">
+                {loading && (
+                    <div className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm rounded-2xl z-10 flex items-center justify-center">
+                        <Loader2 className="animate-spin text-zinc-400" size={24} />
+                    </div>
+                )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {cards.map((card) => (
+                        <ReportCard key={card.id} card={card} />
+                    ))}
+                </div>
             </div>
 
             {cards.length === 0 && (
