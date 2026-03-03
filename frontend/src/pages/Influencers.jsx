@@ -66,7 +66,7 @@ const Influencers = () => {
   const [search, setSearch] = useState("");
   const [platformFilter, setPlatformFilter] = useState("");
   const [seriesFilter, setSeriesFilter] = useState("");
-  const [periodFilter, setPeriodFilter] = useState("7");
+  const [periodFilter, setPeriodFilter] = useState("15");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
@@ -424,7 +424,7 @@ const Influencers = () => {
           onChange={(e) => setPeriodFilter(e.target.value)}
           className="px-3 py-2 text-sm bg-zinc-900/50 border border-white/5 rounded-lg text-zinc-300 focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer hover:bg-zinc-800/50"
         >
-          <option value="7">Últimos 7 dias</option>
+          <option value="15">Últimos 15 dias</option>
           <option value="30">Últimos 30 dias</option>
           <option value="90">Últimos 90 dias</option>
           <option value="all">Todo o período</option>

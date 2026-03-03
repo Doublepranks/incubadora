@@ -247,7 +247,7 @@ const Dashboard = () => {
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="flex items-center bg-zinc-900/50 rounded-lg p-1 border border-white/5">
                         <div className="px-2 py-1 text-xs text-zinc-500 font-medium">Período</div>
-                        {[7, 30, 90].map(days => (
+                        {[15, 30, 90].map(days => (
                             <button
                                 key={days}
                                 onClick={() => setFilters((prev) => ({ ...prev, periodDays: days }))}
