@@ -205,7 +205,7 @@ const InfluencerDetail = () => {
                             ))}
                         </div>
                         <div className="flex bg-zinc-900/50 p-1 rounded-lg border border-white/5">
-                            {[7, 30, 90].map(days => (
+                            {[15, 30, 90].map(days => (
                                 <button
                                     key={days}
                                     onClick={() => setFilters((prev) => ({ ...prev, periodDays: days }))}
