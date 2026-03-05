@@ -98,6 +98,25 @@ export async function updateUser(req: Request, res: Response) {
 
 export async function deleteUser(req: Request, res: Response) {
   const { id } = req.params;
-  await prisma.user.delete({ where: { id: Number(id) } });
-  return res.json({ error: false, message: "Deleted" });
+  const targetId = Number(id);
+
+  // Prevent self-deletion
+  if (req.user?.id === targetId) {
+    return res.status(400).json({ error: true, message: "Você não pode excluir a própria conta." });
+  }
+
+  try {
+    await prisma.user.delete({ where: { id: targetId } });
+    return res.json({ error: false, message: "Deleted" });
+  } catch (err: any) {
+    // Foreign key constraint (e.g. user created goals that reference them)
+    if (err?.code === "P2003" || err?.code === "P2014") {
+      return res.status(409).json({
+        error: true,
+        message: "Este usuário possui registros associados (metas criadas, etc.) e não pode ser excluído. Considere desativar a conta.",
+      });
+    }
+    console.error("Error deleting user:", err);
+    return res.status(500).json({ error: true, message: "Erro ao excluir usuário." });
+  }
 }

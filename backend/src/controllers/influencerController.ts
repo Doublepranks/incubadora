@@ -217,15 +217,12 @@ export async function deleteInfluencerHandler(req: Request, res: Response) {
 
   const metricsTotal = existing.socialProfiles.reduce((sum, p) => sum + (p._count?.metrics ?? 0), 0);
   if (metricsTotal > 0 && role !== "admin_global" && role !== "system_admin") {
-    const admins = await prisma.user.findMany({
-      where: { role: { in: ["admin_global", "system_admin"] } },
-      select: { email: true, name: true },
+    return res.status(403).json({
+      error: true,
+      message: "Este influenciador possui métricas registradas. A exclusão só pode ser feita por um administrador global.",
+      contactUrl: "https://wa.me/559192379947",
+      contactLabel: "Falar com administrador via WhatsApp",
     });
-    const emails = admins.map((a) => `${a.name} <${a.email}>`).join(", ");
-    const friendly = emails
-      ? `Este influenciador possui métricas registradas. A exclusão só pode ser feita por um administrador global. Por favor, contate: ${emails}.`
-      : "Este influenciador possui métricas registradas. A exclusão só pode ser feita por um administrador global.";
-    return res.status(403).json({ error: true, message: friendly });
   }
 
   await deleteInfluencer(Number(id), regions);

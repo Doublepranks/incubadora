@@ -57,6 +57,10 @@ export const AppProvider = ({ children }) => {
                 body: JSON.stringify({ email, password })
             });
 
+            if (res.status === 429) {
+                return 'rate_limited';
+            }
+
             if (!res.ok) {
                 return false;
             }
@@ -88,6 +92,11 @@ export const AppProvider = ({ children }) => {
             const res = await fetch(`${API_URL}/auth/me`, {
                 credentials: 'include'
             });
+            if (res.status === 429) {
+                // Rate limited — keep current session, don't log out
+                console.warn('Rate limited on /auth/me — preserving session');
+                return;
+            }
             if (res.ok) {
                 const data = await res.json();
                 setUser(data.user);

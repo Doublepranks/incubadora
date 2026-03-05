@@ -290,10 +290,17 @@ const Influencers = () => {
       const res = await fetch(`${API_URL}/influencers/${id}`, { method: "DELETE", credentials: "include" });
       if (!res.ok) {
         let message = "Erro ao remover influenciador";
+        let contactUrl = null;
         try {
           const data = await res.json();
           if (data?.message) message = data.message;
+          if (data?.contactUrl) contactUrl = data.contactUrl;
         } catch { } // ignore
+        if (contactUrl) {
+          alert(message);
+          window.open(contactUrl, "_blank", "noopener,noreferrer");
+          return;
+        }
         throw new Error(message);
       }
       await loadInfluencers();
