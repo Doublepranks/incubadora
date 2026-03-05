@@ -23,10 +23,13 @@ const Login = () => {
         // Simulate a small delay for the animation feeling
         await new Promise(r => setTimeout(r, 600));
 
-        const ok = await login(email, password);
-        if (ok) {
+        const result = await login(email, password);
+        if (result === true) {
             setError('');
             navigate('/');
+        } else if (result === 'rate_limited') {
+            setError('Muitas tentativas de login. Aguarde alguns minutos antes de tentar novamente.');
+            setIsLoading(false);
         } else {
             setError('Credenciais inválidas.');
             setIsLoading(false);
