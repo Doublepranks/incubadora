@@ -4,6 +4,35 @@ import { prisma } from '../config/prisma';
 import type { GoalType, GoalStatus, Series } from '@prisma/client';
 
 /**
+ * Helper: Verify that a goal's influencer belongs to the user's region scope.
+ * Returns the goal if authorized, or sends a 403/404 response and returns null.
+ */
+async function verifyGoalAccess(req: Request, res: Response, goalId: number) {
+    const regions = (req as any).userRegions as string[] | undefined;
+
+    const goal = await prisma.influencerGoal.findUnique({
+        where: { id: goalId },
+        include: {
+            influencer: { select: { id: true, name: true, state: true } },
+            creator: { select: { id: true, name: true } },
+        },
+    });
+
+    if (!goal) {
+        res.status(404).json({ success: false, error: 'Goal not found' });
+        return null;
+    }
+
+    // If user has regional restrictions, check the influencer's state
+    if (regions && regions.length > 0 && !regions.includes(goal.influencer.state)) {
+        res.status(403).json({ success: false, error: 'Meta fora do seu escopo de acesso' });
+        return null;
+    }
+
+    return goal;
+}
+
+/**
  * GET /api/goals
  * Listar metas com filtros opcionais
  */
@@ -180,11 +209,8 @@ export async function getGoalHandler(req: Request, res: Response) {
     try {
         const { id } = req.params;
 
-        const goal = await goalsService.getGoalById(Number(id));
-
-        if (!goal) {
-            return res.status(404).json({ success: false, error: 'Goal not found' });
-        }
+        const goal = await verifyGoalAccess(req, res, Number(id));
+        if (!goal) return; // response already sent
 
         return res.json({ success: true, data: goal });
     } catch (error) {
@@ -205,15 +231,18 @@ export async function updateGoalHandler(req: Request, res: Response) {
         const { id } = req.params;
         const { targetValue, deadline, description, status } = req.body;
 
+        const goal = await verifyGoalAccess(req, res, Number(id));
+        if (!goal) return; // response already sent
+
         const updateData: any = {};
         if (targetValue !== undefined) updateData.targetValue = Number(targetValue);
         if (deadline !== undefined) updateData.deadline = new Date(deadline);
         if (description !== undefined) updateData.description = description;
         if (status !== undefined) updateData.status = status as GoalStatus;
 
-        const goal = await goalsService.updateGoal(Number(id), updateData);
+        const updated = await goalsService.updateGoal(Number(id), updateData);
 
-        return res.json({ success: true, data: goal });
+        return res.json({ success: true, data: updated });
     } catch (error) {
         console.error('Error updating goal:', error);
         return res.status(500).json({
@@ -231,9 +260,12 @@ export async function cancelGoalHandler(req: Request, res: Response) {
     try {
         const { id } = req.params;
 
-        const goal = await goalsService.cancelGoal(Number(id));
+        const goal = await verifyGoalAccess(req, res, Number(id));
+        if (!goal) return; // response already sent
 
-        return res.json({ success: true, data: goal });
+        const cancelled = await goalsService.cancelGoal(Number(id));
+
+        return res.json({ success: true, data: cancelled });
     } catch (error) {
         console.error('Error cancelling goal:', error);
         return res.status(500).json({
@@ -250,6 +282,9 @@ export async function cancelGoalHandler(req: Request, res: Response) {
 export async function deleteGoalHandler(req: Request, res: Response) {
     try {
         const { id } = req.params;
+
+        const goal = await verifyGoalAccess(req, res, Number(id));
+        if (!goal) return; // response already sent
 
         const result = await goalsService.deleteGoal(Number(id));
 
