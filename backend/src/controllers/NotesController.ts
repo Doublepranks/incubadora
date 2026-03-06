@@ -45,16 +45,12 @@ export async function getNotesHandler(req: Request, res: Response) {
 export async function addNoteHandler(req: Request, res: Response) {
     const { id } = req.params;
     const { content } = req.body;
-    const userId = (req as any).user?.id; // Assuming auth middleware populates user
+    const userId = (req as any).user?.id;
 
     try {
         const influencerId = Number(id);
         if (isNaN(influencerId)) {
             return res.status(400).json({ error: true, message: "Invalid influencer ID" });
-        }
-
-        if (!content || typeof content !== "string" || !content.trim()) {
-            return res.status(400).json({ error: true, message: "Content is required" });
         }
 
         const note = await prisma.influencerNote.create({

@@ -93,7 +93,6 @@ export const AppProvider = ({ children }) => {
                 credentials: 'include'
             });
             if (res.status === 429) {
-                // Rate limited — keep current session, don't log out
                 console.warn('Rate limited on /auth/me — preserving session');
                 return;
             }

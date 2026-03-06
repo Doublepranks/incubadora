@@ -3,6 +3,7 @@ import { syncAllProfiles } from "../services/syncService";
 import { logSystem } from "../services/logService";
 import { LogLevel } from "@prisma/client";
 import { checkExpiredGoals } from "../services/goalsService";
+import { cleanupExpiredTokens } from "../services/authService";
 
 // Default: Monday at 03:00 UTC (0 3 * * MON)
 const DEFAULT_CRON = "0 3 * * MON";
@@ -45,6 +46,21 @@ export function startScheduledSyncJob() {
         }
       } catch (err) {
         console.error("[goals] failed to check expired goals", err);
+      }
+
+      // Cleanup expired refresh tokens
+      try {
+        const { count } = await cleanupExpiredTokens();
+        if (count > 0) {
+          await logSystem({
+            level: LogLevel.info,
+            message: `Cleaned up ${count} expired refresh tokens`,
+            meta: { count },
+          });
+          console.log(`[auth] cleaned up ${count} expired refresh tokens`);
+        }
+      } catch (err) {
+        console.error("[auth] failed to cleanup expired tokens", err);
       }
     } catch (err) {
       console.error("[sync job] failed", err);

@@ -133,23 +133,15 @@ export async function addManualMetricHandler(req: Request, res: Response) {
   const regions = (req as any).userRegions as string[] | undefined;
   const { socialProfileId, influencerId, platform, date, followersCount, postsCount } = req.body;
 
-  if (!platform) {
-    return res.status(400).json({ error: true, message: "platform is required" });
-  }
-
-  if (!date || followersCount === undefined || postsCount === undefined) {
-    return res.status(400).json({ error: true, message: "date, followersCount and postsCount are required" });
-  }
-
   try {
     const metric = await addManualMetric(
       {
-        socialProfileId: socialProfileId ? Number(socialProfileId) : undefined,
-        influencerId: influencerId ? Number(influencerId) : undefined,
+        socialProfileId,
+        influencerId,
         platform: platform as Platform,
         date,
-        followersCount: Number(followersCount),
-        postsCount: Number(postsCount),
+        followersCount,
+        postsCount,
       },
       regions,
     );

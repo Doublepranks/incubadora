@@ -4,23 +4,6 @@ import { prisma } from "../config/prisma";
 import { Platform, Series, Sex } from "@prisma/client";
 
 const VALID_SERIES: Series[] = ["Elite", "A2", "A3", "Institucional", "Cortes", "Noticias"];
-const VALID_SEX: Sex[] = ["masculino", "feminino"];
-
-type InfluencerBody = {
-  name?: string;
-  state?: string;
-  city?: string;
-  avatarUrl?: string | null;
-  notes?: string | null;
-  series?: Series | null;
-  sex?: Sex | null;
-  profiles?: {
-    platform: Platform;
-    handle: string;
-    url?: string | null;
-    externalId?: string | null;
-  }[];
-};
 
 export async function getInfluencers(req: Request, res: Response) {
   const { search, state, city, platform, periodDays, series, page, limit } = req.query;
@@ -102,13 +85,10 @@ export async function getInfluencer(req: Request, res: Response) {
 }
 
 export async function createInfluencerHandler(req: Request, res: Response) {
-  const body = req.body as InfluencerBody;
-  if (!body.name || !body.state) {
-    return res.status(400).json({ error: true, message: "name and state are required" });
-  }
+  const body = req.body;
 
   const profiles = body.profiles ?? [];
-  const hasValidProfile = profiles.some((p) => p.handle || p.url);
+  const hasValidProfile = profiles.some((p: any) => p.handle || p.url);
   if (!hasValidProfile) {
     return res.status(400).json({
       error: true,
@@ -122,19 +102,15 @@ export async function createInfluencerHandler(req: Request, res: Response) {
     return res.status(403).json({ error: true, message: "Acesso restrito à UF" });
   }
 
-  // Validate series if provided
-  const seriesValue = body.series && VALID_SERIES.includes(body.series) ? body.series : null;
-  const sexValue = body.sex && VALID_SEX.includes(body.sex) ? body.sex : null;
-
   const influencer = await createInfluencer({
     name: body.name,
     state,
     city: body.city ?? "",
     avatarUrl: body.avatarUrl ?? null,
     notes: body.notes ?? null,
-    series: seriesValue,
-    sex: sexValue,
-    profiles: (body.profiles ?? []).map((p) => ({
+    series: body.series ?? null,
+    sex: body.sex ?? null,
+    profiles: profiles.map((p: any) => ({
       platform: p.platform,
       handle: p.handle,
       url: p.url ?? null,
@@ -147,20 +123,13 @@ export async function createInfluencerHandler(req: Request, res: Response) {
 
 export async function updateInfluencerHandler(req: Request, res: Response) {
   const { id } = req.params;
-  const body = req.body as InfluencerBody;
-  if (!body.name || !body.state) {
-    return res.status(400).json({ error: true, message: "name and state are required" });
-  }
+  const body = req.body;
 
   const regions = (req as any).userRegions as string[] | undefined;
   const state = body.state.toUpperCase();
   if (regions && regions.length > 0 && !regions.includes(state)) {
     return res.status(403).json({ error: true, message: "Acesso restrito à UF" });
   }
-
-  // Validate series if provided
-  const seriesValue = body.series && VALID_SERIES.includes(body.series) ? body.series : null;
-  const sexValue = body.sex && VALID_SEX.includes(body.sex) ? body.sex : null;
 
   const updated = await updateInfluencer(
     Number(id),
@@ -170,9 +139,9 @@ export async function updateInfluencerHandler(req: Request, res: Response) {
       city: body.city ?? "",
       avatarUrl: body.avatarUrl ?? null,
       notes: body.notes ?? null,
-      series: seriesValue,
-      sex: sexValue,
-      profiles: (body.profiles ?? []).map((p) => ({
+      series: body.series ?? null,
+      sex: body.sex ?? null,
+      profiles: (body.profiles ?? []).map((p: any) => ({
         platform: p.platform,
         handle: p.handle,
         url: p.url ?? null,
