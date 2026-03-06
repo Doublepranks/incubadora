@@ -7,10 +7,6 @@ export async function triggerStateSyncNow(req: Request, res: Response) {
   const userId = req.user?.id ?? null;
   const { state } = req.body;
 
-  if (!state) {
-    return res.status(400).json({ error: true, message: "State is required" });
-  }
-
   await logActivity({
     userId,
     message: `Disparou coleta por estado (${state})`,

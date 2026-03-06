@@ -37,7 +37,7 @@ Principais variáveis no `.env`:
 - `DATABASE_URL`: URL de conexão com o PostgreSQL.
 - `AUTH_SECRET`: Segredo para assinatura de cookies de sessão.
 - `FRONTEND_URL`: URL base do frontend (ex: `http://localhost:4173`).
-- `CORS_ALLOWED_ORIGINS`: (Opcional) Lista de origens adicionais permitidas pelo CORS, separadas por vírgula (ex: `http://127.0.0.1:4173`).
+- `CORS_ALLOWED_ORIGINS`: ~~Removido~~ — ver [Registro de Mudanças Arquiteturais](#-registro-de-mudanças-arquiteturais).
 - `APIFY_TOKEN`: Token de integração com a Apify (necessário para sincronização de dados).
 
 ### 2. Executar com Docker (Recomendado)
@@ -91,7 +91,7 @@ O seed padrão cria os seguintes usuários para testes:
 
 ## 🤝 Contribuição
 
-1. Para correções em ambiente de desenvolvimento, verifique se a URL de acesso corresponde ao `FRONTEND_URL` ou adicione-a ao `CORS_ALLOWED_ORIGINS`.
+1. Para correções em ambiente de desenvolvimento, verifique se a URL de acesso corresponde ao `FRONTEND_URL` configurado no `.env`.
 2. Mantenha o padrão de código (ESLint + Prettier).
 3. Utilize branches para features (`feat/nome-da-feature`) ou correções (`fix/nome-do-bug`).
 
@@ -107,6 +107,16 @@ Os valores internos do banco de dados (`A2`, `A3`) são mapeados para labels de 
 | `A3`        | Série C      |
 
 **Motivo**: Evitar migração de banco de dados ao renomear categorias. A configuração está centralizada em `frontend/src/components/SeriesBadge.jsx`.
+
+## 📋 Registro de Mudanças Arquiteturais
+
+Registro de decisões técnicas e remoções relevantes para contexto futuro.
+
+| Data | Mudança | Motivo |
+|---|---|---|
+| 05/03/2026 | Removido `CORS_ALLOWED_ORIGINS` do `env.ts` | Config nunca foi utilizada. O CORS é gerenciado exclusivamente por `env.frontendUrl` em `app.ts` via middleware `cors()`. Para permitir múltiplas origens no futuro, modificar diretamente o middleware em `app.ts`. |
+| 05/03/2026 | Implementado token rotation (F6) | Access token JWT de 15min + refresh token opaco de 7d. Refresh silencioso no middleware `requireAuth`. Detalhes no PRD: `PRD_F6_TOKEN_ROTATION.md`. |
+| 05/03/2026 | Validação Zod em todos os endpoints (F5) | Schemas em `backend/src/schemas/`, middleware em `backend/src/middlewares/validate.ts`. Removida validação manual dos controllers. |
 
 ## 📄 Licença
 

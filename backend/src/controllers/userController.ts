@@ -2,8 +2,6 @@ import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
 import { hashPassword } from "../services/authService";
 
-const ROLES = ["admin_global", "system_admin", "admin_regional", "admin_estadual"];
-
 export async function listUsers(_req: Request, res: Response) {
   const users = await prisma.user.findMany({
     include: { regions: true },
@@ -23,10 +21,7 @@ export async function listUsers(_req: Request, res: Response) {
 }
 
 export async function createUser(req: Request, res: Response) {
-  const { name, email, password, role, regions } = req.body ?? {};
-  if (!name || !email || !password || !role || !ROLES.includes(role)) {
-    return res.status(400).json({ error: true, message: "Invalid payload" });
-  }
+  const { name, email, password, role, regions } = req.body;
 
   const passwordHash = await hashPassword(password);
   const ufs = Array.isArray(regions)
@@ -54,10 +49,7 @@ export async function createUser(req: Request, res: Response) {
 
 export async function updateUser(req: Request, res: Response) {
   const { id } = req.params;
-  const { name, email, password, role, regions } = req.body ?? {};
-  if (role && !ROLES.includes(role)) {
-    return res.status(400).json({ error: true, message: "Invalid role" });
-  }
+  const { name, email, password, role, regions } = req.body;
 
   const data: any = {};
   if (name) data.name = name;

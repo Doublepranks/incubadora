@@ -73,17 +73,10 @@ export async function createGoalHandler(req: Request, res: Response) {
             return res.status(401).json({ success: false, error: 'Unauthorized' });
         }
 
-        if (!influencerId || !type || !targetValue || !deadline) {
-            return res.status(400).json({
-                success: false,
-                error: 'Missing required fields: influencerId, type, targetValue, deadline',
-            });
-        }
-
         // Validar que o influenciador pertence ao escopo do usuário
         if (regions && regions.length > 0) {
             const inf = await prisma.influencer.findFirst({
-                where: { id: Number(influencerId), state: { in: regions } },
+                where: { id: influencerId, state: { in: regions } },
                 select: { id: true },
             });
             if (!inf) {
@@ -94,23 +87,10 @@ export async function createGoalHandler(req: Request, res: Response) {
             }
         }
 
-        // Validar tipo
-        if (!['followers', 'posts'].includes(type)) {
-            return res.status(400).json({ success: false, error: 'Invalid goal type' });
-        }
-
-        // Platform é obrigatória para metas de followers/posts
-        if ((type === 'followers' || type === 'posts') && !platform) {
-            return res.status(400).json({
-                success: false,
-                error: 'Platform is required for followers and posts goals',
-            });
-        }
-
         const goal = await goalsService.createGoal({
-            influencerId: Number(influencerId),
+            influencerId,
             type: type as GoalType,
-            targetValue: Number(targetValue),
+            targetValue,
             platform,
             deadline: new Date(deadline + 'T12:00:00.000Z'),
             description,
@@ -119,7 +99,6 @@ export async function createGoalHandler(req: Request, res: Response) {
 
         return res.status(201).json({ success: true, data: goal });
     } catch (error: any) {
-        // Check for business-rule errors from the service
         if (error?.message?.startsWith('METRICS_REQUIRED:')) {
             return res.status(400).json({
                 success: false,
@@ -148,33 +127,10 @@ export async function createSeriesGoalHandler(req: Request, res: Response) {
             return res.status(401).json({ success: false, error: 'Unauthorized' });
         }
 
-        if (!series || !type || !targetValue || !deadline) {
-            return res.status(400).json({
-                success: false,
-                error: 'Missing required fields: series, type, targetValue, deadline',
-            });
-        }
-
-        const validSeries: Series[] = ['Elite', 'A2', 'A3', 'Institucional', 'Cortes', 'Noticias'];
-        if (!validSeries.includes(series as Series)) {
-            return res.status(400).json({ success: false, error: 'Invalid series' });
-        }
-
-        if (!['followers', 'posts'].includes(type)) {
-            return res.status(400).json({ success: false, error: 'Invalid goal type' });
-        }
-
-        if ((type === 'followers' || type === 'posts') && !platform) {
-            return res.status(400).json({
-                success: false,
-                error: 'Platform is required for followers and posts goals',
-            });
-        }
-
         const result = await goalsService.createGoalsForSeries({
             series: series as Series,
             type: type as GoalType,
-            targetValue: Number(targetValue),
+            targetValue,
             platform,
             deadline: new Date(deadline + 'T12:00:00.000Z'),
             description,

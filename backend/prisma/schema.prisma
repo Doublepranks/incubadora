@@ -66,10 +66,11 @@ model User {
   role         String?
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
-  regions      UserRegion[]
-  createdNotes InfluencerNote[]
-  logs         LogEntry[]
-  createdGoals InfluencerGoal[]
+  regions       UserRegion[]
+  createdNotes  InfluencerNote[]
+  logs          LogEntry[]
+  createdGoals  InfluencerGoal[]
+  refreshTokens RefreshToken[]
   @@index([role])
 }
 
@@ -204,4 +205,18 @@ model InfluencerGoal {
   @@index([influencerId])
   @@index([status])
   @@index([deadline])
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  userAgent String?  @map("user_agent")
+  ip        String?
+
+  @@index([userId])
+  @@index([expiresAt])
 }

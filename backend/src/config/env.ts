@@ -27,8 +27,10 @@ export const env = {
     : isProduction, // defaults to true in production, false in dev
   apifyToken: process.env.APIFY_TOKEN ?? "",
   apifyStateToken: process.env.APIFY_STATE_TOKEN ?? "",
-  corsAllowedOrigins: (process.env.CORS_ALLOWED_ORIGINS ?? "").split(",").map(o => o.trim()).filter(Boolean),
   apifyStateSyncActorId: process.env.APIFY_STATE_SYNC_ACTOR_ID ?? "",
+  // Token rotation config
+  accessTokenExpiration: process.env.ACCESS_TOKEN_EXPIRATION ?? "15m",
+  refreshTokenExpirationMs: number(process.env.REFRESH_TOKEN_EXPIRATION_MS, 7 * 24 * 60 * 60 * 1000),
 };
 
 if (!env.databaseUrl) {
