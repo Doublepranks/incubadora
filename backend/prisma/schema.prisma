@@ -80,6 +80,8 @@ model Influencer {
   avatarUrl       String?          @map("avatar_url")
   state           String
   city            String
+  isFiliado       Boolean          @default(false) @map("is_filiado")
+  isPreCandidato  Boolean          @default(false) @map("is_pre_candidato")
   notes           String?
   series          Series?
   sex             Sex?

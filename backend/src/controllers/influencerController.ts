@@ -141,6 +141,8 @@ export async function updateInfluencerHandler(req: Request, res: Response) {
       notes: body.notes ?? null,
       series: body.series ?? null,
       sex: body.sex ?? null,
+      isFiliado: body.isFiliado ?? false,
+      isPreCandidato: body.isPreCandidato ?? false,
       profiles: (body.profiles ?? []).map((p: any) => ({
         platform: p.platform,
         handle: p.handle,

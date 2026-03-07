@@ -182,9 +182,17 @@ const InfluencerDetail = () => {
                     <div className="flex items-center gap-6">
                         {headerAvatar}
                         <div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex flex-wrap items-center gap-3">
                                 <h1 className="text-3xl font-bold text-white tracking-tight">{influencer.name}</h1>
                                 <SeriesBadge series={influencer.series} size="lg" />
+                                <div className="flex flex-col gap-1.5 items-start ml-2">
+                                    {influencer.isFiliado && (
+                                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30 uppercase tracking-widest">Filiado</span>
+                                    )}
+                                    {influencer.isPreCandidato && (
+                                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-widest">Pré-Candidato</span>
+                                    )}
+                                </div>
                             </div>
                             <p className="text-zinc-400 text-lg">{influencer.city} - {influencer.state}</p>
                         </div>

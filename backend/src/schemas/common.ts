@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // ── Prisma Enum Mirrors ──────────────────────────────────────────
 export const platformEnum = z.enum([
-    'Instagram', 'Tiktok', 'Youtube', 'X', 'Kwai',
+    'instagram', 'tiktok', 'youtube', 'x', 'kwai',
 ]);
 
 export const seriesEnum = z.enum([

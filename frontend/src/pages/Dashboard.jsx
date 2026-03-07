@@ -11,7 +11,7 @@ const Dashboard = () => {
     const { user, authLoading, selectedState, selectedMunicipality, filters, setFilters } = useApp();
     const navigate = useNavigate();
 
-    const [overview, setOverview] = useState({ totalInfluencers: 0, totalFollowers: 0, totalPosts: 0, growthPercent: 0 });
+    const [overview, setOverview] = useState({ totalInfluencers: 0, totalFollowers: 0, totalPosts: 0, growthPercent: 0, totalFiliados: 0, totalPreCandidatos: 0 });
     const [timeline, setTimeline] = useState([]);
     const [topGrowth, setTopGrowth] = useState([]);
     const [tableData, setTableData] = useState([]);
@@ -77,7 +77,7 @@ const Dashboard = () => {
                     genderData,
                     genderRegionData
                 ] = await Promise.all([
-                    safeFetch(`${API_URL}/metrics/overview?${params.toString()}`, { totalInfluencers: 0, totalFollowers: 0, totalPosts: 0, growthPercent: 0 }),
+                    safeFetch(`${API_URL}/metrics/overview?${params.toString()}`, { totalInfluencers: 0, totalFollowers: 0, totalPosts: 0, growthPercent: 0, totalFiliados: 0, totalPreCandidatos: 0 }),
                     safeFetch(`${API_URL}/metrics/timeline?${params.toString()}`, []),
                     safeFetch(`${API_URL}/metrics/top-growth?limit=5&${params.toString()}`, []),
                     safeFetch(`${API_URL}/influencers/summary?limit=20&${params.toString()}`, []),
@@ -212,6 +212,20 @@ const Dashboard = () => {
 
     const maxStateCount = stateDistribution.reduce((max, s) => Math.max(max, s.count), 0) || 1;
 
+    const formatKpiValue = (val) => {
+        if (val === null || val === undefined) return '0';
+        if (typeof val === 'number') {
+            if (val >= 1000000) return (val / 1000000).toFixed(1) + 'Mi';
+            return val.toLocaleString('pt-BR');
+        }
+        return val;
+    };
+
+    const getExactTooltip = (val) => {
+        if (typeof val === 'number') return val.toLocaleString('pt-BR');
+        return undefined;
+    };
+
     const formatSignedPercent = (value, fractionDigits = 2) => {
         const formatted = Math.abs(value).toFixed(fractionDigits);
         if (value > 0) return `+${formatted}%`;
@@ -277,22 +291,27 @@ const Dashboard = () => {
             </div>
 
             {/* KPIs */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6">
                 {[
-                    { label: 'Influenciadores', value: overview.totalInfluencers, icon: Users, color: 'text-blue-400', bg: 'bg-blue-400/10' },
-                    { label: 'Seguidores Totais', value: overview.totalFollowers.toLocaleString(), icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
-                    { label: 'Crescimento', value: formatSignedPercent(overview.growthPercent || 0, 2), icon: TrendingUp, color: 'text-amber-400', bg: 'bg-amber-400/10' },
-                    { label: 'Posts no Período', value: overview.totalPosts, icon: Activity, color: 'text-orange-400', bg: 'bg-orange-400/10', sub: '(Exceto X)' }
+                    { label: 'Influenciadores', value: overview.totalInfluencers },
+                    { label: 'Filiados', value: overview.totalFiliados || 0 },
+                    { label: 'Pré-Candidatos', value: overview.totalPreCandidatos || 0 },
+                    { label: 'Seguidores', value: overview.totalFollowers },
+                    { label: 'Crescimento', value: formatSignedPercent(overview.growthPercent || 0, 2) },
+                    { label: 'Posts (s/ X)', value: overview.totalPosts }
                 ].map((kpi, idx) => (
-                    <div key={idx} className="glass-card p-6 rounded-2xl flex items-start justify-between group">
-                        <div>
-                            <p className="text-sm font-medium text-zinc-400 mb-1">{kpi.label}</p>
-                            <h3 className="text-3xl font-bold text-white tracking-tight">{kpi.value}</h3>
-                            {kpi.sub && <p className="text-[10px] text-zinc-500 mt-1">{kpi.sub}</p>}
-                        </div>
-                        <div className={`p-3 rounded-xl ${kpi.bg} ${kpi.color} group-hover:scale-110 transition-transform duration-300`}>
-                            <kpi.icon size={24} />
-                        </div>
+                    <div
+                        key={idx}
+                        className="glass-card p-6 rounded-2xl flex flex-col justify-center relative overflow-hidden group border-t border-white/5"
+                        title={getExactTooltip(kpi.value)}
+                    >
+                        <p className="text-sm font-medium text-zinc-400 mb-2">{kpi.label}</p>
+                        <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-none group-hover:scale-105 transition-transform origin-left">
+                            {formatKpiValue(kpi.value)}
+                        </h3>
+
+                        {/* Decorative background glow that activates on hover */}
+                        <div className="absolute -inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </div>
                 ))}
             </div>

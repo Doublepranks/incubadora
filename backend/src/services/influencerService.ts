@@ -28,6 +28,8 @@ export type InfluencerInput = {
   notes?: string | null;
   series?: Series | null;
   sex?: Sex | null;
+  isFiliado?: boolean;
+  isPreCandidato?: boolean;
   profiles?: InfluencerProfileInput[];
 };
 
@@ -40,6 +42,8 @@ export type AggregatedInfluencer = {
   notes: string | null;
   series: Series | null;
   sex: Sex | null;
+  isFiliado: boolean;
+  isPreCandidato: boolean;
   platforms: Platform[];
   totalFollowers: number;
   totalPosts: number;
@@ -121,6 +125,8 @@ export async function listInfluencers(
       notes: inf.notes ?? null,
       series: inf.series ?? null,
       sex: inf.sex ?? null,
+      isFiliado: inf.isFiliado,
+      isPreCandidato: inf.isPreCandidato,
       platforms: inf.socialProfiles.map((p) => p.platform),
       profileLinks: inf.socialProfiles.map((p) => ({
         platform: p.platform,
@@ -171,6 +177,8 @@ export async function listInfluencerSummary(
       state: true,
       avatarUrl: true,
       series: true,
+      isFiliado: true,
+      isPreCandidato: true,
     },
     ...(options?.limit ? { take: options.limit } : {}),
   });
@@ -241,6 +249,8 @@ export async function createInfluencer(payload: InfluencerInput) {
       notes: payload.notes,
       series: payload.series ?? null,
       sex: payload.sex ?? null,
+      isFiliado: payload.isFiliado ?? false,
+      isPreCandidato: payload.isPreCandidato ?? false,
       socialProfiles: payload.profiles && payload.profiles.length > 0
         ? {
           create: payload.profiles.map((p) => ({
@@ -313,6 +323,8 @@ export async function updateInfluencer(
       notes: payload.notes,
       series: payload.series ?? null,
       sex: payload.sex ?? null,
+      isFiliado: payload.isFiliado ?? false,
+      isPreCandidato: payload.isPreCandidato ?? false,
     },
     include: { socialProfiles: true },
   });

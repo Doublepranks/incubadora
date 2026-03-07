@@ -29,7 +29,7 @@ export const env = {
   apifyStateToken: process.env.APIFY_STATE_TOKEN ?? "",
   apifyStateSyncActorId: process.env.APIFY_STATE_SYNC_ACTOR_ID ?? "",
   // Token rotation config
-  accessTokenExpiration: process.env.ACCESS_TOKEN_EXPIRATION ?? "15m",
+  accessTokenExpiration: process.env.ACCESS_TOKEN_EXPIRATION ?? "4h",
   refreshTokenExpirationMs: number(process.env.REFRESH_TOKEN_EXPIRATION_MS, 7 * 24 * 60 * 60 * 1000),
 };
 

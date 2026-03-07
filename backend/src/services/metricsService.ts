@@ -70,16 +70,21 @@ export async function getOverview(filters: MetricsFilters) {
 
   const influencerWhere = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
 
-  // Count unique influencers
+  // Count unique influencers and boolean flags
   const countQuery = `
-    SELECT COUNT(DISTINCT i.id) as count
+    SELECT 
+      COUNT(DISTINCT i.id) as count,
+      COUNT(DISTINCT CASE WHEN i.is_filiado = true THEN i.id END) as filiados_count,
+      COUNT(DISTINCT CASE WHEN i.is_pre_candidato = true THEN i.id END) as precandidatos_count
     FROM "Influencer" i
     LEFT JOIN "SocialProfile" sp ON sp.influencer_id = i.id
     ${influencerWhere}
   `;
 
-  const countResult = await prisma.$queryRawUnsafe<{ count: bigint }[]>(countQuery, ...params);
+  const countResult = await prisma.$queryRawUnsafe<{ count: bigint; filiados_count: bigint; precandidatos_count: bigint }[]>(countQuery, ...params);
   const totalInfluencers = Number(countResult[0]?.count ?? 0);
+  const totalFiliados = Number(countResult[0]?.filiados_count ?? 0);
+  const totalPreCandidatos = Number(countResult[0]?.precandidatos_count ?? 0);
 
   // Get followers and growth using latest metric per profile
   // We use a subquery to get the first and last metric per profile within the period
@@ -145,7 +150,7 @@ export async function getOverview(filters: MetricsFilters) {
   const startFollowers = totalFollowers - totalGrowth;
   const growthPercent = startFollowers > 0 ? (totalGrowth / startFollowers) * 100 : 0;
 
-  return { totalInfluencers, totalFollowers, totalPosts, growthPercent };
+  return { totalInfluencers, totalFollowers, totalPosts, growthPercent, totalFiliados, totalPreCandidatos };
 }
 
 export async function getTopGrowth(filters: MetricsFilters, limit = 10) {
