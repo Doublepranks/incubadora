@@ -44,7 +44,7 @@ export const AppProvider = ({ children }) => {
         return Array.from(new Set(list)).sort((a, b) => a.localeCompare(b, 'pt-BR'));
     }, [sidebarPool, selectedState]);
     const [filters, setFilters] = useState({
-        periodDays: 7,
+        periodDays: 15,
         platform: '',
     });
 
@@ -98,7 +98,11 @@ export const AppProvider = ({ children }) => {
             }
             if (res.ok) {
                 const data = await res.json();
-                setUser(data.user);
+                if (data.user) {
+                    setUser(data.user);
+                }
+                // Se data.user é null mas já temos user logado,
+                // preservar sessão (o refresh pode ter falhado temporariamente)
             }
         } catch (err) {
             console.error('Fetch me error', err);

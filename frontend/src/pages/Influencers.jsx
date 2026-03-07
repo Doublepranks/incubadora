@@ -42,6 +42,8 @@ const emptyForm = {
   avatarUrl: "",
   series: "",
   sex: "",
+  isFiliado: false,
+  isPreCandidato: false,
   profiles: {
     instagram: { handle: "", url: "", externalId: "" },
     x: { handle: "", url: "", externalId: "" },
@@ -195,6 +197,8 @@ const Influencers = () => {
         avatarUrl: detail.avatarUrl || "",
         series: detail.series || "",
         sex: detail.sex || "",
+        isFiliado: detail.isFiliado || false,
+        isPreCandidato: detail.isPreCandidato || false,
         profiles: { ...emptyForm.profiles },
       };
       detail.socialProfiles?.forEach((p) => {
@@ -253,6 +257,8 @@ const Influencers = () => {
         avatarUrl: form.avatarUrl || null,
         series: form.series || null,
         sex: form.sex || null,
+        isFiliado: form.isFiliado,
+        isPreCandidato: form.isPreCandidato,
         profiles,
       };
 
@@ -456,7 +462,7 @@ const Influencers = () => {
               <thead className="text-xs uppercase bg-zinc-900/80 text-zinc-500 font-medium">
                 <tr>
                   <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Nome</th>
-                  <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Série</th>
+                  <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Tags</th>
                   <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Localização</th>
                   <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Plataformas</th>
                   <th className="px-4 xl:px-6 py-3 xl:py-4 sticky top-0 bg-zinc-900/95 backdrop-blur-sm z-10">Seguidores</th>
@@ -477,14 +483,21 @@ const Influencers = () => {
                             <Users size={18} />
                           )}
                         </div>
-                        <div>
-                          <div className="font-semibold text-white">{inf.name}</div>
-                          <div className="text-xs text-zinc-500"><span>{inf.city || "-"}</span> - <span>{inf.state}</span></div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-white">{inf.name}</span>
                         </div>
                       </div>
                     </td>
                     <td className="px-4 xl:px-6 py-3 xl:py-4">
-                      <SeriesBadge series={inf.series} size="sm" />
+                      <div className="flex flex-col gap-2 items-start">
+                        <SeriesBadge series={inf.series} size="sm" />
+                        {inf.isFiliado && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30 uppercase tracking-widest">Filiado</span>
+                        )}
+                        {inf.isPreCandidato && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase tracking-widest">Pré-Cand</span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 xl:px-6 py-3 xl:py-4 text-zinc-400">
                       <span>{inf.city ? `${inf.city}/${inf.state}` : inf.state}</span>
@@ -676,6 +689,43 @@ const Influencers = () => {
                     <option value="masculino">Masculino</option>
                     <option value="feminino">Feminino</option>
                   </select>
+                </div>
+
+                {/* Checkboxes para flags políticas */}
+                <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                  <label className="flex items-center gap-3 p-4 bg-zinc-900/50 border border-white/5 rounded-xl cursor-pointer hover:bg-white/5 transition-colors">
+                    <div className="relative flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={form.isFiliado}
+                        onChange={(e) => setForm({ ...form, isFiliado: e.target.checked })}
+                        className="peer sr-only"
+                      />
+                      <div className="w-10 h-6 bg-zinc-800 rounded-full peer-checked:bg-primary transition-colors"></div>
+                      <div className="absolute left-1 top-1 bg-zinc-400 w-4 h-4 rounded-full transition-all peer-checked:translate-x-4 peer-checked:bg-zinc-950"></div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-white">Filiado</div>
+                      <div className="text-xs text-zinc-500">Influenciador possui filiação partidária</div>
+                    </div>
+                  </label>
+
+                  <label className="flex items-center gap-3 p-4 bg-zinc-900/50 border border-white/5 rounded-xl cursor-pointer hover:bg-white/5 transition-colors">
+                    <div className="relative flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={form.isPreCandidato}
+                        onChange={(e) => setForm({ ...form, isPreCandidato: e.target.checked })}
+                        className="peer sr-only"
+                      />
+                      <div className="w-10 h-6 bg-zinc-800 rounded-full peer-checked:bg-primary transition-colors"></div>
+                      <div className="absolute left-1 top-1 bg-zinc-400 w-4 h-4 rounded-full transition-all peer-checked:translate-x-4 peer-checked:bg-zinc-950"></div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-white">Pré-Candidato / Candidato</div>
+                      <div className="text-xs text-zinc-500">Influenciador anunciou candidatura</div>
+                    </div>
+                  </label>
                 </div>
               </div>
 

@@ -14,6 +14,8 @@ export const createInfluencerSchema = z.object({
     city: z.string().max(200).default(''),
     avatarUrl: z.string().max(500).nullable().optional(),
     notes: z.string().max(5000).nullable().optional(),
+    isFiliado: z.boolean().default(false).optional(),
+    isPreCandidato: z.boolean().default(false).optional(),
     series: seriesEnum.nullable().optional(),
     sex: sexEnum.nullable().optional(),
     profiles: z.array(socialProfileSchema).default([]),

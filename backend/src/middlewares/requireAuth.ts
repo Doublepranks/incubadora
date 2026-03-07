@@ -16,7 +16,7 @@ const sessionCookieOptions = {
   httpOnly: true,
   secure: env.cookieSecure,
   sameSite: env.cookieSecure ? "none" as const : "lax" as const,
-  maxAge: 15 * 60 * 1000, // 15 minutes (synced with access token TTL)
+  maxAge: 4 * 60 * 60 * 1000, // 4 hours (synced with access token TTL)
   path: "/",
 };
 
