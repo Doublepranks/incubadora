@@ -3,7 +3,7 @@ import { fetchProfilesBatch, fetchRetryBatch, fetchStateBatch } from "./apifySer
 import { SyncStatus } from "@prisma/client";
 import { updateGoalsAfterSync } from "./goalsService";
 
-export async function syncStateProfiles(state: string) {
+export async function syncStateProfiles(state: string, targetDate?: string) {
   const profiles = await prisma.socialProfile.findMany({
     where: { influencer: { state } },
   });
@@ -11,6 +11,8 @@ export async function syncStateProfiles(state: string) {
   if (profiles.length === 0) {
     return { success: 0, failed: 0, total: 0 };
   }
+  // If targetDate is provided, parse it into a Date to override metric dates
+  const overrideDate = targetDate ? normalizeDateOnly(targetDate) : undefined;
 
   const { metrics, errors } = await fetchStateBatch(profiles);
   const errorMap = new Map<number, RetryCandidate[]>();
@@ -55,7 +57,7 @@ export async function syncStateProfiles(state: string) {
 
       const data = profileMetrics.map((m) => ({
         socialProfileId: profile.id,
-        date: m.date,
+        date: overrideDate ?? m.date,
         followersCount: m.followersCount,
         postsCount: m.postsCount,
       }));
@@ -120,7 +122,7 @@ type RetryCandidate = {
   sourceActorId?: string | null;
 };
 
-export async function syncAllProfiles(filter?: SyncFilter) {
+export async function syncAllProfiles(filter?: SyncFilter, targetDate?: string) {
   const where: any = {};
   if (filter?.handles && filter.handles.length > 0) {
     where.handle = { in: filter.handles.map((h) => (h.startsWith("@") ? h : `@${h}`)) };
@@ -144,6 +146,9 @@ export async function syncAllProfiles(filter?: SyncFilter) {
     list.push(e);
     errorMap.set(e.profileId, list);
   });
+
+  // If targetDate is provided, parse it into a Date to override metric dates
+  const overrideDate = targetDate ? normalizeDateOnly(targetDate) : undefined;
 
   let success = 0;
   let failed = 0;
@@ -192,7 +197,7 @@ export async function syncAllProfiles(filter?: SyncFilter) {
 
       const data = profileMetrics.map((m) => ({
         socialProfileId: profile.id,
-        date: m.date,
+        date: overrideDate ?? m.date,
         followersCount: m.followersCount,
         postsCount: m.postsCount,
       }));
@@ -391,4 +396,12 @@ export async function retryFailedSyncs(options?: { sinceDays?: number; limit?: n
   }
 
   return { success, failed, total: profiles.length };
+}
+
+function normalizeDateOnly(value: unknown): Date {
+  const str = String(value);
+  // Append T00:00:00 to force local-time parsing (plain "YYYY-MM-DD" is parsed as UTC)
+  const d = /^\d{4}-\d{2}-\d{2}$/.test(str) ? new Date(str + "T00:00:00") : new Date(str);
+  d.setHours(0, 0, 0, 0);
+  return d;
 }
