@@ -11,7 +11,8 @@ import {
   Loader2,
   Search,
   Clock3,
-  Terminal
+  Terminal,
+  CalendarDays
 } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
@@ -103,6 +104,29 @@ const SysAdmin = () => {
   const [actionError, setActionError] = useState('');
   const [selectedState, setSelectedState] = useState('');
   const [running, setRunning] = useState({ sync: false, retry: false, state: false });
+
+  // Target date for retroactive data collection
+  const [targetDate, setTargetDate] = useState('');
+
+  // Compute min (most recent past Monday) and max (today) for the date picker
+  const dateConstraints = useMemo(() => {
+    // Format as YYYY-MM-DD using LOCAL time (toISOString uses UTC and shifts the day at night in BRT)
+    const toLocalDateStr = (d) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    };
+    const today = new Date();
+    const todayStr = toLocalDateStr(today);
+    // Find most recent Monday (1 = Monday)
+    const dayOfWeek = today.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+    const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - daysSinceMonday);
+    const mondayStr = toLocalDateStr(monday);
+    return { min: mondayStr, max: todayStr };
+  }, []);
 
   const searchPlaceholder = useMemo(
     () => (activeTab === 'system' ? 'Buscar em mensagens do sistema' : 'Buscar em atividades de usuários'),
@@ -235,7 +259,7 @@ const SysAdmin = () => {
               ))}
             </select>
             <button
-              onClick={() => runAction('state', { state: selectedState })}
+              onClick={() => runAction('state', { state: selectedState, targetDate: targetDate || undefined })}
               disabled={running.state || !selectedState}
               className="p-1.5 rounded-lg hover:bg-white/5 text-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Disparar Coleta por Estado"
@@ -252,13 +276,36 @@ const SysAdmin = () => {
             Rodar Retry (Falhas)
           </button>
           <button
-            onClick={() => runAction('sync')}
+            onClick={() => runAction('sync', { targetDate: targetDate || undefined })}
             disabled={running.sync}
             className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl bg-primary text-black hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02]"
           >
             {running.sync ? <Loader2 className="w-4 h-4 animate-spin" /> : <PlayCircle className="w-4 h-4" />}
             Nova Coleta (Manual)
           </button>
+
+          {/* Target Date Picker */}
+          <div className="flex items-center gap-2 bg-zinc-900/50 p-1.5 rounded-xl border border-white/5">
+            <CalendarDays size={16} className="text-zinc-400 ml-1" />
+            <input
+              type="date"
+              value={targetDate}
+              onChange={(e) => setTargetDate(e.target.value)}
+              min={dateConstraints.min}
+              max={dateConstraints.max}
+              className="bg-transparent text-sm text-zinc-300 focus:outline-none px-1 py-1 cursor-pointer [color-scheme:dark] w-[130px]"
+              title={`Data alvo para métricas (${dateConstraints.min} a ${dateConstraints.max})`}
+            />
+            {targetDate && (
+              <button
+                onClick={() => setTargetDate('')}
+                className="text-xs text-zinc-500 hover:text-white transition-colors px-1"
+                title="Limpar data (usar data da coleta)"
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

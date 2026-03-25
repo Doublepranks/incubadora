@@ -5,16 +5,16 @@ import { retryFailedSyncs, syncAllProfiles, syncStateProfiles } from "../service
 
 export async function triggerStateSyncNow(req: Request, res: Response) {
   const userId = req.user?.id ?? null;
-  const { state } = req.body;
+  const { state, targetDate } = req.body;
 
   await logActivity({
     userId,
-    message: `Disparou coleta por estado (${state})`,
-    meta: { ip: req.ip, userAgent: req.headers["user-agent"], state },
+    message: `Disparou coleta por estado (${state})${targetDate ? ` com data alvo ${targetDate}` : ''}`,
+    meta: { ip: req.ip, userAgent: req.headers["user-agent"], state, targetDate },
   });
 
   try {
-    const result = await syncStateProfiles(state);
+    const result = await syncStateProfiles(state, targetDate);
     await logSystem({
       level: LogLevel.info,
       message: `Coleta estadual concluída (${state})`,
@@ -37,14 +37,16 @@ export async function triggerStateSyncNow(req: Request, res: Response) {
 
 export async function triggerSyncNow(req: Request, res: Response) {
   const userId = req.user?.id ?? null;
+  const { targetDate } = req.body ?? {};
+
   await logActivity({
     userId,
-    message: "Disparou coleta manual agora",
-    meta: { ip: req.ip, userAgent: req.headers["user-agent"] },
+    message: `Disparou coleta manual agora${targetDate ? ` com data alvo ${targetDate}` : ''}`,
+    meta: { ip: req.ip, userAgent: req.headers["user-agent"], targetDate },
   });
 
   try {
-    const result = await syncAllProfiles();
+    const result = await syncAllProfiles(undefined, targetDate);
     await logSystem({
       level: LogLevel.info,
       message: "Coleta manual concluída",

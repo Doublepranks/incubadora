@@ -6,14 +6,14 @@ import { LogLevel } from "@prisma/client";
 import { authorize } from "../middlewares/authorize";
 import { requireAuth } from "../middlewares/requireAuth";
 import { validate } from "../middlewares/validate";
-import { stateSyncSchema, retrySchema, clientErrorSchema } from "../schemas/admin";
+import { stateSyncSchema, runSyncSchema, retrySchema, clientErrorSchema } from "../schemas/admin";
 
 export const adminRouter = Router();
 
 // Apenas system_admin pode acessar /sysadmin e orquestrar execuções manuais
 const requireSysAdmin = [requireAuth, authorize({ roles: ["system_admin"] })];
 
-adminRouter.post("/sync/run", ...requireSysAdmin, triggerSyncNow);
+adminRouter.post("/sync/run", ...requireSysAdmin, validate(runSyncSchema), triggerSyncNow);
 adminRouter.post("/sync/state", ...requireSysAdmin, validate(stateSyncSchema), triggerStateSyncNow);
 adminRouter.post("/sync/retry", ...requireSysAdmin, validate(retrySchema), triggerRetryNow);
 adminRouter.get("/logs", ...requireSysAdmin, getLogs);
