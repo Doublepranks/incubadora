@@ -167,3 +167,38 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-zinc-700;
 }
+
+/* Notification body rich-text styles */
+.notification-body a {
+  @apply text-primary underline hover:text-primary/80 transition-colors;
+}
+
+.notification-body ul,
+.notification-body ol {
+  @apply pl-4 my-1;
+}
+
+.notification-body ul {
+  list-style-type: disc;
+}
+
+.notification-body ol {
+  list-style-type: decimal;
+}
+
+.notification-body p {
+  @apply mb-1;
+}
+
+.notification-body p:last-child {
+  @apply mb-0;
+}
+
+/* TipTap editor */
+.tiptap p.is-editor-empty:first-child::before {
+  @apply text-zinc-600;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}

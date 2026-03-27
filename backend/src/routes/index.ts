@@ -9,6 +9,7 @@ import { syncRouter } from "./sync";
 import { usersRouter } from "./users";
 import { adminRouter } from "./admin";
 import { goalsRouter } from "./goals";
+import { notificationsRouter } from "./notifications";
 
 export const routes = Router();
 
@@ -22,3 +23,4 @@ routes.use("/sync", syncRouter);
 routes.use("/users", usersRouter);
 routes.use("/admin", adminRouter);
 routes.use("/goals", goalsRouter);
+routes.use("/notifications", notificationsRouter);
