@@ -217,10 +217,11 @@ export async function getTopGrowth(filters: MetricsFilters, limit = 10) {
   const limitParam = `$${paramIndex}`;
 
   const query = `
-    WITH profile_growth AS (
+    WITH profile_metrics AS (
       SELECT 
+        sp.id as profile_id,
         sp.influencer_id,
-        sp.platform,
+        COUNT(m.id) OVER (PARTITION BY sp.id) as metric_count,
         FIRST_VALUE(m.followers_count) OVER (PARTITION BY sp.id ORDER BY m.date ASC) as start_followers,
         FIRST_VALUE(m.followers_count) OVER (PARTITION BY sp.id ORDER BY m.date DESC) as end_followers
       FROM "SocialProfile" sp
@@ -228,12 +229,21 @@ export async function getTopGrowth(filters: MetricsFilters, limit = 10) {
       INNER JOIN "MetricDaily" m ON m.social_profile_id = sp.id
       ${influencerWhere} ${metricsWhere}
     ),
-    influencer_growth AS (
-      SELECT DISTINCT ON (influencer_id)
+    profile_growth AS (
+      SELECT DISTINCT ON (profile_id)
         influencer_id,
-        SUM(end_followers - start_followers) OVER (PARTITION BY influencer_id) as growth_absolute,
-        SUM(end_followers) OVER (PARTITION BY influencer_id) as total_followers
+        start_followers,
+        end_followers
+      FROM profile_metrics
+      WHERE metric_count >= 2
+    ),
+    influencer_growth AS (
+      SELECT 
+        influencer_id,
+        SUM(end_followers - start_followers) as growth_absolute,
+        SUM(end_followers) as total_followers
       FROM profile_growth
+      GROUP BY influencer_id
     )
     SELECT 
       i.id,
