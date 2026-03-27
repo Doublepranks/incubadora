@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import NotificationEditor from '../components/NotificationEditor';
 import {
   PlayCircle,
   RotateCcw,
@@ -12,7 +13,11 @@ import {
   Search,
   Clock3,
   Terminal,
-  CalendarDays
+  CalendarDays,
+  Bell,
+  Plus,
+  Pencil,
+  Trash2
 } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
@@ -34,6 +39,7 @@ const levelLabels = {
 const tabs = [
   { key: 'system', label: 'Logs do sistema', icon: ServerCrash },
   { key: 'activity', label: 'Logs de usuários', icon: ActivityIcon },
+  { key: 'notifications', label: 'Notificações', icon: Bell },
 ];
 
 function formatDate(value) {
@@ -235,6 +241,72 @@ const SysAdmin = () => {
     }
   };
 
+  // Notification management state
+  const [notifications, setNotifications] = useState([]);
+  const [notifLoading, setNotifLoading] = useState(false);
+  const [editingNotif, setEditingNotif] = useState(null); // null = list, {} = new, {id,...} = editing
+  const [notifSaving, setNotifSaving] = useState(false);
+
+  const fetchNotifications = useCallback(async () => {
+    setNotifLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/notifications`, { credentials: 'include' });
+      const json = await res.json();
+      if (res.ok) setNotifications(json.data ?? []);
+    } catch (err) {
+      console.warn('Failed to fetch notifications', err);
+    } finally {
+      setNotifLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'notifications') fetchNotifications();
+  }, [activeTab, fetchNotifications]);
+
+  const handleSaveNotification = async ({ id, title, body }) => {
+    setNotifSaving(true);
+    setActionMessage('');
+    setActionError('');
+    try {
+      const url = id ? `${API_URL}/notifications/${id}` : `${API_URL}/notifications`;
+      const method = id ? 'PUT' : 'POST';
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ title, body }),
+      });
+      const json = await res.json();
+      if (!res.ok || json.error) throw new Error(json?.message || 'Falha ao salvar');
+      setActionMessage(id ? 'Notificação atualizada com sucesso.' : 'Notificação publicada com sucesso.');
+      setEditingNotif(null);
+      fetchNotifications();
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : 'Erro ao salvar notificação');
+    } finally {
+      setNotifSaving(false);
+    }
+  };
+
+  const handleDeleteNotification = async (id) => {
+    if (!confirm('Remover esta notificação?')) return;
+    setActionMessage('');
+    setActionError('');
+    try {
+      const res = await fetch(`${API_URL}/notifications/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      const json = await res.json();
+      if (!res.ok || json.error) throw new Error(json?.message || 'Falha ao remover');
+      setActionMessage('Notificação removida.');
+      fetchNotifications();
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : 'Erro ao remover notificação');
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 glass-panel rounded-2xl">
@@ -344,83 +416,171 @@ const SysAdmin = () => {
             })}
           </div>
 
-          <div className="flex flex-1 w-full lg:w-auto items-center gap-3">
-            <div className="relative flex-1 group">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-primary transition-colors" />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder={searchPlaceholder}
-                className="w-full pl-9 pr-4 py-2 text-sm bg-zinc-950/50 border border-white/5 rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-zinc-600 transition-all hover:bg-zinc-950/80"
-              />
-            </div>
-            <select
-              value={levelFilter}
-              onChange={(e) => setLevelFilter(e.target.value)}
-              className="px-3 py-2 text-sm bg-zinc-950/50 border border-white/5 rounded-lg text-zinc-300 focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer hover:bg-zinc-950/80"
-            >
-              <option value="">Nível: Todos</option>
-              <option value="info">Info</option>
-              <option value="warn">Atenção</option>
-              <option value="error">Erro</option>
-              <option value="debug">Debug</option>
-            </select>
-          </div>
+          {/* Only show search/filter controls on log tabs */}
+          {activeTab !== 'notifications' && (
+            <>
+              <div className="flex flex-1 w-full lg:w-auto items-center gap-3">
+                <div className="relative flex-1 group">
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-primary transition-colors" />
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder={searchPlaceholder}
+                    className="w-full pl-9 pr-4 py-2 text-sm bg-zinc-950/50 border border-white/5 rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-zinc-600 transition-all hover:bg-zinc-950/80"
+                  />
+                </div>
+                <select
+                  value={levelFilter}
+                  onChange={(e) => setLevelFilter(e.target.value)}
+                  className="px-3 py-2 text-sm bg-zinc-950/50 border border-white/5 rounded-lg text-zinc-300 focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer hover:bg-zinc-950/80"
+                >
+                  <option value="">Nível: Todos</option>
+                  <option value="info">Info</option>
+                  <option value="warn">Atenção</option>
+                  <option value="error">Erro</option>
+                  <option value="debug">Debug</option>
+                </select>
+              </div>
 
-          <div className="flex items-center gap-3 border-l border-white/5 pl-4 ml-2">
-            <label className="text-xs text-zinc-500 flex items-center gap-2 cursor-pointer hover:text-zinc-300 select-none">
-              <input
-                type="checkbox"
-                checked={autoRefresh}
-                onChange={(e) => setAutoRefresh(e.target.checked)}
-                className="rounded border-zinc-700 bg-zinc-900 text-primary focus:ring-primary/50"
-              />
-              Auto-refresh
-            </label>
-            <button
-              onClick={() => fetchLogs({ mode: 'replace' })}
-              className="p-2 text-zinc-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors border border-transparent hover:border-white/5"
-              title="Atualizar lista"
-            >
-              <RefreshCcw className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Logs List */}
-        <div className="flex-1 overflow-y-auto bg-zinc-900/20">
-          {logsLoading && (
-            <div className="flex flex-col items-center justify-center h-64 text-zinc-500">
-              <Loader2 className="w-8 h-8 animate-spin mb-3 text-primary" />
-              <span className="text-sm font-medium">Carregando logs do sistema...</span>
-            </div>
+              <div className="flex items-center gap-3 border-l border-white/5 pl-4 ml-2">
+                <label className="text-xs text-zinc-500 flex items-center gap-2 cursor-pointer hover:text-zinc-300 select-none">
+                  <input
+                    type="checkbox"
+                    checked={autoRefresh}
+                    onChange={(e) => setAutoRefresh(e.target.checked)}
+                    className="rounded border-zinc-700 bg-zinc-900 text-primary focus:ring-primary/50"
+                  />
+                  Auto-refresh
+                </label>
+                <button
+                  onClick={() => fetchLogs({ mode: 'replace' })}
+                  className="p-2 text-zinc-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors border border-transparent hover:border-white/5"
+                  title="Atualizar lista"
+                >
+                  <RefreshCcw className="w-4 h-4" />
+                </button>
+              </div>
+            </>
           )}
 
-          {!logsLoading && !actionError && logs.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 text-zinc-600">
-              <Terminal size={48} className="mb-4 opacity-20" />
-              <p className="text-sm">Nenhum log encontrado para o filtro atual.</p>
-            </div>
-          )}
-
-          <div className="flex flex-col">
-            {!logsLoading && logs.map((log) => <LogItem key={log.id} log={log} />)}
-          </div>
-
-          {nextCursor && !logsLoading && (
-            <div className="flex justify-center py-6 border-t border-white/5 bg-zinc-900/30">
+          {/* Notifications toolbar */}
+          {activeTab === 'notifications' && !editingNotif && (
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-zinc-500">{notifications.length}/5 slots</span>
               <button
-                disabled={loadingMore}
-                onClick={() => fetchLogs({ mode: 'append', cursor: nextCursor })}
-                className="inline-flex items-center gap-2 px-6 py-2 text-sm font-semibold rounded-lg bg-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-700 border border-white/5 transition-all disabled:opacity-50"
+                onClick={() => setEditingNotif({})}
+                disabled={notifications.length >= 5}
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-black hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loadingMore ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                Carregar mais registros
+                <Plus size={14} /> Nova Notificação
               </button>
             </div>
           )}
         </div>
+
+        {/* Notifications Panel */}
+        {activeTab === 'notifications' && (
+          <div className="flex-1 overflow-y-auto bg-zinc-900/20 p-6">
+            {editingNotif !== null ? (
+              <NotificationEditor
+                notification={editingNotif}
+                onSave={handleSaveNotification}
+                onCancel={() => setEditingNotif(null)}
+                saving={notifSaving}
+              />
+            ) : notifLoading ? (
+              <div className="flex flex-col items-center justify-center h-64 text-zinc-500">
+                <Loader2 className="w-8 h-8 animate-spin mb-3 text-primary" />
+                <span className="text-sm font-medium">Carregando notificações...</span>
+              </div>
+            ) : notifications.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 text-zinc-600">
+                <Bell size={48} className="mb-4 opacity-20" />
+                <p className="text-sm">Nenhuma notificação criada.</p>
+                <p className="text-xs text-zinc-700 mt-1">Crie avisos para comunicar mudanças, features e orientações.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {notifications.map((n) => (
+                  <div key={n.id} className="glass-card rounded-xl p-5 border border-white/5 group hover:border-white/10 transition-colors">
+                    <div className="flex items-start justify-between gap-4 mb-3">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-base font-bold text-white leading-tight">{n.title}</h4>
+                        <div className="flex items-center gap-2 mt-1 text-xs text-zinc-500">
+                          <Clock3 size={12} />
+                          {formatDate(n.createdAt)}
+                          {n.creator && <span>· {n.creator.name}</span>}
+                          {n._count?.reads > 0 && (
+                            <span className="bg-zinc-800 px-1.5 py-0.5 rounded text-[10px]">
+                              {n._count.reads} leitura(s)
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => setEditingNotif(n)}
+                          className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+                          title="Editar"
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteNotification(n.id)}
+                          className="p-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
+                          title="Remover"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      className="text-sm text-zinc-300 leading-relaxed notification-body"
+                      dangerouslySetInnerHTML={{ __html: n.body }}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Logs List — only visible on log tabs */}
+        {activeTab !== 'notifications' && (
+          <div className="flex-1 overflow-y-auto bg-zinc-900/20">
+            {logsLoading && (
+              <div className="flex flex-col items-center justify-center h-64 text-zinc-500">
+                <Loader2 className="w-8 h-8 animate-spin mb-3 text-primary" />
+                <span className="text-sm font-medium">Carregando logs do sistema...</span>
+              </div>
+            )}
+
+            {!logsLoading && !actionError && logs.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-20 text-zinc-600">
+                <Terminal size={48} className="mb-4 opacity-20" />
+                <p className="text-sm">Nenhum log encontrado para o filtro atual.</p>
+              </div>
+            )}
+
+            <div className="flex flex-col">
+              {!logsLoading && logs.map((log) => <LogItem key={log.id} log={log} />)}
+            </div>
+
+            {nextCursor && !logsLoading && (
+              <div className="flex justify-center py-6 border-t border-white/5 bg-zinc-900/30">
+                <button
+                  disabled={loadingMore}
+                  onClick={() => fetchLogs({ mode: 'append', cursor: nextCursor })}
+                  className="inline-flex items-center gap-2 px-6 py-2 text-sm font-semibold rounded-lg bg-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-700 border border-white/5 transition-all disabled:opacity-50"
+                >
+                  {loadingMore ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  Carregar mais registros
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

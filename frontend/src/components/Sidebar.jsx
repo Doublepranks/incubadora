@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { Home, Users, Search, BarChart3, Settings, LogOut, ChevronRight, ChevronLeft, UserCircle, Map, LayoutDashboard, ServerCog, Shield, PanelLeftClose, PanelLeft, Minimize2, Maximize2, Target } from 'lucide-react';
+import NotificationBell from './NotificationBell';
 
 const Sidebar = () => {
     const {
@@ -46,7 +47,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div className={`fixed left-4 top-4 bottom-4 ${isSidebarCollapsed ? 'w-20' : 'w-64 xl:w-72'} glass-panel rounded-3xl flex flex-col z-50 overflow-hidden border border-white/5 bg-zinc-950/80 backdrop-blur-xl transition-all duration-300 ease-in-out`}>
+        <div className={`fixed left-4 top-4 bottom-4 ${isSidebarCollapsed ? 'w-20' : 'w-64 xl:w-72'} glass-panel rounded-3xl flex flex-col z-[999] overflow-visible border border-white/5 bg-zinc-950/80 backdrop-blur-xl transition-all duration-300 ease-in-out`}>
             {/* Header */}
             <div className="p-4 border-b border-white/5 flex items-center justify-center relative min-h-[72px]">
                 <div className={`flex items-center ${isSidebarCollapsed ? 'justify-center w-full' : 'w-full gap-3'}`}>
@@ -54,10 +55,11 @@ const Sidebar = () => {
                         <span className="font-bold text-white">I</span>
                     </div>
                     {!isSidebarCollapsed && (
-                        <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400 animate-fade-in truncate">
+                        <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400 animate-fade-in truncate flex-1">
                             Incubadora
                         </h1>
                     )}
+                    <NotificationBell />
                 </div>
             </div>
 

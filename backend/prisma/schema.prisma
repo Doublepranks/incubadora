@@ -69,8 +69,10 @@ model User {
   regions       UserRegion[]
   createdNotes  InfluencerNote[]
   logs          LogEntry[]
-  createdGoals  InfluencerGoal[]
-  refreshTokens RefreshToken[]
+  createdGoals         InfluencerGoal[]
+  refreshTokens        RefreshToken[]
+  createdNotifications Notification[]
+  notificationReads    NotificationRead[]
   @@index([role])
 }
 
@@ -221,4 +223,31 @@ model RefreshToken {
 
   @@index([userId])
   @@index([expiresAt])
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(120)
+  body      String   @db.Text
+  createdBy Int      @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  creator   User               @relation(fields: [createdBy], references: [id], onDelete: Restrict)
+  reads     NotificationRead[]
+
+  @@index([createdAt])
+}
+
+model NotificationRead {
+  id             Int          @id @default(autoincrement())
+  notificationId Int          @map("notification_id")
+  userId         Int          @map("user_id")
+  readAt         DateTime     @default(now()) @map("read_at")
+
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([notificationId, userId])
+  @@index([userId])
 }
