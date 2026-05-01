@@ -453,7 +453,7 @@ const Reports = () => {
                             ))}
                             {rankTotals && (
                                 <tr className="bg-zinc-900/80 font-bold">
-                                    <td className="p-3 rounded-l-lg text-zinc-300">Totais</td>
+                                    <td className="p-3 rounded-l-lg text-zinc-300">Total</td>
                                     <td className="p-3"></td>
                                     {rankMode === 'weekly' ? (
                                         <>
