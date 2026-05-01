@@ -1,4 +1,4 @@
-﻿import ExcelJS from "exceljs";
+import ExcelJS from "exceljs";
 import { Platform, Series, Prisma } from "@prisma/client";
 import { prisma } from "../config/prisma";
 import { daysAgo, startOfWeekMonday } from "./dateService";
@@ -18,6 +18,7 @@ type WeeklyData = {
   platform: Platform;
   weekStart: Date;
   followers: number;
+  posts: number;
   metricDate: Date;
 };
 
@@ -97,6 +98,7 @@ export async function getReportData(filters: ReportFilters, options?: { paginati
           platform: profile.platform,
           weekStart,
           followers: m.followersCount,
+          posts: m.postsCount,
           metricDate: new Date(m.date),
         });
       });
@@ -108,6 +110,11 @@ export async function getReportData(filters: ReportFilters, options?: { paginati
       return sum + (last ? last.followersCount : 0);
     }, 0);
 
+    const totalPosts = inf.socialProfiles.reduce((sum, p) => {
+      const last = p.metrics[p.metrics.length - 1];
+      return sum + (last ? last.postsCount : 0);
+    }, 0);
+
     return {
       id: inf.id,
       name: inf.name,
@@ -117,6 +124,7 @@ export async function getReportData(filters: ReportFilters, options?: { paginati
       series: inf.series ?? null,
       platforms: inf.socialProfiles.map((p) => p.platform),
       totalFollowers,
+      totalPosts,
       weekly: grouped,
     };
   });
