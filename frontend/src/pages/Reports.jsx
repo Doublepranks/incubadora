@@ -453,7 +453,7 @@ const Reports = () => {
                             ))}
                             {rankTotals && (
                                 <tr className="bg-zinc-900/80 font-bold">
-                                    <td className="p-3 rounded-l-lg text-zinc-300">Total</td>
+                                    <td className="p-3 rounded-l-lg text-zinc-300">Totais</td>
                                     <td className="p-3"></td>
                                     {rankMode === 'weekly' ? (
                                         <>
@@ -500,33 +500,76 @@ const ReportCard = ({ card }) => {
                 arr.push(match ? match.followers : 0);
             });
         });
-        return Array.from(grouped.entries()).map(([platform, data]) => ({
+        const followersSeries = Array.from(grouped.entries()).map(([platform, data]) => ({
             name: platform,
             data,
             color: platformColors[platform] || '#3b82f6'
         }));
+
+        // Posts series (aggregated across returned platforms per week)
+        const postsData = weeks.map((week) => {
+            return card.weekly
+                .filter((w) => w.weekStart === week)
+                .reduce((sum, w) => sum + (w.posts || 0), 0);
+        });
+        const postsSeries = {
+            name: 'Posts',
+            data: postsData,
+            color: '#a855f7', // purple-500
+            type: 'line',
+        };
+
+        return [...followersSeries, postsSeries];
     }, [card.weekly, weeks]);
 
     const chartOptions = useMemo(() => ({
         chart: { type: 'line', toolbar: { show: false }, animations: { enabled: false }, background: 'transparent' },
         dataLabels: { enabled: false },
-        stroke: { curve: 'smooth', width: 3 },
+        stroke: {
+            curve: 'smooth',
+            width: series.map((s) => s.name === 'Posts' ? 2 : 3),
+            dashArray: series.map((s) => s.name === 'Posts' ? 4 : 0)
+        },
         xaxis: {
             categories: weeks.map((w, idx) => `S${idx + 1}`),
             axisBorder: { show: false },
             axisTicks: { show: false },
             labels: { style: { colors: '#71717a' } }
         },
-        yaxis: {
-            labels: { style: { colors: '#71717a' }, formatter: (val) => val >= 1000 ? `${(val / 1000).toFixed(1)}k` : val }
-        },
+        yaxis: [
+            {
+                title: { text: undefined },
+                labels: { style: { colors: '#71717a' }, formatter: (val) => val >= 1000 ? `${(val / 1000).toFixed(1)}k` : val }
+            },
+            {
+                opposite: true,
+                title: { text: undefined },
+                labels: { style: { colors: '#a855f7' }, formatter: (val) => Math.round(val).toString() }
+            }
+        ],
         legend: { show: false },
         grid: { borderColor: '#27272a', strokeDashArray: 4 },
         theme: { mode: 'dark' }
-    }), [weeks]);
+    }), [weeks, series]);
 
     const variationBadges = useMemo(() => {
         const badges = [];
+
+        // Posts variation (aggregated)
+        const postsByWeek = new Map();
+        card.weekly.forEach((w) => {
+            postsByWeek.set(w.weekStart, (postsByWeek.get(w.weekStart) || 0) + (w.posts || 0));
+        });
+        const sortedPostWeeks = Array.from(postsByWeek.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+        if (sortedPostWeeks.length >= 2) {
+            const prev = sortedPostWeeks[sortedPostWeeks.length - 2][1];
+            const last = sortedPostWeeks[sortedPostWeeks.length - 1][1];
+            const diff = last - prev;
+            const pct = prev > 0 ? (diff / prev) * 100 : 0;
+            badges.push({ platform: 'posts', pct });
+        }
+
+        // Followers variation (per-platform)
         const grouped = new Map();
         card.weekly.forEach((w) => {
             if (!grouped.has(w.platform)) grouped.set(w.platform, []);
@@ -681,7 +724,11 @@ const ReportCard = ({ card }) => {
 
                 <div className="mt-4 space-y-3">
                     <div className="flex items-baseline justify-between">
-                        <span className="text-xs text-zinc-500 uppercase tracking-wider font-medium">Total</span>
+                        <span className="text-xs text-zinc-500 uppercase tracking-wider font-medium">Posts</span>
+                        <span className="text-xl font-bold text-white">{card.totalPosts?.toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-baseline justify-between">
+                        <span className="text-xs text-zinc-500 uppercase tracking-wider font-medium">Seguidores totais</span>
                         <span className="text-xl font-bold text-white">{card.totalFollowers?.toLocaleString()}</span>
                     </div>
 
