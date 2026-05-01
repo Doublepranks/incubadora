@@ -26,6 +26,7 @@ export const AppProvider = ({ children }) => {
 
     const [selectedState, setSelectedState] = useState('');
     const [selectedMunicipality, setSelectedMunicipality] = useState('');
+    const [selectedSituacao, setSelectedSituacao] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [user, setUser] = useState(null);
     const [authLoading, setAuthLoading] = useState(true);
@@ -163,12 +164,13 @@ export const AppProvider = ({ children }) => {
         const params = new URLSearchParams();
         if (searchQuery) params.append('search', searchQuery);
         if (selectedState) params.append('state', selectedState);
+        if (selectedSituacao) params.append('situacao', selectedSituacao);
         const url = `${API_URL}/influencers/summary?${params.toString()}`;
         fetch(url, { credentials: 'include' })
             .then(res => res.json())
             .then(json => setSidebarPool(json.data || []))
             .catch(err => console.error('Failed to load influencers', err));
-    }, [authLoading, user, searchQuery, selectedState]);
+    }, [authLoading, user, searchQuery, selectedState, selectedSituacao]);
 
     return (
         <AppContext.Provider value={{
@@ -179,6 +181,8 @@ export const AppProvider = ({ children }) => {
             setSelectedState,
             selectedMunicipality,
             setSelectedMunicipality,
+            selectedSituacao,
+            setSelectedSituacao,
             searchQuery,
             setSearchQuery,
             isAuthenticated: !!user,

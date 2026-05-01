@@ -11,6 +11,7 @@ export type InfluencerFilters = {
   regions?: string[];
   series?: Series;
   sex?: Sex;
+  situacao?: string;
 };
 
 export type InfluencerProfileInput = {
@@ -72,6 +73,8 @@ export async function listInfluencers(
           ],
         }
         : {},
+      filters.situacao === 'filiado' ? { isFiliado: true } : {},
+      filters.situacao === 'pre_candidato' ? { isPreCandidato: true } : {},
     ],
   };
 
@@ -148,7 +151,7 @@ export async function listInfluencers(
  * Used by Dashboard table, Metas dropdown, and Sidebar.
  */
 export async function listInfluencerSummary(
-  filters: Pick<InfluencerFilters, 'search' | 'state' | 'city' | 'regions'>,
+  filters: Pick<InfluencerFilters, 'search' | 'state' | 'city' | 'regions' | 'situacao'>,
   options?: { limit?: number }
 ) {
   const where: Prisma.InfluencerWhereInput = {
@@ -164,6 +167,8 @@ export async function listInfluencerSummary(
           ],
         }
         : {},
+      filters.situacao === 'filiado' ? { isFiliado: true } : {},
+      filters.situacao === 'pre_candidato' ? { isPreCandidato: true } : {},
     ],
   };
 

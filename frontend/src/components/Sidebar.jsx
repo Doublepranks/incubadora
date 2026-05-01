@@ -8,6 +8,7 @@ const Sidebar = () => {
     const {
         selectedState, setSelectedState,
         selectedMunicipality, setSelectedMunicipality,
+        selectedSituacao, setSelectedSituacao,
         searchQuery, setSearchQuery,
         sidebarResults,
         states,
@@ -130,6 +131,19 @@ const Sidebar = () => {
                                         {cityOptions.map(city => (
                                             <option key={city} value={city}>{city}</option>
                                         ))}
+                                    </select>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-medium text-zinc-500 ml-1">Situação Eleitoral</label>
+                                    <select
+                                        value={selectedSituacao}
+                                        onChange={(e) => setSelectedSituacao(e.target.value)}
+                                        className="w-full px-3 py-2 text-sm bg-zinc-900/50 border border-white/5 rounded-xl text-zinc-300 focus:outline-none focus:ring-1 focus:ring-primary/50 appearance-none cursor-pointer hover:bg-zinc-800/50 transition-colors"
+                                    >
+                                        <option value="">Todos</option>
+                                        <option value="filiado">Filiado</option>
+                                        <option value="pre_candidato">Pré-candidato</option>
                                     </select>
                                 </div>
                             </div>

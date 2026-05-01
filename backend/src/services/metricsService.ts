@@ -9,6 +9,7 @@ type MetricsFilters = {
   periodDays?: number | null;
   regions?: string[];
   series?: Series;
+  situacao?: string;
 };
 
 type AggregatedInfluencerInternal = {
@@ -66,6 +67,12 @@ export async function getOverview(filters: MetricsFilters) {
     whereConditions.push(`sp.platform = $${paramIndex}::"Platform"`);
     params.push(filters.platform);
     paramIndex++;
+  }
+
+  if (filters.situacao === 'filiado') {
+    whereConditions.push(`i.is_filiado = true`);
+  } else if (filters.situacao === 'pre_candidato') {
+    whereConditions.push(`i.is_pre_candidato = true`);
   }
 
   const influencerWhere = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
@@ -201,6 +208,16 @@ export async function getTopGrowth(filters: MetricsFilters, limit = 10) {
     paramIndex++;
   }
 
+  if (filters.situacao === 'filiado') {
+    const cond = `i.is_filiado = true`;
+    influencerConditions.push(cond);
+    allConditions.push(cond);
+  } else if (filters.situacao === 'pre_candidato') {
+    const cond = `i.is_pre_candidato = true`;
+    influencerConditions.push(cond);
+    allConditions.push(cond);
+  }
+
   // Full WHERE (for CTEs that JOIN SocialProfile)
   const influencerWhere = allConditions.length > 0 ? `WHERE ${allConditions.join(' AND ')}` : '';
   // Influencer-only WHERE (for final SELECT on Influencer table — no sp.* refs)
@@ -299,6 +316,8 @@ export async function getPlatformDistribution(filters: MetricsFilters = {}) {
         state: filters.regions && filters.regions.length > 0 ? { in: filters.regions } : filters.state || undefined,
         city: filters.city || undefined,
         series: filters.series || undefined,
+        ...(filters.situacao === 'filiado' ? { isFiliado: true } : {}),
+        ...(filters.situacao === 'pre_candidato' ? { isPreCandidato: true } : {}),
       },
     },
     select: {
@@ -347,6 +366,12 @@ export async function getStateDistribution(filters: MetricsFilters) {
     where.socialProfiles = { some: { platform: filters.platform } };
   }
 
+  if (filters.situacao === 'filiado') {
+    where.isFiliado = true;
+  } else if (filters.situacao === 'pre_candidato') {
+    where.isPreCandidato = true;
+  }
+
   const results = await prisma.influencer.groupBy({
     by: ['state'],
     where,
@@ -364,6 +389,8 @@ export async function getGenderDistribution(filters: MetricsFilters) {
       city: filters.city || undefined,
       series: filters.series || undefined,
       sex: { not: null },
+      ...(filters.situacao === 'filiado' ? { isFiliado: true } : {}),
+      ...(filters.situacao === 'pre_candidato' ? { isPreCandidato: true } : {}),
     },
     select: { sex: true },
   });
@@ -386,6 +413,8 @@ export async function getGenderByRegion(filters: MetricsFilters) {
       city: filters.city || undefined,
       series: filters.series || undefined,
       sex: { not: null },
+      ...(filters.situacao === 'filiado' ? { isFiliado: true } : {}),
+      ...(filters.situacao === 'pre_candidato' ? { isPreCandidato: true } : {}),
     },
     select: { state: true, sex: true },
   });
@@ -438,6 +467,8 @@ export async function getFollowersTimeline(filters: MetricsFilters) {
         state: filters.regions && filters.regions.length > 0 ? { in: filters.regions } : filters.state || undefined,
         city: filters.city || undefined,
         series: filters.series || undefined,
+        ...(filters.situacao === 'filiado' ? { isFiliado: true } : {}),
+        ...(filters.situacao === 'pre_candidato' ? { isPreCandidato: true } : {}),
       },
     },
     include: {
@@ -600,6 +631,8 @@ async function aggregateInfluencers(filters: MetricsFilters, overrideDays?: numb
       state: filters.regions && filters.regions.length > 0 ? { in: filters.regions } : filters.state || undefined,
       city: filters.city || undefined,
       series: filters.series || undefined,
+      ...(filters.situacao === 'filiado' ? { isFiliado: true } : {}),
+      ...(filters.situacao === 'pre_candidato' ? { isPreCandidato: true } : {}),
     },
     include: {
       socialProfiles: {

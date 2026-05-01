@@ -6,7 +6,7 @@ const VALID_SERIES: Series[] = ["Elite", "A2", "A3", "Institucional", "Cortes", 
 
 export async function getOverviewHandler(req: Request, res: Response) {
   try {
-    const { state, city, platform, periodDays, series } = req.query;
+    const { state, city, platform, periodDays, series, situacao } = req.query;
     const period =
       periodDays === "all"
         ? null
@@ -23,6 +23,7 @@ export async function getOverviewHandler(req: Request, res: Response) {
       periodDays: period,
       regions,
       series: seriesFilter,
+      situacao: situacao as string | undefined,
     });
     return res.json({ error: false, data });
   } catch (err) {
@@ -33,7 +34,7 @@ export async function getOverviewHandler(req: Request, res: Response) {
 
 export async function getTopGrowthHandler(req: Request, res: Response) {
   try {
-    const { state, city, platform, periodDays, limit, series } = req.query;
+    const { state, city, platform, periodDays, limit, series, situacao } = req.query;
     const period =
       periodDays === "all"
         ? null
@@ -52,6 +53,7 @@ export async function getTopGrowthHandler(req: Request, res: Response) {
         periodDays: period,
         regions,
         series: seriesFilter,
+        situacao: situacao as string | undefined,
       },
       lim,
     );
@@ -64,7 +66,7 @@ export async function getTopGrowthHandler(req: Request, res: Response) {
 
 export async function getPlatformDistributionHandler(_req: Request, res: Response) {
   try {
-    const { state, city, platform, series } = _req.query;
+    const { state, city, platform, series, situacao } = _req.query;
     const regions = (_req as any).userRegions as string[] | undefined;
     const seriesFilter = series && VALID_SERIES.includes(series as Series) ? (series as Series) : undefined;
 
@@ -74,6 +76,7 @@ export async function getPlatformDistributionHandler(_req: Request, res: Respons
       platform: platform as Platform | undefined,
       regions,
       series: seriesFilter,
+      situacao: situacao as string | undefined,
     });
     return res.json({ error: false, data });
   } catch (err) {
@@ -84,7 +87,7 @@ export async function getPlatformDistributionHandler(_req: Request, res: Respons
 
 export async function getStateDistributionHandler(req: Request, res: Response) {
   try {
-    const { state, city, platform, series } = req.query;
+    const { state, city, platform, series, situacao } = req.query;
     const regions = (req as any).userRegions as string[] | undefined;
     const seriesFilter = series && VALID_SERIES.includes(series as Series) ? (series as Series) : undefined;
 
@@ -94,6 +97,7 @@ export async function getStateDistributionHandler(req: Request, res: Response) {
       platform: platform as Platform | undefined,
       regions,
       series: seriesFilter,
+      situacao: situacao as string | undefined,
     });
     return res.json({ error: false, data });
   } catch (err) {
@@ -104,7 +108,7 @@ export async function getStateDistributionHandler(req: Request, res: Response) {
 
 export async function getTimelineHandler(req: Request, res: Response) {
   try {
-    const { state, city, platform, periodDays, series } = req.query;
+    const { state, city, platform, periodDays, series, situacao } = req.query;
     const period =
       periodDays === "all"
         ? null
@@ -121,6 +125,7 @@ export async function getTimelineHandler(req: Request, res: Response) {
       periodDays: period,
       regions,
       series: seriesFilter,
+      situacao: situacao as string | undefined,
     });
     return res.json({ error: false, data });
   } catch (err) {
@@ -153,7 +158,7 @@ export async function addManualMetricHandler(req: Request, res: Response) {
 
 export async function getGenderDistributionHandler(req: Request, res: Response) {
   try {
-    const { state, city, series } = req.query;
+    const { state, city, series, situacao } = req.query;
     const regions = (req as any).userRegions as string[] | undefined;
     const seriesFilter = series && VALID_SERIES.includes(series as Series) ? (series as Series) : undefined;
 
@@ -162,6 +167,7 @@ export async function getGenderDistributionHandler(req: Request, res: Response) 
       city: city as string | undefined,
       series: seriesFilter,
       regions,
+      situacao: situacao as string | undefined,
     });
     return res.json({ error: false, data });
   } catch (err) {
@@ -172,7 +178,7 @@ export async function getGenderDistributionHandler(req: Request, res: Response) 
 
 export async function getGenderByRegionHandler(req: Request, res: Response) {
   try {
-    const { state, city, series } = req.query;
+    const { state, city, series, situacao } = req.query;
     const regions = (req as any).userRegions as string[] | undefined;
     const seriesFilter = series && VALID_SERIES.includes(series as Series) ? (series as Series) : undefined;
 
@@ -181,6 +187,7 @@ export async function getGenderByRegionHandler(req: Request, res: Response) {
       city: city as string | undefined,
       series: seriesFilter,
       regions,
+      situacao: situacao as string | undefined,
     });
     return res.json({ error: false, data });
   } catch (err) {

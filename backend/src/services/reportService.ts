@@ -12,6 +12,7 @@ type ReportFilters = {
   month?: number;
   year?: number;
   platform?: Platform;
+  situacao?: string;
 };
 
 type WeeklyData = {
@@ -64,6 +65,8 @@ export async function getReportData(filters: ReportFilters, options?: { paginati
   if (filters.series) whereConditions.push({ series: filters.series });
   if (filters.search) whereConditions.push({ name: { contains: filters.search, mode: "insensitive" } });
   if (filters.platform) whereConditions.push({ socialProfiles: { some: { platform: filters.platform } } });
+  if (filters.situacao === "filiado") whereConditions.push({ isFiliado: true });
+  else if (filters.situacao === "pre_candidato") whereConditions.push({ isPreCandidato: true });
 
   const where: Prisma.InfluencerWhereInput = { AND: whereConditions };
 
@@ -237,6 +240,8 @@ async function getWeeklyRank(filters: ReportFilters): Promise<RankResult> {
   if (filters.series) whereConditions.push({ series: filters.series });
   if (filters.search) whereConditions.push({ name: { contains: filters.search, mode: "insensitive" } });
   if (filters.platform) whereConditions.push({ socialProfiles: { some: { platform: filters.platform } } });
+  if (filters.situacao === "filiado") whereConditions.push({ isFiliado: true });
+  else if (filters.situacao === "pre_candidato") whereConditions.push({ isPreCandidato: true });
 
   const influencers = await prisma.influencer.findMany({
     where: { AND: whereConditions },
@@ -351,6 +356,8 @@ async function getMonthlyRank(filters: Required<Pick<ReportFilters, "month" | "y
   if (filters.series) whereConditions.push({ series: filters.series });
   if (filters.search) whereConditions.push({ name: { contains: filters.search, mode: "insensitive" } });
   if (filters.platform) whereConditions.push({ socialProfiles: { some: { platform: filters.platform } } });
+  if (filters.situacao === "filiado") whereConditions.push({ isFiliado: true });
+  else if (filters.situacao === "pre_candidato") whereConditions.push({ isPreCandidato: true });
 
   const influencers = await prisma.influencer.findMany({
     where: { AND: whereConditions },
