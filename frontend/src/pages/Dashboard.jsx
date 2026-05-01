@@ -8,7 +8,7 @@ import * as dateUtils from '../utils/dateUtils';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const Dashboard = () => {
-    const { user, authLoading, selectedState, selectedMunicipality, filters, setFilters } = useApp();
+    const { user, authLoading, selectedState, selectedMunicipality, selectedSituacao, filters, setFilters } = useApp();
     const navigate = useNavigate();
 
     const [overview, setOverview] = useState({ totalInfluencers: 0, totalFollowers: 0, totalPosts: 0, growthPercent: 0, totalFiliados: 0, totalPreCandidatos: 0 });
@@ -40,10 +40,11 @@ const Dashboard = () => {
         const p = new URLSearchParams();
         if (selectedState) p.append('state', selectedState);
         if (selectedMunicipality) p.append('city', selectedMunicipality);
+        if (selectedSituacao) p.append('situacao', selectedSituacao);
         if (filters.platform) p.append('platform', filters.platform);
         p.append('periodDays', filters.periodDays);
         return p;
-    }, [selectedState, selectedMunicipality, filters]);
+    }, [selectedState, selectedMunicipality, selectedSituacao, filters]);
 
     useEffect(() => {
         if (authLoading || !user) return;

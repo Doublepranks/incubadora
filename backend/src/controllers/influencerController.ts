@@ -6,7 +6,7 @@ import { Platform, Series, Sex } from "@prisma/client";
 const VALID_SERIES: Series[] = ["Elite", "A2", "A3", "Institucional", "Cortes", "Noticias"];
 
 export async function getInfluencers(req: Request, res: Response) {
-  const { search, state, city, platform, periodDays, series, page, limit } = req.query;
+  const { search, state, city, platform, periodDays, series, page, limit, situacao } = req.query;
   const period =
     periodDays === "all"
       ? null
@@ -39,6 +39,7 @@ export async function getInfluencers(req: Request, res: Response) {
     regions,
     series: seriesFilter,
     sex: req.query.sex as Sex | undefined,
+    situacao: situacao as string | undefined,
   }, {
     pagination: paginationOpts
   });
@@ -51,7 +52,7 @@ export async function getInfluencers(req: Request, res: Response) {
 }
 
 export async function getInfluencerSummary(req: Request, res: Response) {
-  const { search, state, city, limit } = req.query;
+  const { search, state, city, limit, situacao } = req.query;
   const regions = (req as any).userRegions as string[] | undefined;
 
   const limitNum = limit ? Math.min(200, Math.max(1, Number(limit) || 20)) : undefined;
@@ -61,6 +62,7 @@ export async function getInfluencerSummary(req: Request, res: Response) {
     state: state as string | undefined,
     city: city as string | undefined,
     regions,
+    situacao: situacao as string | undefined,
   }, {
     limit: limitNum,
   });

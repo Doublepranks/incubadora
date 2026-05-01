@@ -26,7 +26,7 @@ const PLATFORM_OPTIONS = [
 ];
 
 const Reports = () => {
-    const { user, selectedState, selectedMunicipality } = useApp();
+    const { user, selectedState, selectedMunicipality, selectedSituacao } = useApp();
     const [stateFilter, setStateFilter] = useState('');
     const [search, setSearch] = useState('');
     const [seriesFilter, setSeriesFilter] = useState('');
@@ -87,6 +87,7 @@ const Reports = () => {
                 if (monthFilter) params.append('month', monthFilter);
                 if (yearFilter) params.append('year', yearFilter);
                 if (debouncedSearch) params.append('search', debouncedSearch);
+                if (selectedSituacao) params.append('situacao', selectedSituacao);
 
                 params.append('page', page);
                 params.append('limit', PAGE_SIZE);
@@ -107,7 +108,7 @@ const Reports = () => {
             }
         };
         fetchData();
-    }, [effectiveState, selectedMunicipality, seriesFilter, platformFilter, monthFilter, yearFilter, debouncedSearch, page]);
+    }, [effectiveState, selectedMunicipality, selectedSituacao, seriesFilter, platformFilter, monthFilter, yearFilter, debouncedSearch, page]);
 
     const handleExport = async () => {
         try {
@@ -119,6 +120,7 @@ const Reports = () => {
             if (monthFilter) params.append('month', monthFilter);
             if (yearFilter) params.append('year', yearFilter);
             if (search) params.append('search', search);
+            if (selectedSituacao) params.append('situacao', selectedSituacao);
             const res = await fetch(`${API_URL}/reports/general/export?format=xlsx&${params.toString()}`, {
                 credentials: 'include'
             });
@@ -148,6 +150,7 @@ const Reports = () => {
             if (search) params.append('search', search);
             if (seriesFilter) params.append('series', seriesFilter);
             if (platformFilter) params.append('platform', platformFilter);
+            if (selectedSituacao) params.append('situacao', selectedSituacao);
             params.append('mode', 'weekly');
             const res = await fetch(`${API_URL}/reports/rank?${params.toString()}`, { credentials: 'include' });
             if (!res.ok) {
@@ -191,6 +194,7 @@ const Reports = () => {
             if (search) params.append('search', search);
             if (seriesFilter) params.append('series', seriesFilter);
             if (platformFilter) params.append('platform', platformFilter);
+            if (selectedSituacao) params.append('situacao', selectedSituacao);
             params.append('mode', 'monthly');
             params.append('month', useMonth);
             params.append('year', useYear);

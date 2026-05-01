@@ -60,6 +60,7 @@ const Influencers = () => {
     setSelectedState,
     selectedMunicipality,
     setSelectedMunicipality,
+    selectedSituacao,
     states,
     cities,
   } = useApp();
@@ -118,6 +119,7 @@ const Influencers = () => {
       if (platformFilter) params.append("platform", platformFilter);
       if (seriesFilter) params.append("series", seriesFilter);
       if (periodFilter) params.append("periodDays", periodFilter);
+      if (selectedSituacao) params.append("situacao", selectedSituacao);
       params.append("page", page);
       params.append("limit", PAGE_SIZE);
 
@@ -141,12 +143,12 @@ const Influencers = () => {
     if (canManage) {
       loadInfluencers();
     }
-  }, [search, selectedState, selectedMunicipality, platformFilter, seriesFilter, periodFilter, page, canManage]);
+  }, [search, selectedState, selectedMunicipality, selectedSituacao, platformFilter, seriesFilter, periodFilter, page, canManage]);
 
   // Reset page when filters change
   useEffect(() => {
     setPage(1);
-  }, [search, selectedState, selectedMunicipality, platformFilter, seriesFilter, periodFilter]);
+  }, [search, selectedState, selectedMunicipality, selectedSituacao, platformFilter, seriesFilter, periodFilter]);
 
   const loadFormCities = async (uf) => {
     if (!uf) {
